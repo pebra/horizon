@@ -40,6 +40,9 @@
     "background": "Background",
     "background_image": "Background image",
     "background_video": "Background video",
+    "beaverkeys_button": "Button",
+    "beaverkeys_gradient": "Gradient",
+    "beaverkeys_product": "Product",
     "block_link": "Block link",
     "block_size": "Block size",
     // Typography setting for body text size
@@ -223,6 +226,9 @@
     "work_quickly_to_ship": "<p>We will work quickly to ship your order as soon as possible. Once your order has shipped, you will receive an email with further information. Delivery times vary depending on your location.</p>"
   },
   "info": {
+    "beaverkeys_product_autofill": "Optional. When set, automatically supplies the image and link below unless you override them.",
+    "beaverkeys_image_override": "Overrides the image from the product above, if selected.",
+    "beaverkeys_link_override": "Overrides the link from the product above, if selected.",
     "actions_display_style": "Icons are always used on mobile",
     "applies_on_image_only": "Applies to images only",
     "aspect_ratio_adjusted": "Adjusted in some layouts",
@@ -252,6 +258,10 @@
     "media_type_info": "Features are populated from your menu links"
   },
   "names": {
+    "beaverkeys_hero": "Hero: BeaverKeys",
+    "beaverkeys_hero_slide": "Slide",
+    "beaverkeys_review": "Review",
+    "beaverkeys_reviews": "Reviews: BeaverKeys",
     "column": "Column",
     "product_title": "Product title",
     "custom_liquid": "Custom Liquid",
@@ -734,6 +744,16 @@
     "below_media": "Below media"
   },
   "settings": {
+    "beaverkeys_badge_label": "Badge label",
+    "beaverkeys_gradient_end": "Gradient end",
+    "beaverkeys_gradient_start": "Gradient start",
+    "beaverkeys_heading_line_1": "Heading line 1",
+    "beaverkeys_heading_line_2": "Heading line 2",
+    "beaverkeys_product": "Product",
+    "beaverkeys_quote": "Quote",
+    "beaverkeys_rating": "Rating",
+    "beaverkeys_reviewer_name": "Reviewer name",
+    "subheading": "Subheading",
     "accordion": "Accordion",
     "account": "Account",
     "actions_display_style": "Menu style",

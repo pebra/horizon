@@ -1,0 +1,188 @@
+{% doc %}
+  A single slide of the beaverkeys-hero cycling offer banner. Private block,
+  only intended to be used inside sections/beaverkeys-hero.liquid.
+{% enddoc %}
+
+{%- liquid
+  assign block_index = section.blocks | find_index: 'id', block.id
+  assign slide_number = block_index | plus: 1
+  assign is_active = false
+  if block_index == 0
+    assign is_active = true
+  endif
+
+  assign loading = 'lazy'
+  assign fetchpriority = 'low'
+  if is_active and section.index == 1
+    assign loading = 'eager'
+    assign fetchpriority = 'high'
+  endif
+
+  assign slide_product = block.settings.product
+
+  assign slide_image = block.settings.image
+  if slide_image == blank and slide_product != blank
+    assign slide_image = slide_product.featured_image
+  endif
+
+  assign slide_link = block.settings.button_link
+  if slide_link == blank and slide_product != blank
+    assign slide_link = slide_product.url
+  endif
+
+  assign slide_image_alt = slide_image.alt
+  if slide_image_alt == blank and slide_product != blank
+    assign slide_image_alt = slide_product.title
+  endif
+  if slide_image_alt == blank
+    assign slide_image_alt = block.settings.heading_line_1
+  endif
+-%}
+
+<div
+  class="beaverkeys-hero__slide"
+  id="BeaverkeysHeroSlide-{{ block.id }}"
+  role="group"
+  aria-roledescription="{{ 'accessibility.slide' | t }}"
+  aria-label="{{ 'accessibility.slide_status' | t: index: slide_number, length: section.blocks.size }}"
+  {% unless is_active %}
+    inert aria-hidden="true"
+  {% endunless %}
+  ref="slides[]"
+  style="--beaverkeys-hero-slide-gradient: linear-gradient(135deg, {{ block.settings.gradient_start }}, {{ block.settings.gradient_end }});"
+  {{ block.shopify_attributes }}
+>
+  <div class="beaverkeys-hero__slide-content">
+    {%- if block.settings.badge != blank -%}
+      <span class="beaverkeys-hero__badge">{{ block.settings.badge }}</span>
+    {%- endif -%}
+    {%- if block.settings.heading_line_1 != blank or block.settings.heading_line_2 != blank -%}
+      <h2 class="beaverkeys-hero__heading">
+        {{- block.settings.heading_line_1 }}<br>{{ block.settings.heading_line_2 -}}
+      </h2>
+    {%- endif -%}
+    {%- if block.settings.subheading != blank -%}
+      <p class="beaverkeys-hero__sub">{{ block.settings.subheading }}</p>
+    {%- endif -%}
+    {%- if block.settings.button_label != blank -%}
+      <a
+        href="{{ slide_link | default: '#' }}"
+        class="beaverkeys-hero__cta"
+        {% if slide_link == blank %}
+          tabindex="-1" aria-disabled="true"
+        {% endif %}
+      >
+        {{- block.settings.button_label }}
+        <span aria-hidden="true">→</span>
+      </a>
+    {%- endif -%}
+  </div>
+  <div class="beaverkeys-hero__media">
+    {%- if slide_image != blank -%}
+      {{
+        slide_image
+        | image_url: width: 1600
+        | image_tag:
+          widths: '400, 600, 800, 1200, 1600',
+          sizes: '(min-width: 750px) 40vw, 90vw',
+          loading: loading,
+          fetchpriority: fetchpriority,
+          alt: slide_image_alt,
+          class: 'beaverkeys-hero__image'
+      }}
+    {%- else -%}
+      {{ 'hero-apparel-1' | placeholder_svg_tag: 'beaverkeys-hero__image beaverkeys-hero__image--placeholder' }}
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "t:names.beaverkeys_hero_slide",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "badge",
+      "label": "t:settings.beaverkeys_badge_label",
+      "default": "New drop"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_1",
+      "label": "t:settings.beaverkeys_heading_line_1"
+    },
+    {
+      "type": "text",
+      "id": "heading_line_2",
+      "label": "t:settings.beaverkeys_heading_line_2"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "t:settings.subheading"
+    },
+    {
+      "type": "header",
+      "content": "t:content.beaverkeys_product"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "t:settings.beaverkeys_product",
+      "info": "t:info.beaverkeys_product_autofill"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "t:settings.image",
+      "info": "t:info.beaverkeys_image_override"
+    },
+    {
+      "type": "header",
+      "content": "t:content.beaverkeys_button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:settings.label",
+      "default": "Shop now"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:settings.link",
+      "info": "t:info.beaverkeys_link_override"
+    },
+    {
+      "type": "header",
+      "content": "t:content.beaverkeys_gradient"
+    },
+    {
+      "type": "color",
+      "id": "gradient_start",
+      "label": "t:settings.beaverkeys_gradient_start",
+      "default": "#86cbc8"
+    },
+    {
+      "type": "color",
+      "id": "gradient_end",
+      "label": "t:settings.beaverkeys_gradient_end",
+      "default": "#1e5f5c"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.beaverkeys_hero_slide",
+      "settings": {
+        "badge": "New drop",
+        "heading_line_1": "New drop",
+        "heading_line_2": "is here.",
+        "subheading": "Hand-picked, factory-lubed, ready to ship from Ottawa.",
+        "button_label": "Shop now",
+        "button_link": "shopify://collections/all"
+      }
+    }
+  ]
+}
+{% endschema %}

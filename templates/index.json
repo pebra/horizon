@@ -9,83 +9,55 @@
  */
 {
   "sections": {
-    "hero_jVaWmY": {
-      "type": "hero",
+    "beaverkeys_hero": {
+      "type": "beaverkeys-hero",
       "blocks": {
-        "text_YLPk4p": {
-          "type": "text",
-          "name": "t:names.heading",
+        "slide_1": {
+          "type": "_beaverkeys-hero-slide",
           "settings": {
-            "text": "<p>Browse our latest products</p>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "text_color": "{{ settings.color_palette.background }}",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
+            "badge": "Just dropped",
+            "heading_line_1": "Wobkey boards",
+            "heading_line_2": "are here.",
+            "subheading": "Zen65 & Crush80. Factory-lubed. Shipped fast from Ottawa.",
+            "product": "akko-mirror",
+            "button_label": "Shop now",
+            "button_link": "shopify://products/akko-mirror",
+            "gradient_start": "#86cbc8",
+            "gradient_end": "#1e5f5c"
+          }
         },
-        "button_H9gpTf": {
-          "type": "button",
-          "name": "t:names.button",
+        "slide_2": {
+          "type": "_beaverkeys-hero-slide",
           "settings": {
-            "label": "Shop all",
-            "link": "shopify://collections/all",
-            "open_in_new_tab": false,
-            "style_class": "button-custom",
-            "custom_button_background": "rgba(0, 0, 0, 0)",
-            "custom_button_text": "{{ settings.color_palette.background }}",
-            "custom_button_border": "{{ settings.color_palette.background }}",
-            "width": "fit-content",
-            "custom_width": 100,
-            "width_mobile": "fit-content",
-            "custom_width_mobile": 100
-          },
-          "blocks": {}
+            "badge": "Limited time",
+            "heading_line_1": "Up to 30% off",
+            "heading_line_2": "switches.",
+            "subheading": "Linear, tactile, and silent — stock up before they're gone.",
+            "button_label": "Shop sale",
+            "button_link": "shopify://collections/all",
+            "gradient_start": "#a9d9d6",
+            "gradient_end": "#2d7a77"
+          }
+        },
+        "slide_3": {
+          "type": "_beaverkeys-hero-slide",
+          "settings": {
+            "badge": "Free shipping",
+            "heading_line_1": "Orders $200+",
+            "heading_line_2": "ship free.",
+            "subheading": "Fast, tracked shipping across Canada — every order, every time.",
+            "button_label": "Start shopping",
+            "button_link": "shopify://collections/all",
+            "gradient_start": "#c5e6e4",
+            "gradient_end": "#1e5f5c"
+          }
         }
       },
-      "block_order": [
-        "text_YLPk4p",
-        "button_H9gpTf"
-      ],
-      "name": "t:names.hero",
+      "block_order": ["slide_1", "slide_2", "slide_3"],
+      "name": "t:names.beaverkeys_hero",
       "settings": {
-        "media_type_1": "image",
-        "media_type_2": "image",
-        "link": "",
-        "open_in_new_tab": false,
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "space-between",
-        "vertical_alignment": "flex-end",
-        "align_baseline": true,
-        "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "flex-end",
-        "gap": 24,
-        "section_width": "page-width",
-        "section_height": "medium",
-        "section_height_custom": 50,
-        "toggle_overlay": true,
-        "overlay_color": "#12121266",
-        "overlay_style": "solid",
-        "gradient_direction": "to bottom",
-        "blurred_reflection": false,
-        "reflection_opacity": 75,
-        "padding-block-start": 100,
-        "padding-block-end": 72
+        "autoplay": true,
+        "autoplay_speed": 4.5
       }
     },
     "product_list_fa6P9H": {
@@ -127,12 +99,12 @@
               "type": "_product-list-text",
               "name": "t:names.collection_title",
               "settings": {
-                "text": "<h3>{{ closest.collection.title }}</h3>",
+                "text": "<h2>New Arrivals 🔥</h2>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
-                "type_preset": "h4",
-                "font": "var(--font-body--family)",
+                "type_preset": "h2",
+                "font": "var(--font-heading--family)",
                 "font_size": "",
                 "line_height": "normal",
                 "letter_spacing": "normal",
@@ -173,7 +145,7 @@
           "name": "t:names.product_card",
           "static": true,
           "settings": {
-            "product_card_gap": 4,
+            "product_card_gap": 10,
             "border": "none",
             "border_width": 1,
             "border_opacity": 100,
@@ -188,11 +160,11 @@
               "type": "_product-card-gallery",
               "name": "t:names.product_card_media",
               "settings": {
-                "image_ratio": "adapt",
+                "image_ratio": "square",
                 "border": "none",
                 "border_width": 1,
                 "border_opacity": 100,
-                "border_radius": 0,
+                "border_radius": 16,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
@@ -207,9 +179,9 @@
                 "width": "100%",
                 "max_width": "normal",
                 "alignment": "left",
-                "type_preset": "paragraph",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
+                "type_preset": "custom",
+                "font": "var(--font-heading--family)",
+                "font_size": "0.875rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
@@ -231,14 +203,15 @@
                 "show_sale_price_first": true,
                 "show_installments": false,
                 "show_tax_info": false,
-                "type_preset": "h6",
+                "type_preset": "custom",
                 "width": "100%",
                 "alignment": "left",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
+                "font": "var(--font-subheading--family)",
+                "font_size": "0.8125rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
+                "text_color": "#399999",
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
@@ -258,25 +231,68 @@
       "settings": {
         "collection": "all",
         "layout_type": "grid",
-        "carousel_on_mobile": false,
+        "carousel_on_mobile": true,
         "max_products": 8,
         "columns": 4,
         "mobile_columns": "2",
         "mobile_card_size": "60cqw",
-        "columns_gap": 8,
+        "columns_gap": 20,
         "rows_gap": 24,
         "icons_style": "arrow",
         "icons_shape": "none",
         "section_width": "page-width",
         "horizontal_alignment": "flex-start",
-        "gap": 28,
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "gap": 30,
+        "padding-block-start": 64,
+        "padding-block-end": 64
+      }
+    },
+    "beaverkeys_reviews": {
+      "type": "beaverkeys-reviews",
+      "blocks": {
+        "review_1": {
+          "type": "_beaverkeys-review",
+          "settings": {
+            "rating": 5,
+            "quote": "Fast shipping and Peter gave me personal help picking switches. Great experience.",
+            "name": "Salar M.",
+            "product": "Keygeek Y2"
+          }
+        },
+        "review_2": {
+          "type": "_beaverkeys-review",
+          "settings": {
+            "rating": 5,
+            "quote": "My favourite switches for non-silent — snappy return, weight is just right.",
+            "name": "Brandon C.",
+            "product": "Weikav Stars21"
+          }
+        },
+        "review_3": {
+          "type": "_beaverkeys-review",
+          "settings": {
+            "rating": 5,
+            "quote": "Great keycaps, good price, and fast shipping.",
+            "name": "Manuel B.",
+            "product": "Gateron Mini I"
+          }
+        }
+      },
+      "block_order": ["review_1", "review_2", "review_3"],
+      "name": "t:names.beaverkeys_reviews",
+      "settings": {
+        "heading": "Real customer reviews",
+        "subheading": "We don't delete or curate reviews.",
+        "background_color": "#1e5f5c",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
       }
     }
   },
   "order": [
-    "hero_jVaWmY",
-    "product_list_fa6P9H"
+    "beaverkeys_hero",
+    "product_list_fa6P9H",
+    "beaverkeys_reviews"
   ]
 }

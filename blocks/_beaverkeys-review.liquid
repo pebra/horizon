@@ -1,0 +1,72 @@
+{% doc %}
+  A single testimonial card for sections/beaverkeys-reviews.liquid. Private
+  block, only intended to be used inside that section.
+{% enddoc %}
+
+{%- liquid
+  assign rating = block.settings.rating | default: 5
+-%}
+
+<div class="beaverkeys-reviews__card" {{ block.shopify_attributes }}>
+  <div
+    class="beaverkeys-reviews__stars"
+    aria-label="{{ 'accessibility.beaverkeys_star_rating' | t: rating: rating }}"
+  >
+    {%- for i in (1..5) -%}
+      <span aria-hidden="true">{% if i <= rating %}★{% else %}☆{% endif %}</span>
+    {%- endfor -%}
+  </div>
+  {%- if block.settings.quote != blank -%}
+    <p class="beaverkeys-reviews__quote">&ldquo;{{ block.settings.quote }}&rdquo;</p>
+  {%- endif -%}
+  {%- if block.settings.name != blank -%}
+    <p class="beaverkeys-reviews__name">{{ block.settings.name }}</p>
+  {%- endif -%}
+  {%- if block.settings.product != blank -%}
+    <p class="beaverkeys-reviews__product">{{ block.settings.product }}</p>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "t:names.beaverkeys_review",
+  "tag": null,
+  "settings": [
+    {
+      "type": "range",
+      "id": "rating",
+      "label": "t:settings.beaverkeys_rating",
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "textarea",
+      "id": "quote",
+      "label": "t:settings.beaverkeys_quote"
+    },
+    {
+      "type": "text",
+      "id": "name",
+      "label": "t:settings.beaverkeys_reviewer_name"
+    },
+    {
+      "type": "text",
+      "id": "product",
+      "label": "t:settings.product"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.beaverkeys_review",
+      "settings": {
+        "rating": 5,
+        "quote": "Fast shipping and the team gave me personal help picking switches. Great experience.",
+        "name": "Alex R.",
+        "product": "Keygeek Y2"
+      }
+    }
+  ]
+}
+{% endschema %}

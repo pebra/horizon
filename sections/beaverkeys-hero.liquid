@@ -1,0 +1,434 @@
+{% liquid
+  assign autoplay_ms = section.settings.autoplay_speed | times: 1000
+%}
+
+<div class="section beaverkeys-hero-section">
+  <h2 class="visually-hidden">{{ 'accessibility.beaverkeys_hero' | t }}</h2>
+  <beaverkeys-hero-component
+    class="beaverkeys-hero"
+    role="region"
+    aria-roledescription="{{ 'accessibility.carousel' | t }}"
+    aria-label="{{ 'accessibility.beaverkeys_hero' | t }}"
+    aria-live="off"
+    data-autoplay="{{ section.settings.autoplay }}"
+    data-autoplay-interval="{{ autoplay_ms }}"
+    data-pause-label="{{ 'accessibility.slideshow_pause' | t }}"
+    data-play-label="{{ 'accessibility.slideshow_play' | t }}"
+    on:pointerenter="/pauseAutoplay"
+    on:pointerleave="/resumeAutoplay"
+    on:focus="/pauseAutoplay"
+    on:blur="/resumeAutoplay"
+  >
+    <div class="beaverkeys-hero__viewport">
+      {% content_for 'blocks' %}
+    </div>
+
+    {% if section.blocks.size > 1 %}
+      <button
+        type="button"
+        class="beaverkeys-hero__arrow beaverkeys-hero__arrow--prev"
+        ref="prevButton"
+        on:click="/goPrevious"
+        aria-label="{{ 'accessibility.slideshow_previous' | t }}"
+      >
+        {{- 'icon-chevron-left.svg' | inline_asset_content -}}
+      </button>
+      <button
+        type="button"
+        class="beaverkeys-hero__arrow beaverkeys-hero__arrow--next"
+        ref="nextButton"
+        on:click="/goNext"
+        aria-label="{{ 'accessibility.slideshow_next' | t }}"
+      >
+        {{- 'icon-chevron-right.svg' | inline_asset_content -}}
+      </button>
+
+      <div class="beaverkeys-hero__controls">
+        <div
+          class="beaverkeys-hero__dots"
+          role="tablist"
+          aria-label="{{ 'accessibility.slideshow' | t }}"
+        >
+          {% for block in section.blocks %}
+            <button
+              type="button"
+              class="beaverkeys-hero__dot"
+              role="tab"
+              ref="dots[]"
+              id="BeaverkeysHeroTab-{{ block.id }}"
+              aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+              aria-controls="BeaverkeysHeroSlide-{{ block.id }}"
+              aria-label="{{ 'accessibility.slide_status' | t: index: forloop.index, length: forloop.length }}"
+              tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
+              on:click="/goToSlide/{{ forloop.index0 }}"
+            ></button>
+          {% endfor %}
+        </div>
+
+        {% if section.settings.autoplay %}
+          <button
+            type="button"
+            class="beaverkeys-hero__pause"
+            ref="pauseButton"
+            on:click="/toggleAutoplay"
+            aria-label="{{ 'accessibility.slideshow_pause' | t }}"
+          >
+            <span class="beaverkeys-hero__pause-icon beaverkeys-hero__pause-icon--pause" aria-hidden="true"></span>
+            <span class="beaverkeys-hero__pause-icon beaverkeys-hero__pause-icon--play" aria-hidden="true"></span>
+          </button>
+        {% endif %}
+      </div>
+    {% endif %}
+  </beaverkeys-hero-component>
+</div>
+
+{% stylesheet %}
+  .beaverkeys-hero-section {
+  }
+
+  .beaverkeys-hero {
+    position: relative;
+    display: block;
+  }
+
+  .beaverkeys-hero__viewport {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+  }
+
+  .beaverkeys-hero__slide {
+    position: relative;
+    background: var(--beaverkeys-hero-slide-gradient);
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    align-items: center;
+    gap: 40px;
+    padding: 48px 32px;
+    overflow: hidden;
+    transition: opacity 0.4s ease;
+  }
+
+  .beaverkeys-hero__slide[inert] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .beaverkeys-hero__slide::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    right: -60px;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.15);
+    pointer-events: none;
+  }
+
+  @media screen and (min-width: 750px) {
+    .beaverkeys-hero__slide {
+      padding: 80px 60px;
+      gap: 40px;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .beaverkeys-hero__slide {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .beaverkeys-hero__slide-content {
+    position: relative;
+    z-index: var(--layer-flat);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .beaverkeys-hero__badge {
+    display: inline-block;
+    background: #0e2524;
+    color: #86cbc8;
+    font: 700 12px/1 var(--font-heading--family);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-block-end: 22px;
+  }
+
+  .beaverkeys-hero__heading {
+    font: 800 40px/0.98 var(--font-heading--family);
+    color: #0e2524;
+    letter-spacing: -0.03em;
+    margin: 0 0 22px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .beaverkeys-hero__heading {
+      font-size: 68px;
+    }
+  }
+
+  .beaverkeys-hero__sub {
+    font: 500 17px/1.5 var(--font-body--family);
+    color: #3a2a12;
+    margin: 0 0 30px;
+    max-width: 400px;
+  }
+
+  .beaverkeys-hero__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #0e2524;
+    color: #86cbc8;
+    font: 700 15px var(--font-body--family);
+    text-decoration: none;
+    padding: 17px 36px;
+    border-radius: 10px;
+    transition: opacity var(--animation-speed) var(--animation-easing);
+  }
+
+  .beaverkeys-hero__cta:hover {
+    opacity: 0.85;
+  }
+
+  .beaverkeys-hero__media {
+    position: relative;
+    z-index: var(--layer-flat);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 260px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .beaverkeys-hero__media {
+      height: 380px;
+    }
+  }
+
+  .beaverkeys-hero__image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+  }
+
+  .beaverkeys-hero__image--placeholder {
+    opacity: 0.6;
+  }
+
+  .beaverkeys-hero__arrow {
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.4);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: var(--layer-raised);
+    color: #0e2524;
+    transition: background var(--animation-speed) var(--animation-easing);
+  }
+
+  .beaverkeys-hero__arrow svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .beaverkeys-hero__arrow:hover {
+    background: rgb(255 255 255 / 0.7);
+  }
+
+  .beaverkeys-hero__arrow--prev {
+    left: 0.66em;
+  }
+
+  .beaverkeys-hero__arrow--next {
+    right: 0.66em;
+  }
+
+  .beaverkeys-hero__controls {
+    position: absolute;
+    left: 32px;
+    bottom: 28px;
+    z-index: var(--layer-raised);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .beaverkeys-hero__controls {
+      left: 60px;
+      bottom: 40px;
+    }
+  }
+
+  .beaverkeys-hero__dots {
+    display: flex;
+    gap: 9px;
+  }
+
+  .beaverkeys-hero__dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: rgb(14 37 36 / 0.3);
+    cursor: pointer;
+    transition: width var(--animation-speed-slow) var(--animation-easing);
+  }
+
+  .beaverkeys-hero__dot[aria-selected='true'] {
+    width: 22px;
+    background: #0e2524;
+  }
+
+  .beaverkeys-hero__dot:focus-visible {
+    outline: 2px solid #0e2524;
+    outline-offset: 2px;
+  }
+
+  .beaverkeys-hero__pause {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgb(14 37 36 / 0.16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .beaverkeys-hero__pause-icon--pause {
+    display: block;
+    width: 8px;
+    height: 10px;
+    background-image: linear-gradient(to right, #0e2524 3px, transparent 3px, transparent 5px, #0e2524 5px);
+  }
+
+  .beaverkeys-hero__pause-icon--play {
+    display: none;
+    width: 0;
+    height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 8px solid #0e2524;
+  }
+
+  .beaverkeys-hero[data-paused='true'] .beaverkeys-hero__pause-icon--pause {
+    display: none;
+  }
+
+  .beaverkeys-hero[data-paused='true'] .beaverkeys-hero__pause-icon--play {
+    display: block;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .beaverkeys-hero__slide {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.beaverkeys_hero",
+  "class": "beaverkeys-hero-wrapper",
+  "tag": "section",
+  "blocks": [
+    {
+      "type": "_beaverkeys-hero-slide"
+    }
+  ],
+  "max_blocks": 5,
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "t:settings.auto_rotate_slides",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "t:settings.speed",
+      "min": 3,
+      "max": 8,
+      "step": 0.5,
+      "unit": "s",
+      "default": 4.5,
+      "visible_if": "{{ section.settings.autoplay }}"
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.beaverkeys_hero",
+      "category": "t:categories.banners",
+      "blocks": {
+        "slide_1": {
+          "type": "_beaverkeys-hero-slide",
+          "settings": {
+            "badge": "Just dropped",
+            "heading_line_1": "Wobkey boards",
+            "heading_line_2": "are here.",
+            "subheading": "Zen65 & Crush80. Factory-lubed. Shipped fast from Ottawa.",
+            "button_label": "Shop now",
+            "button_link": "shopify://collections/all",
+            "gradient_start": "#86cbc8",
+            "gradient_end": "#1e5f5c"
+          }
+        },
+        "slide_2": {
+          "type": "_beaverkeys-hero-slide",
+          "settings": {
+            "badge": "Limited time",
+            "heading_line_1": "Up to 30% off",
+            "heading_line_2": "switches.",
+            "subheading": "Linear, tactile, and silent — stock up before they're gone.",
+            "button_label": "Shop sale",
+            "button_link": "shopify://collections/all",
+            "gradient_start": "#a9d9d6",
+            "gradient_end": "#2d7a77"
+          }
+        },
+        "slide_3": {
+          "type": "_beaverkeys-hero-slide",
+          "settings": {
+            "badge": "Free shipping",
+            "heading_line_1": "Orders $200+",
+            "heading_line_2": "ship free.",
+            "subheading": "Fast, tracked shipping across Canada — every order, every time.",
+            "button_label": "Start shopping",
+            "button_link": "shopify://collections/all",
+            "gradient_start": "#c5e6e4",
+            "gradient_end": "#1e5f5c"
+          }
+        }
+      },
+      "block_order": ["slide_1", "slide_2", "slide_3"],
+      "settings": {
+        "autoplay": true,
+        "autoplay_speed": 4.5
+      }
+    }
+  ]
+}
+{% endschema %}
