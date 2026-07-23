@@ -24,7 +24,8 @@
             "button_link": "shopify://products/akko-mirror",
             "gradient_start": "#86cbc8",
             "gradient_end": "#1e5f5c"
-          }
+          },
+          "blocks": {}
         },
         "slide_2": {
           "type": "_beaverkeys-hero-slide",
@@ -33,27 +34,37 @@
             "heading_line_1": "Up to 30% off",
             "heading_line_2": "switches.",
             "subheading": "Linear, tactile, and silent — stock up before they're gone.",
+            "product": "wobkey-crush-80-reboot-pro",
+            "image": "shopify://shop_images/wobkey-crush80-reboot-cover.png",
             "button_label": "Shop sale",
             "button_link": "shopify://collections/all",
             "gradient_start": "#a9d9d6",
             "gradient_end": "#2d7a77"
-          }
+          },
+          "blocks": {}
         },
         "slide_3": {
           "type": "_beaverkeys-hero-slide",
           "settings": {
-            "badge": "Free shipping",
-            "heading_line_1": "Orders $200+",
-            "heading_line_2": "ship free.",
-            "subheading": "Fast, tracked shipping across Canada — every order, every time.",
+            "badge": "Recommendation of the week",
+            "heading_line_1": "BSUN GUYU",
+            "heading_line_2": "",
+            "subheading": "Full & rounded sound",
+            "product": "bsun-guyu",
+            "image": "shopify://shop_images/resized_2000_x_20250912_0086.jpg",
             "button_label": "Start shopping",
             "button_link": "shopify://collections/all",
-            "gradient_start": "#c5e6e4",
+            "gradient_start": "#528440",
             "gradient_end": "#1e5f5c"
-          }
+          },
+          "blocks": {}
         }
       },
-      "block_order": ["slide_1", "slide_2", "slide_3"],
+      "block_order": [
+        "slide_1",
+        "slide_2",
+        "slide_3"
+      ],
       "name": "t:names.beaverkeys_hero",
       "settings": {
         "autoplay": true,
@@ -83,11 +94,13 @@
             "height": "fit",
             "custom_height": 100,
             "background_media": "none",
+            "background_color": "",
             "video_position": "cover",
             "background_image_position": "cover",
             "border": "none",
             "border_width": 1,
             "border_opacity": 100,
+            "border_color": "",
             "border_radius": 0,
             "padding-block-start": 0,
             "padding-block-end": 0,
@@ -110,6 +123,7 @@
                 "letter_spacing": "normal",
                 "case": "none",
                 "wrap": "pretty",
+                "text_color": "",
                 "background": false,
                 "background_color": "#00000026",
                 "corner_radius": 0,
@@ -127,6 +141,10 @@
                 "label": "View all",
                 "open_in_new_tab": false,
                 "style_class": "button-unstyled",
+                "custom_button_background": "{{ settings.color_palette.foreground }}",
+                "custom_button_text": "{{ settings.color_palette.background }}",
+                "custom_button_border": "{{ settings.color_palette.background }}",
+                "link_text_color": "",
                 "width": "fit-content",
                 "custom_width": 100,
                 "width_mobile": "fit-content",
@@ -146,9 +164,11 @@
           "static": true,
           "settings": {
             "product_card_gap": 10,
+            "background_color": "",
             "border": "none",
             "border_width": 1,
             "border_opacity": 100,
+            "border_color": "",
             "border_radius": 0,
             "padding-block-start": 0,
             "padding-block-end": 0,
@@ -164,6 +184,7 @@
                 "border": "none",
                 "border_width": 1,
                 "border_opacity": 100,
+                "border_color": "",
                 "border_radius": 16,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
@@ -186,6 +207,7 @@
                 "letter_spacing": "normal",
                 "case": "none",
                 "wrap": "pretty",
+                "text_color": "",
                 "background": false,
                 "background_color": "#00000026",
                 "corner_radius": 0,
@@ -243,6 +265,7 @@
         "section_width": "page-width",
         "horizontal_alignment": "flex-start",
         "gap": 30,
+        "background_color": "",
         "padding-block-start": 64,
         "padding-block-end": 64
       }
@@ -257,7 +280,8 @@
             "quote": "Fast shipping and Peter gave me personal help picking switches. Great experience.",
             "name": "Salar M.",
             "product": "Keygeek Y2"
-          }
+          },
+          "blocks": {}
         },
         "review_2": {
           "type": "_beaverkeys-review",
@@ -266,7 +290,8 @@
             "quote": "My favourite switches for non-silent — snappy return, weight is just right.",
             "name": "Brandon C.",
             "product": "Weikav Stars21"
-          }
+          },
+          "blocks": {}
         },
         "review_3": {
           "type": "_beaverkeys-review",
@@ -275,10 +300,15 @@
             "quote": "Great keycaps, good price, and fast shipping.",
             "name": "Manuel B.",
             "product": "Gateron Mini I"
-          }
+          },
+          "blocks": {}
         }
       },
-      "block_order": ["review_1", "review_2", "review_3"],
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3"
+      ],
       "name": "t:names.beaverkeys_reviews",
       "settings": {
         "heading": "Real customer reviews",
@@ -288,11 +318,80 @@
         "padding-block-start": 0,
         "padding-block-end": 0
       }
+    },
+    "1784847699d6ad3295": {
+      "type": "_blocks",
+      "blocks": {
+        "judge_me_reviews_cards_carousel_gH8xLV": {
+          "type": "shopify://apps/judge-me-reviews/blocks/cards_carousel/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "show_sample_reviews": true,
+            "reviews_selection": "all",
+            "products": [],
+            "star_rating": "all",
+            "show_review_media": true,
+            "display_order": "media_first",
+            "no_image_fallback": "review_text_only",
+            "max_reviews": 20,
+            "review_length": "medium",
+            "text_size": "medium",
+            "image_ratio": "1",
+            "reviews_shown": 4,
+            "show_reviewer_name": true,
+            "show_product_name": true,
+            "hide_arrows_mobile": true,
+            "arrows_position": "sides",
+            "max_width": 1100,
+            "corner_styling": "soft",
+            "header_text_color": "#000000",
+            "text_color": "#000000",
+            "card_color": "#F9F9F9",
+            "stars_color": "",
+            "arrows_color": "#000000",
+            "transition_speed": 5,
+            "header_text": "Customers are saying",
+            "show_average_rating": true,
+            "rating_display": "default"
+          }
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_cards_carousel_gH8xLV"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
     }
   },
   "order": [
     "beaverkeys_hero",
     "product_list_fa6P9H",
-    "beaverkeys_reviews"
+    "beaverkeys_reviews",
+    "1784847699d6ad3295"
   ]
 }
