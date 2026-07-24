@@ -15,11 +15,7 @@
   assign specs = product.metafields.switch_specs
 
   assign switch_type = specs.type.value
-  assign actuation_weight = specs.actuation_weight.value
-  assign bottom_out_weight = specs.bottom_out_weight.value
   assign pin_count = specs.pin_count.value
-  assign actuation_travel = specs.actuation_travel.value
-  assign bottom_out_travel = specs.bottom_out_travel.value
   assign top_housing_material = specs.top_housing_material.value
   assign bottom_housing_material = specs.bottom_housing_material.value
   assign stem_material = specs.stem_material.value
@@ -33,24 +29,38 @@
     assign factory_lubed = specs.factory_lubed.value
   endif
 
+  # Weight/travel metafields already include their unit (e.g. "30g", "2.0mm"),
+  # so the *_display values are used verbatim in copy. For the meter math we
+  # need a bare number: Liquid's math filters convert strings via a strict
+  # BigDecimal parse (not Ruby's lenient `to_f`), so a trailing unit like "g"
+  # or "mm" makes the conversion raise and silently fall back to 0. Strip the
+  # known unit suffixes first so the numeric value survives.
+  assign actuation_weight_display = specs.actuation_weight.value
   assign has_actuation_weight = false
-  unless actuation_weight == blank
+  unless actuation_weight_display == blank
     assign has_actuation_weight = true
+    assign actuation_weight = actuation_weight_display | remove: 'gf' | remove: 'g' | remove: 'G' | strip | times: 1.0
   endunless
 
+  assign bottom_out_weight_display = specs.bottom_out_weight.value
   assign has_bottom_out_weight = false
-  unless bottom_out_weight == blank
+  unless bottom_out_weight_display == blank
     assign has_bottom_out_weight = true
+    assign bottom_out_weight = bottom_out_weight_display | remove: 'gf' | remove: 'g' | remove: 'G' | strip | times: 1.0
   endunless
 
+  assign actuation_travel_display = specs.actuation_travel.value
   assign has_actuation_travel = false
-  unless actuation_travel == blank
+  unless actuation_travel_display == blank
     assign has_actuation_travel = true
+    assign actuation_travel = actuation_travel_display | remove: 'mm' | remove: 'MM' | strip | times: 1.0
   endunless
 
+  assign bottom_out_travel_display = specs.bottom_out_travel.value
   assign has_bottom_out_travel = false
-  unless bottom_out_travel == blank
+  unless bottom_out_travel_display == blank
     assign has_bottom_out_travel = true
+    assign bottom_out_travel = bottom_out_travel_display | remove: 'mm' | remove: 'MM' | strip | times: 1.0
   endunless
 
   assign has_force_meter = false
@@ -175,7 +185,11 @@
       {% render 'spacing-style', settings: block_settings %}
       {% if block_settings.accent_color != blank %}
         --switch-specs-accent: {{ block_settings.accent_color }};
-        --switch-specs-accent-rgb: {{ block_settings.accent_color.rgb }};
+        --switch-specs-accent-rgb: {{ block_settings.accent_color.rgb | replace: ',', ' ' }};
+      {% endif %}
+      {% if block_settings.secondary_color != blank %}
+        --switch-specs-secondary: {{ block_settings.secondary_color }};
+        --switch-specs-secondary-rgb: {{ block_settings.secondary_color.rgb | replace: ',', ' ' }};
       {% endif %}
     "
     {{ block.shopify_attributes }}
@@ -183,7 +197,7 @@
     {% if has_feel_profile %}
       <div class="switch-specs__panel">
         {% if block_settings.feel_profile_heading != blank %}
-          <p class="switch-specs__panel-heading h6">{{ block_settings.feel_profile_heading | escape }}</p>
+          <h3 class="switch-specs__panel-heading">{{ block_settings.feel_profile_heading | escape }}</h3>
         {% endif %}
 
         {% if has_force_meter %}
@@ -191,14 +205,18 @@
             <div class="switch-specs__meter-row">
               <span class="switch-specs__meter-label">{{ 'products.product.switch_specs.actuation_force' | t }}</span>
               <span class="switch-specs__meter-value">
-                {%- if has_actuation_weight -%}{{ actuation_weight }}g{%- endif -%}
+                {%- if has_actuation_weight -%}
+                  <span class="switch-specs__legend-swatch switch-specs__legend-swatch--actuation" aria-hidden="true"></span>{{ actuation_weight_display }}
+                {%- endif -%}
                 {%- if has_actuation_weight and has_bottom_out_weight -%} / {%- endif -%}
-                {%- if has_bottom_out_weight -%}{{ bottom_out_weight }}g {{ 'products.product.switch_specs.bottom_out' | t }}{%- endif -%}
+                {%- if has_bottom_out_weight -%}
+                  <span class="switch-specs__legend-swatch switch-specs__legend-swatch--bottom-out" aria-hidden="true"></span>{{ bottom_out_weight_display }} {{ 'products.product.switch_specs.bottom_out' | t }}
+                {%- endif -%}
               </span>
             </div>
-            <div class="switch-specs__track switch-specs__track--force">
+            <div class="switch-specs__track">
               {% if has_actuation_weight %}
-                <span class="switch-specs__dot switch-specs__dot--circle" style="left: {{ actuation_pos }}%"></span>
+                <span class="switch-specs__dot switch-specs__dot--circle switch-specs__dot--actuation" style="left: {{ actuation_pos }}%"></span>
               {% endif %}
               {% if has_bottom_out_weight %}
                 <span class="switch-specs__dot switch-specs__dot--diamond" style="left: {{ bottom_out_pos }}%"></span>
@@ -216,14 +234,18 @@
             <div class="switch-specs__meter-row">
               <span class="switch-specs__meter-label">{{ 'products.product.switch_specs.travel_distance' | t }}</span>
               <span class="switch-specs__meter-value">
-                {%- if has_actuation_travel -%}{{ actuation_travel }}mm {{ 'products.product.switch_specs.pre_travel' | t }}{%- endif -%}
+                {%- if has_actuation_travel -%}
+                  <span class="switch-specs__legend-swatch switch-specs__legend-swatch--actuation" aria-hidden="true"></span>{{ actuation_travel_display }} {{ 'products.product.switch_specs.pre_travel' | t }}
+                {%- endif -%}
                 {%- if has_actuation_travel and has_bottom_out_travel -%} / {%- endif -%}
-                {%- if has_bottom_out_travel -%}{{ bottom_out_travel }}mm {{ 'products.product.switch_specs.bottom_out' | t }}{%- endif -%}
+                {%- if has_bottom_out_travel -%}
+                  <span class="switch-specs__legend-swatch switch-specs__legend-swatch--bottom-out" aria-hidden="true"></span>{{ bottom_out_travel_display }} {{ 'products.product.switch_specs.bottom_out' | t }}
+                {%- endif -%}
               </span>
             </div>
             <div class="switch-specs__track">
               {% if has_actuation_travel %}
-                <span class="switch-specs__dot switch-specs__dot--circle" style="left: {{ actuation_travel_pos }}%"></span>
+                <span class="switch-specs__dot switch-specs__dot--circle switch-specs__dot--actuation" style="left: {{ actuation_travel_pos }}%"></span>
               {% endif %}
               {% if has_bottom_out_travel %}
                 <span class="switch-specs__dot switch-specs__dot--diamond" style="left: {{ bottom_out_travel_pos }}%"></span>
@@ -259,7 +281,7 @@
     {% if has_full_specs %}
       <div class="switch-specs__full">
         {% if block_settings.full_specs_heading != blank %}
-          <p class="switch-specs__panel-heading h6">{{ block_settings.full_specs_heading | escape }}</p>
+          <h3 class="switch-specs__panel-heading">{{ block_settings.full_specs_heading | escape }}</h3>
         {% endif %}
         <div class="switch-specs__grid">
           {% if has_type_meter %}
@@ -273,28 +295,28 @@
             <div class="switch-specs__card">
               <span class="switch-specs__card-icon" aria-hidden="true">⚡</span>
               <span class="switch-specs__card-label">{{ 'products.product.switch_specs.actuation_force' | t }}</span>
-              <span class="switch-specs__card-value">{{ actuation_weight }}g</span>
+              <span class="switch-specs__card-value">{{ actuation_weight_display }}</span>
             </div>
           {% endif %}
           {% if has_bottom_out_weight %}
             <div class="switch-specs__card">
               <span class="switch-specs__card-icon" aria-hidden="true">🔻</span>
               <span class="switch-specs__card-label">{{ 'products.product.switch_specs.bottom_out_force' | t }}</span>
-              <span class="switch-specs__card-value">{{ bottom_out_weight }}g</span>
+              <span class="switch-specs__card-value">{{ bottom_out_weight_display }}</span>
             </div>
           {% endif %}
           {% if has_actuation_travel %}
             <div class="switch-specs__card">
               <span class="switch-specs__card-icon" aria-hidden="true">📏</span>
               <span class="switch-specs__card-label">{{ 'products.product.switch_specs.pre_travel' | t }}</span>
-              <span class="switch-specs__card-value">{{ actuation_travel }}mm</span>
+              <span class="switch-specs__card-value">{{ actuation_travel_display }}</span>
             </div>
           {% endif %}
           {% if has_bottom_out_travel %}
             <div class="switch-specs__card">
               <span class="switch-specs__card-icon" aria-hidden="true">📐</span>
               <span class="switch-specs__card-label">{{ 'products.product.switch_specs.total_travel' | t }}</span>
-              <span class="switch-specs__card-value">{{ bottom_out_travel }}mm</span>
+              <span class="switch-specs__card-value">{{ bottom_out_travel_display }}</span>
             </div>
           {% endif %}
           {% if has_factory_lubed %}
@@ -314,7 +336,7 @@
             <div class="switch-specs__card">
               <span class="switch-specs__card-icon" aria-hidden="true">📌</span>
               <span class="switch-specs__card-label">{{ 'products.product.switch_specs.pin_count' | t }}</span>
-              <span class="switch-specs__card-value">{{ 'products.product.switch_specs.pin_count_value' | t: count: pin_count }}</span>
+              <span class="switch-specs__card-value">{{ pin_count }}</span>
             </div>
           {% endif %}
           {% if top_housing_material != blank %}
@@ -352,7 +374,7 @@
     {% if video_id != blank %}
       <div class="switch-specs__video-section">
         {% if block_settings.video_heading != blank %}
-          <p class="switch-specs__panel-heading h6">{{ block_settings.video_heading | escape }}</p>
+          <h3 class="switch-specs__panel-heading">{{ block_settings.video_heading | escape }}</h3>
         {% endif %}
         {% render 'video',
           video_from_url: true,
@@ -371,8 +393,14 @@
 
 {% stylesheet %}
   .switch-specs {
-    --switch-specs-accent: var(--color-primary-button-background);
-    --switch-specs-accent-rgb: var(--color-primary-button-background-rgb, var(--color-foreground-rgb));
+    /* This theme's palette has no distinct accent (buttons just reuse the near-black
+       foreground), so these default to the teal/mint pairing from the original
+       switch-page design instead of a theme color. Override via the block's Accent
+       color / Secondary color settings if you want to match a specific palette. */
+    --switch-specs-accent: #399999;
+    --switch-specs-accent-rgb: 57 153 153;
+    --switch-specs-secondary: #86cbc8;
+    --switch-specs-secondary-rgb: 134 203 200;
     display: flex;
     flex-direction: column;
     gap: var(--gap-lg, var(--padding-lg));
@@ -412,20 +440,32 @@
   }
 
   .switch-specs__meter-value {
-    color: var(--switch-specs-accent);
     font-weight: var(--font-weight-semibold, 700);
     white-space: nowrap;
+  }
+
+  .switch-specs__legend-swatch {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-inline-end: var(--padding-3xs, 4px);
+  }
+
+  .switch-specs__legend-swatch--actuation {
+    border-radius: 50%;
+    background: var(--switch-specs-accent);
+  }
+
+  .switch-specs__legend-swatch--bottom-out {
+    background: var(--switch-specs-secondary);
+    transform: rotate(45deg);
   }
 
   .switch-specs__track {
     position: relative;
     height: 6px;
     border-radius: 6px;
-    background: rgb(var(--color-foreground-rgb) / var(--opacity-20));
     margin-block: var(--padding-2xs);
-  }
-
-  .switch-specs__track--force {
     background: linear-gradient(
       90deg,
       rgb(var(--color-foreground-rgb) / var(--opacity-10)),
@@ -460,10 +500,14 @@
     background: var(--color-foreground);
   }
 
+  .switch-specs__dot--circle.switch-specs__dot--actuation {
+    background: var(--switch-specs-accent);
+  }
+
   .switch-specs__dot--diamond {
     width: 9px;
     height: 9px;
-    background: var(--switch-specs-accent);
+    background: var(--switch-specs-secondary);
     transform: translate(-50%, -50%) rotate(45deg);
   }
 
@@ -567,7 +611,14 @@
       "type": "color",
       "id": "accent_color",
       "label": "Accent color",
-      "info": "Used for the meter fill and bottom-out marker. Defaults to the primary button color.",
+      "info": "Used for the meter fill and the actuation marker/legend swatch (the circle). Defaults to the primary button color.",
+      "placeholder": "t:settings.default"
+    },
+    {
+      "type": "color",
+      "id": "secondary_color",
+      "label": "Secondary color",
+      "info": "Used for the bottom-out marker/legend swatch (the diamond), so it's distinguishable from the actuation marker. Defaults to a muted blend of the accent color.",
       "placeholder": "t:settings.default"
     },
     {

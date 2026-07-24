@@ -389,7 +389,6 @@
         "yes": "Yes",
         "no": "No",
         "pin_count": "Pin Count",
-        "pin_count_value": "{{ count }}-pin",
         "top_housing": "Top Housing",
         "bottom_housing": "Bottom Housing",
         "stem_material": "Stem Material",

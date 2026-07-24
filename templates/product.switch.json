@@ -231,19 +231,6 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
-            },
-            "switch_specs_default": {
-              "type": "switch-specs",
-              "settings": {
-                "feel_profile_heading": "Feel Profile",
-                "full_specs_heading": "Full Specs",
-                "video_heading": "Switch Sound & Feel",
-                "padding-block-start": 24,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
             }
           },
           "block_order": [
@@ -251,9 +238,22 @@
             "divider_VJhene",
             "variant_picker_R3rGDr",
             "buy_buttons_eYQEYi",
-            "text_aEtTtq",
-            "switch_specs_default"
+            "text_aEtTtq"
           ]
+        },
+        "switch-specs": {
+          "type": "switch-specs",
+          "static": true,
+          "settings": {
+            "feel_profile_heading": "Feel Profile",
+            "full_specs_heading": "Full Specs",
+            "video_heading": "Switch Sound & Feel",
+            "padding-block-start": 24,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
         },
         "disclosures": {
           "type": "disclosures",

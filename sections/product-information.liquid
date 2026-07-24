@@ -18,6 +18,14 @@
   %}
 {% endcapture %}
 
+{% capture switch_specs %}
+  {%- content_for 'block',
+    type: 'switch-specs',
+    id: 'switch-specs',
+    closest.product: closest.product
+  -%}
+{% endcapture %}
+
 {% capture additional_blocks %}
   {% content_for 'blocks' %}
 {% endcapture %}
@@ -178,6 +186,7 @@
   settings: section.settings,
   media_gallery: media_gallery,
   product_details: product_details,
+  switch_specs: switch_specs,
   additional_blocks: additional_blocks
 %}
 

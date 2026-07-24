@@ -9,6 +9,7 @@
   @param {object} settings - Section settings object
   @param {string} media_gallery - Captured HTML for the product media gallery block
   @param {string} product_details - Captured HTML for the product details block
+  @param {string} [switch_specs] - Captured HTML rendered in its own row directly under the media column
   @param {string} additional_blocks - Captured HTML for additional section blocks
 
   @example
@@ -67,6 +68,23 @@
     endif
   endif
 
+  # Build a distinct class for the switch-specs row: same media-position/half
+  # modifiers as product_grid_class, but under their own namespace so they
+  # don't also match the .product-information__grid container's own rules.
+  assign switch_specs_class = 'product-information__switch-specs'
+
+  if product_has_media == false
+    assign switch_specs_class = switch_specs_class | append: ' product-information__switch-specs--media-none'
+  elsif settings.desktop_media_position == 'right'
+    assign switch_specs_class = switch_specs_class | append: ' product-information__switch-specs--media-right'
+  else
+    assign switch_specs_class = switch_specs_class | append: ' product-information__switch-specs--media-left'
+  endif
+
+  if settings.equal_columns
+    assign switch_specs_class = switch_specs_class | append: ' product-information__switch-specs--half'
+  endif
+
   # Determine content width
   case settings.content_width
     when 'content-center-aligned'
@@ -118,6 +136,23 @@
         {{ product_details }}
       {% endif %}
     {% endfor %}
+
+    {% assign switch_specs_stripped = switch_specs | strip %}
+    {% if switch_specs_stripped != blank %}
+      {% comment %}
+        Rendered as its own subgrid row (not nested inside .product-information__media,
+        which is `position: sticky`) so it can't get visually stuck behind the sticky
+        media gallery while scrolling. `.product-information--media-*` on this element
+        reuses the same modifier classes as the grid container so it can mirror
+        .product-information__media's column placement in every layout variant.
+      {% endcomment %}
+      <div
+        class="{{ switch_specs_class }}"
+        data-testid="product-information-switch-specs"
+      >
+        {{ switch_specs }}
+      </div>
+    {% endif %}
   </product-component>
 
   {{ additional_blocks }}
@@ -149,6 +184,14 @@
   .product-information__media .product-media-gallery__placeholder-image {
     width: 100%;
     height: 100%;
+  }
+
+  /* Rendered as its own row below media/details, never nested inside
+     .product-information__media (which is `position: sticky`), so it can't
+     end up visually stuck behind the sticky media gallery while scrolling. */
+  .product-information__switch-specs {
+    grid-row: 2;
+    grid-column: 1 / -1;
   }
 
   /* Mobile styles */
@@ -290,6 +333,35 @@
           }
         }
       }
+    }
+
+    /* Align the switch-specs row under whichever column the media occupies */
+    .product-information__switch-specs--media-none {
+      grid-column: 1 / -1;
+    }
+
+    .product-information__switch-specs--media-left:not(.product-information__switch-specs--half) {
+      grid-column: 1;
+    }
+
+    .product-information__switch-specs--media-right:not(.product-information__switch-specs--half) {
+      grid-column: 2;
+    }
+
+    .product-information__switch-specs--half.product-information__switch-specs--media-left {
+      grid-column: 2 / 3;
+    }
+
+    .product-information__switch-specs--half.product-information__switch-specs--media-right {
+      grid-column: 3 / 4;
+    }
+
+    .section--full-width .product-information__switch-specs--half.product-information__switch-specs--media-left {
+      grid-column: 1 / 3;
+    }
+
+    .section--full-width .product-information__switch-specs--half.product-information__switch-specs--media-right {
+      grid-column: 3 / -1;
     }
   }
 
