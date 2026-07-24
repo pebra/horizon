@@ -60,11 +60,23 @@ in each `.liquid` file. Edit schemas in place.
 - **Every string visible to a customer or merchant** needs a translation key — never hardcode English text in `.liquid` files.
 - **Accessibility is not optional**: check the relevant `.cursor/rules/*-accessibility.mdc` file for the component type you're touching.
 
+## Practical notes (learned the hard way)
+
+These supplement — and in a couple of cases correct — the `.cursor/rules/*.mdc` files above. Kept here rather than added to `.cursor/rules/` because that directory is more exposed to merge conflicts against `upstream/main` on future Horizon version pulls.
+
+- **JavaScript for custom elements lives in `assets/*.js`, not inline `{% javascript %}` tags.** `javascript-standards.mdc`'s primary example shows `{% javascript %}` blocks with `import { Component } from '@theme/component'` written directly inside a section/block file — but no file in this theme actually does that. Every real `Component`-based custom element (`slideshow.js`, `layered-slideshow.js`, etc.) is its own file in `assets/`, registered in the import map and loaded as a `<script type="module">` tag in `snippets/scripts.liquid`. Follow those files, not the inline-tag example, when adding a new interactive component.
+- **Custom element tag names must end in `-component`** (`slideshow-component`, `layered-slideshow-component`, `quick-order-list-component`, ...). This isn't cosmetic: `assets/component.js`'s event-delegation logic (the custom-element upgrade-race fallback inside `getClosestComponent`) specifically checks for that suffix. Without it, a click landing before the module has upgraded the element silently drops instead of being recovered.
+- **Don't hand-populate every `locales/*.json` file when adding new translation keys.** Only add keys to `en.default.json` and `en.default.schema.json` — those are the actual source of truth. A key missing from another locale falls back to the default locale at runtime with no functional impact; it is not a bug. Shopify's own translation pipeline touches nearly every `locales/*.json` file in almost every upstream release (spot-check with `git log -- locales/<file>`), so hand-editing all of them for one small addition creates avoidable merge-conflict surface against `upstream/main`. If `shopify theme check`'s `MatchingTranslations` rule complains, disable it via `.theme-check.yml` instead of faking translations across every language file.
+- **Section/block schema `"name"` has a 25-character limit**, enforced by `shopify theme check`'s `ValidSchemaName` rule. Easy to exceed with a descriptive name; only surfaces as a lint failure after the fact.
+- **To set an `image_picker` value to an already-uploaded file without the editor UI** (e.g. in `config/settings_data.json` or a JSON template), use `"shopify://shop_images/<filename>"` as the string value — not the raw CDN URL. Liquid hydrates that reference into a full image object (`.aspect_ratio`, `.alt`, etc.) at render time; a plain `https://cdn.shopify.com/...` string won't behave the same way.
+
 ## Validating changes
 
 There's no local build to run. Useful checks:
 
-- `shopify theme check` — lints Liquid/JSON against Shopify's Theme Check rules (requires [Shopify CLI](https://shopify.dev/docs/storefronts/themes/tools/cli)).
+- `shopify theme check` — lints Liquid/JSON against Shopify's Theme Check rules (requires [Shopify CLI](https://shopify.dev/docs/storefronts/themes/tools/cli)). Its JSON parser is more lenient than strict JSON, though — it did not flag a trailing comma in a JSON template that `json.loads` caught immediately. After editing `templates/*.json`, `config/settings_data.json`, or `sections/*-group.json`, also parse the file with a strict JSON parser (stripping the leading `/* */` comment block first) as a supplementary check.
+- `shopify theme check --print` — prints the active lint config; useful for confirming what a rule's current `enabled`/`severity` is before overriding it.
+- `.theme-check.yml` — the project-level override file for disabling or adjusting individual rules (e.g. `MatchingTranslations: { enabled: false }`, see above). Prefer this over reformatting files just to satisfy a rule.
 - `shopify theme dev` — starts a local dev server against a connected store to preview changes.
 - Manually verify any new/changed section or block renders correctly in the theme editor, including its presets and schema-driven settings.
 
