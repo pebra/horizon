@@ -1,0 +1,625 @@
+{%- doc -%}
+  Renders a switch's "Feel Profile" (actuation/bottom-out force, travel distance,
+  switch type meters) and "Full Specs" grid, driven entirely by the
+  `switch_specs` metafield namespace on the product. Also renders an optional
+  embedded video from `product.metafields.switch_specs.video`.
+
+  Every field is optional: any metafield can be missing and the block will
+  only render the sub-sections/cards it actually has data for. If nothing is
+  populated the block renders nothing on the storefront.
+{%- enddoc -%}
+
+{%- liquid
+  assign block_settings = block.settings
+  assign product = closest.product
+  assign specs = product.metafields.switch_specs
+
+  assign switch_type = specs.type.value
+  assign actuation_weight = specs.actuation_weight.value
+  assign bottom_out_weight = specs.bottom_out_weight.value
+  assign pin_count = specs.pin_count.value
+  assign actuation_travel = specs.actuation_travel.value
+  assign bottom_out_travel = specs.bottom_out_travel.value
+  assign top_housing_material = specs.top_housing_material.value
+  assign bottom_housing_material = specs.bottom_housing_material.value
+  assign stem_material = specs.stem_material.value
+  assign sound_profile = specs.sound_profile.value
+
+  # `false != blank` is true in Liquid, so a boolean metafield set to false
+  # would otherwise look "empty". Check the metafield object itself instead.
+  assign has_factory_lubed = false
+  if specs.factory_lubed != blank
+    assign has_factory_lubed = true
+    assign factory_lubed = specs.factory_lubed.value
+  endif
+
+  assign has_actuation_weight = false
+  unless actuation_weight == blank
+    assign has_actuation_weight = true
+  endunless
+
+  assign has_bottom_out_weight = false
+  unless bottom_out_weight == blank
+    assign has_bottom_out_weight = true
+  endunless
+
+  assign has_actuation_travel = false
+  unless actuation_travel == blank
+    assign has_actuation_travel = true
+  endunless
+
+  assign has_bottom_out_travel = false
+  unless bottom_out_travel == blank
+    assign has_bottom_out_travel = true
+  endunless
+
+  assign has_force_meter = false
+  if has_actuation_weight or has_bottom_out_weight
+    assign has_force_meter = true
+  endif
+
+  assign has_travel_meter = false
+  if has_actuation_travel or has_bottom_out_travel
+    assign has_travel_meter = true
+  endif
+
+  assign has_type_meter = false
+  unless switch_type == blank
+    assign has_type_meter = true
+  endunless
+
+  assign has_feel_profile = false
+  if has_force_meter or has_travel_meter or has_type_meter
+    assign has_feel_profile = true
+  endif
+
+  assign has_full_specs = false
+  if has_type_meter or has_actuation_weight or has_bottom_out_weight or has_factory_lubed or pin_count != blank or has_actuation_travel or has_bottom_out_travel or top_housing_material != blank or bottom_housing_material != blank or stem_material != blank or sound_profile != blank
+    assign has_full_specs = true
+  endif
+
+  # Force meter scale: default 0-80g, stretched if the switch is heavier than that.
+  assign force_scale_max = 80
+  if has_bottom_out_weight and bottom_out_weight > 70
+    assign force_scale_max = bottom_out_weight | plus: 10 | ceil
+  endif
+  if has_actuation_weight and actuation_weight > force_scale_max
+    assign force_scale_max = actuation_weight | plus: 10 | ceil
+  endif
+
+  assign actuation_pos = 0
+  if has_actuation_weight
+    assign actuation_pos = actuation_weight | times: 100.0 | divided_by: force_scale_max | at_most: 100
+  endif
+
+  assign bottom_out_pos = 0
+  if has_bottom_out_weight
+    assign bottom_out_pos = bottom_out_weight | times: 100.0 | divided_by: force_scale_max | at_most: 100
+  endif
+
+  # Travel meter scale: default 0-4mm, stretched if travel exceeds that.
+  assign travel_scale_max = 4
+  if has_bottom_out_travel and bottom_out_travel > 3.5
+    assign travel_scale_max = bottom_out_travel | plus: 0.5 | ceil
+  endif
+  if has_actuation_travel and actuation_travel > travel_scale_max
+    assign travel_scale_max = actuation_travel | plus: 0.5 | ceil
+  endif
+
+  assign actuation_travel_pos = 0
+  if has_actuation_travel
+    assign actuation_travel_pos = actuation_travel | times: 100.0 | divided_by: travel_scale_max | at_most: 100
+  endif
+
+  assign bottom_out_travel_pos = 0
+  if has_bottom_out_travel
+    assign bottom_out_travel_pos = bottom_out_travel | times: 100.0 | divided_by: travel_scale_max | at_most: 100
+  endif
+
+  # Match the switch type against the three known families to place the meter dot.
+  assign type_index = -1
+  if has_type_meter
+    assign type_down = switch_type | downcase
+    if type_down contains 'linear'
+      assign type_index = 0
+    elsif type_down contains 'tactile'
+      assign type_index = 1
+    elsif type_down contains 'clicky' or type_down contains 'click'
+      assign type_index = 2
+    endif
+  endif
+
+  case type_index
+    when 0
+      assign type_pos = 16.67
+    when 1
+      assign type_pos = 50
+    when 2
+      assign type_pos = 83.33
+  endcase
+
+  # Resolve the optional video into a bare YouTube ID, accepting full URLs or a raw ID.
+  assign video_url = specs.video.value
+  assign video_id = blank
+  if video_url != blank
+    assign clean_video_url = video_url | strip
+    if clean_video_url contains 'youtu.be/'
+      assign video_id = clean_video_url | split: 'youtu.be/' | last | split: '?' | first
+    elsif clean_video_url contains 'v='
+      assign video_id = clean_video_url | split: 'v=' | last | split: '&' | first
+    elsif clean_video_url contains '/embed/'
+      assign video_id = clean_video_url | split: '/embed/' | last | split: '?' | first
+    elsif clean_video_url contains '/shorts/'
+      assign video_id = clean_video_url | split: '/shorts/' | last | split: '?' | first
+    else
+      assign video_id = clean_video_url
+    endif
+    assign video_id = video_id | strip
+
+    # YouTube IDs are always 11 characters; guard against malformed metafield values.
+    if video_id.size != 11
+      assign video_id = blank
+    endif
+  endif
+
+  assign has_content = false
+  if has_feel_profile or has_full_specs or video_id != blank
+    assign has_content = true
+  endif
+-%}
+
+{% if has_content or request.visual_preview_mode %}
+  <div
+    class="switch-specs spacing-style"
+    style="
+      {% render 'spacing-style', settings: block_settings %}
+      {% if block_settings.accent_color != blank %}
+        --switch-specs-accent: {{ block_settings.accent_color }};
+        --switch-specs-accent-rgb: {{ block_settings.accent_color.rgb }};
+      {% endif %}
+    "
+    {{ block.shopify_attributes }}
+  >
+    {% if has_feel_profile %}
+      <div class="switch-specs__panel">
+        {% if block_settings.feel_profile_heading != blank %}
+          <p class="switch-specs__panel-heading h6">{{ block_settings.feel_profile_heading | escape }}</p>
+        {% endif %}
+
+        {% if has_force_meter %}
+          <div class="switch-specs__meter">
+            <div class="switch-specs__meter-row">
+              <span class="switch-specs__meter-label">{{ 'products.product.switch_specs.actuation_force' | t }}</span>
+              <span class="switch-specs__meter-value">
+                {%- if has_actuation_weight -%}{{ actuation_weight }}g{%- endif -%}
+                {%- if has_actuation_weight and has_bottom_out_weight -%} / {%- endif -%}
+                {%- if has_bottom_out_weight -%}{{ bottom_out_weight }}g {{ 'products.product.switch_specs.bottom_out' | t }}{%- endif -%}
+              </span>
+            </div>
+            <div class="switch-specs__track switch-specs__track--force">
+              {% if has_actuation_weight %}
+                <span class="switch-specs__dot switch-specs__dot--circle" style="left: {{ actuation_pos }}%"></span>
+              {% endif %}
+              {% if has_bottom_out_weight %}
+                <span class="switch-specs__dot switch-specs__dot--diamond" style="left: {{ bottom_out_pos }}%"></span>
+              {% endif %}
+            </div>
+            <div class="switch-specs__scale-labels">
+              <span>{{ 'products.product.switch_specs.light' | t }}</span>
+              <span>{{ 'products.product.switch_specs.heavy' | t: weight: force_scale_max }}</span>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if has_travel_meter %}
+          <div class="switch-specs__meter">
+            <div class="switch-specs__meter-row">
+              <span class="switch-specs__meter-label">{{ 'products.product.switch_specs.travel_distance' | t }}</span>
+              <span class="switch-specs__meter-value">
+                {%- if has_actuation_travel -%}{{ actuation_travel }}mm {{ 'products.product.switch_specs.pre_travel' | t }}{%- endif -%}
+                {%- if has_actuation_travel and has_bottom_out_travel -%} / {%- endif -%}
+                {%- if has_bottom_out_travel -%}{{ bottom_out_travel }}mm {{ 'products.product.switch_specs.bottom_out' | t }}{%- endif -%}
+              </span>
+            </div>
+            <div class="switch-specs__track">
+              {% if has_actuation_travel %}
+                <span class="switch-specs__dot switch-specs__dot--circle" style="left: {{ actuation_travel_pos }}%"></span>
+              {% endif %}
+              {% if has_bottom_out_travel %}
+                <span class="switch-specs__dot switch-specs__dot--diamond" style="left: {{ bottom_out_travel_pos }}%"></span>
+              {% endif %}
+            </div>
+            <div class="switch-specs__scale-labels">
+              <span>0mm</span>
+              <span>{{ travel_scale_max }}mm</span>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if has_type_meter %}
+          <div class="switch-specs__meter">
+            <span class="switch-specs__meter-label">{{ 'products.product.switch_specs.switch_type' | t }}</span>
+            <div class="switch-specs__track switch-specs__track--type">
+              <span class="switch-specs__tick" style="left: 33.33%"></span>
+              <span class="switch-specs__tick" style="left: 66.66%"></span>
+              {% if type_index >= 0 %}
+                <span class="switch-specs__dot switch-specs__dot--circle" style="left: {{ type_pos }}%"></span>
+              {% endif %}
+            </div>
+            <div class="switch-specs__type-labels">
+              <span{% if type_index == 0 %} class="is-active"{% endif %}>{{ 'products.product.switch_specs.linear' | t }}</span>
+              <span{% if type_index == 1 %} class="is-active"{% endif %}>{{ 'products.product.switch_specs.tactile' | t }}</span>
+              <span{% if type_index == 2 %} class="is-active"{% endif %}>{{ 'products.product.switch_specs.clicky' | t }}</span>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if has_full_specs %}
+      <div class="switch-specs__full">
+        {% if block_settings.full_specs_heading != blank %}
+          <p class="switch-specs__panel-heading h6">{{ block_settings.full_specs_heading | escape }}</p>
+        {% endif %}
+        <div class="switch-specs__grid">
+          {% if has_type_meter %}
+            <div class="switch-specs__card">
+              <span class="switch-specs__card-icon" aria-hidden="true">🔀</span>
+              <span class="switch-specs__card-label">{{ 'products.product.switch_specs.switch_type' | t }}</span>
+              <span class="switch-specs__card-value">{{ switch_type }}</span>
+            </div>
+          {% endif %}
+          {% if has_actuation_weight %}
+            <div class="switch-specs__card">
+              <span class="switch-specs__card-icon" aria-hidden="true">⚡</span>
+              <span class="switch-specs__card-label">{{ 'products.product.switch_specs.actuation_force' | t }}</span>
+              <span class="switch-specs__card-value">{{ actuation_weight }}g</span>
+            </div>
+          {% endif %}
+          {% if has_bottom_out_weight %}
+            <div class="switch-specs__card">
+              <span class="switch-specs__card-icon" aria-hidden="true">🔻</span>
+              <span class="switch-specs__card-label">{{ 'products.product.switch_specs.bottom_out_force' | t }}</span>
+              <span class="switch-specs__card-value">{{ bottom_out_weight }}g</span>
+            </div>
+          {% endif %}
+          {% if has_actuation_travel %}
+            <div class="switch-specs__card">
+              <span class="switch-specs__card-icon" aria-hidden="true">📏</span>
+              <span class="switch-specs__card-label">{{ 'products.product.switch_specs.pre_travel' | t }}</span>
+              <span class="switch-specs__card-value">{{ actuation_travel }}mm</span>
+            </div>
+          {% endif %}
+          {% if has_bottom_out_travel %}
+            <div class="switch-specs__card">
+              <span class="switch-specs__card-icon" aria-hidden="true">📐</span>
+              <span class="switch-specs__card-label">{{ 'products.product.switch_specs.total_travel' | t }}</span>
+              <span class="switch-specs__card-value">{{ bottom_out_travel }}mm</span>
+            </div>
+          {% endif %}
+          {% if has_factory_lubed %}
+            <div class="switch-specs__card">
+              <span class="switch-specs__card-icon" aria-hidden="true">🧴</span>
+              <span class="switch-specs__card-label">{{ 'products.product.switch_specs.factory_lubed' | t }}</span>
+              <span class="switch-specs__card-value">
+                {% if factory_lubed %}
+                  {{ 'products.product.switch_specs.yes' | t }}
+                {% else %}
+                  {{ 'products.product.switch_specs.no' | t }}
+                {% endif %}
+              </span>
+            </div>
+          {% endif %}
+          {% if pin_count != blank %}
+            <div class="switch-specs__card">
+              <span class="switch-specs__card-icon" aria-hidden="true">📌</span>
+              <span class="switch-specs__card-label">{{ 'products.product.switch_specs.pin_count' | t }}</span>
+              <span class="switch-specs__card-value">{{ 'products.product.switch_specs.pin_count_value' | t: count: pin_count }}</span>
+            </div>
+          {% endif %}
+          {% if top_housing_material != blank %}
+            <div class="switch-specs__card">
+              <span class="switch-specs__card-icon" aria-hidden="true">🏠</span>
+              <span class="switch-specs__card-label">{{ 'products.product.switch_specs.top_housing' | t }}</span>
+              <span class="switch-specs__card-value">{{ top_housing_material }}</span>
+            </div>
+          {% endif %}
+          {% if bottom_housing_material != blank %}
+            <div class="switch-specs__card">
+              <span class="switch-specs__card-icon" aria-hidden="true">🧱</span>
+              <span class="switch-specs__card-label">{{ 'products.product.switch_specs.bottom_housing' | t }}</span>
+              <span class="switch-specs__card-value">{{ bottom_housing_material }}</span>
+            </div>
+          {% endif %}
+          {% if stem_material != blank %}
+            <div class="switch-specs__card">
+              <span class="switch-specs__card-icon" aria-hidden="true">🧬</span>
+              <span class="switch-specs__card-label">{{ 'products.product.switch_specs.stem_material' | t }}</span>
+              <span class="switch-specs__card-value">{{ stem_material }}</span>
+            </div>
+          {% endif %}
+          {% if sound_profile != blank %}
+            <div class="switch-specs__card">
+              <span class="switch-specs__card-icon" aria-hidden="true">🔊</span>
+              <span class="switch-specs__card-label">{{ 'products.product.switch_specs.sound_profile' | t }}</span>
+              <span class="switch-specs__card-value">{{ sound_profile }}</span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if video_id != blank %}
+      <div class="switch-specs__video-section">
+        {% if block_settings.video_heading != blank %}
+          <p class="switch-specs__panel-heading h6">{{ block_settings.video_heading | escape }}</p>
+        {% endif %}
+        {% render 'video',
+          video_from_url: true,
+          video: video_id,
+          video_type: 'youtube',
+          video_class: 'switch-specs__video',
+          video_style: '--size-style-aspect-ratio: 16/9;',
+          video_alt: product.title
+        %}
+      </div>
+    {% elsif has_content == false %}
+      <p class="switch-specs__empty-state">{{ 'products.product.switch_specs.empty_state' | t }}</p>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .switch-specs {
+    --switch-specs-accent: var(--color-primary-button-background);
+    --switch-specs-accent-rgb: var(--color-primary-button-background-rgb, var(--color-foreground-rgb));
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg, var(--padding-lg));
+  }
+
+  .switch-specs__panel,
+  .switch-specs__full,
+  .switch-specs__video-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-lg);
+    background: rgb(var(--color-foreground-rgb) / var(--opacity-5));
+    border-radius: var(--style-border-radius-inputs, 12px);
+    padding: var(--padding-lg);
+  }
+
+  .switch-specs__panel-heading {
+    margin: 0;
+  }
+
+  .switch-specs__meter {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-2xs);
+  }
+
+  .switch-specs__meter-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--padding-xs);
+    flex-wrap: wrap;
+  }
+
+  .switch-specs__meter-label {
+    font-weight: var(--font-weight-semibold, 700);
+  }
+
+  .switch-specs__meter-value {
+    color: var(--switch-specs-accent);
+    font-weight: var(--font-weight-semibold, 700);
+    white-space: nowrap;
+  }
+
+  .switch-specs__track {
+    position: relative;
+    height: 6px;
+    border-radius: 6px;
+    background: rgb(var(--color-foreground-rgb) / var(--opacity-20));
+    margin-block: var(--padding-2xs);
+  }
+
+  .switch-specs__track--force {
+    background: linear-gradient(
+      90deg,
+      rgb(var(--color-foreground-rgb) / var(--opacity-10)),
+      rgb(var(--switch-specs-accent-rgb) / 0.55) 55%,
+      var(--switch-specs-accent)
+    );
+  }
+
+  .switch-specs__track--type {
+    display: flex;
+  }
+
+  .switch-specs__tick {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--color-background);
+    transform: translateX(-50%);
+  }
+
+  .switch-specs__dot {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .switch-specs__dot--circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-foreground);
+  }
+
+  .switch-specs__dot--diamond {
+    width: 9px;
+    height: 9px;
+    background: var(--switch-specs-accent);
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  .switch-specs__scale-labels,
+  .switch-specs__type-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: var(--font-size--xs, 0.75rem);
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+  }
+
+  .switch-specs__type-labels {
+    text-align: center;
+  }
+
+  .switch-specs__type-labels span {
+    flex: 1;
+  }
+
+  .switch-specs__type-labels .is-active {
+    color: var(--color-foreground);
+    font-weight: var(--font-weight-semibold, 700);
+  }
+
+  .switch-specs__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--padding-md);
+  }
+
+  @media screen and (max-width: 749px) {
+    .switch-specs__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .switch-specs__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-3xs);
+    background: var(--color-background);
+    border-radius: var(--style-border-radius-inputs, 10px);
+    padding: var(--padding-md);
+  }
+
+  .switch-specs__card-icon {
+    font-size: 1.125rem;
+  }
+
+  .switch-specs__card-label {
+    font-size: var(--font-size--xs, 0.75rem);
+    letter-spacing: 0.04em;
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+  }
+
+  .switch-specs__card-value {
+    font-weight: var(--font-weight-semibold, 700);
+  }
+
+  .switch-specs__video {
+    display: block;
+    width: 100%;
+    border-radius: var(--style-border-radius-inputs, 12px);
+    overflow: hidden;
+  }
+
+  .switch-specs__empty-state {
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+    font-style: italic;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Switch specs",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Reads product.metafields.switch_specs.* to render a Feel Profile, a Full Specs grid, and an optional video. Any missing metafield is skipped automatically."
+    },
+    {
+      "type": "text",
+      "id": "feel_profile_heading",
+      "label": "Feel profile heading",
+      "default": "Feel Profile"
+    },
+    {
+      "type": "text",
+      "id": "full_specs_heading",
+      "label": "Full specs heading",
+      "default": "Full Specs"
+    },
+    {
+      "type": "text",
+      "id": "video_heading",
+      "label": "Video heading",
+      "default": "Switch Sound & Feel"
+    },
+    {
+      "type": "color",
+      "id": "accent_color",
+      "label": "Accent color",
+      "info": "Used for the meter fill and bottom-out marker. Defaults to the primary button color.",
+      "placeholder": "t:settings.default"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Switch specs",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

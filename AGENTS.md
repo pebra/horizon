@@ -54,6 +54,7 @@ in each `.liquid` file. Edit schemas in place.
 
 ## Working conventions
 
+- **IMPORTANT** this theme will be routinely rebased from the Shopify upstream main branch, avoid touching theme files that could cause merge conflicts down the road whenever possible.
 - **No comments explaining what code does** — Liquid, CSS, and JS in this repo favor self-explanatory naming; comments are reserved for non-obvious constraints.
 - **BEM CSS**, scoped inside `{% stylesheet %}`/`{% style %}` tags in the same file as the markup; shared component CSS lives in `assets/*.css`.
 - **Web components** for interactivity, extending `Component` from `@theme/component` (`assets/component.js`), using `ref="name"` attributes and `on:event="/methodName"` declarative bindings rather than manual `addEventListener` wiring.

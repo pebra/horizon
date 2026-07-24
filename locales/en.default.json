@@ -371,7 +371,31 @@
       "quantity_maximum": "Maximum of {{ maximum }}",
       "in_cart": "in cart",
       "default_title": "Default Title",
-      "sticky_add_to_cart": "Quick add to cart bar"
+      "sticky_add_to_cart": "Quick add to cart bar",
+      "switch_specs": {
+        "actuation_force": "Actuation Force",
+        "bottom_out_force": "Bottom-out Force",
+        "bottom_out": "bottom-out",
+        "travel_distance": "Travel Distance",
+        "pre_travel": "pre-travel",
+        "total_travel": "Total Travel",
+        "light": "Light (0g)",
+        "heavy": "Heavy ({{ weight }}g)",
+        "switch_type": "Switch Type",
+        "linear": "Linear",
+        "tactile": "Tactile",
+        "clicky": "Clicky",
+        "factory_lubed": "Factory Lubed",
+        "yes": "Yes",
+        "no": "No",
+        "pin_count": "Pin Count",
+        "pin_count_value": "{{ count }}-pin",
+        "top_housing": "Top Housing",
+        "bottom_housing": "Bottom Housing",
+        "stem_material": "Stem Material",
+        "sound_profile": "Sound Profile",
+        "empty_state": "Add switch spec metafields to this product to populate the Feel Profile and Full Specs."
+      }
     }
   }
 }

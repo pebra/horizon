@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="image-slot.js"></script>
+<style>
+body{margin:0;background:#f0eee9;font-family:'IBM Plex Sans',sans-serif}
+.dv-turn{padding:40px 44px 60px;border-bottom:1px solid rgba(0,0,0,.08)}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}
+.dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tname{font:600 13px/1.2 'Sora',sans-serif;color:#1a1a1a}
+.dv-opts{display:flex;flex-wrap:wrap;gap:28px;align-items:flex-start}
+.dv-opt{flex:none;display:flex;flex-direction:column;gap:9px}
+.dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.08);color:#1a1a1a;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11px/1.3 'IBM Plex Sans',sans-serif;color:rgba(0,0,0,.55)}
+.dv-card{max-width:100%;background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.08);overflow:hidden}
+.dv-next{margin:22px 0 0;font:12px/1.5 'IBM Plex Sans',sans-serif;color:rgba(0,0,0,.5)}
+a{color:#a8631f}
+a:hover{color:#7a4715}
+.bk-navlink{color:#4a3d33;text-decoration:none;font:500 14px 'IBM Plex Sans',sans-serif}
+.bk-navlink:hover{color:#a8631f}
+.bk-scroll{display:flex;gap:20px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin}
+.bk-pcard{flex:0 0 220px;display:flex;flex-direction:column;gap:10px;cursor:pointer;transition:transform .2s}
+.bk-pcard:hover{transform:translateY(-4px)}
+.bk-cta{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;font:600 15px 'IBM Plex Sans',sans-serif;cursor:pointer;transition:opacity .2s}
+.bk-cta:hover{opacity:.85}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t3">
+<div class="dv-thd"><a class="dv-tid" href="#t3">3</a><span class="dv-tname">Switch product template — spec-driven, built for the reusable switch-page pattern</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="3a">
+<div class="dv-olabel"><a class="dv-oid" href="#3a">3a</a>Huano Sakura V2 — visual Feel Profile (force + travel meters) replaces the plain spec table</div>
+<div class="dv-card" style="width:1360px">
+<div style="background:#f5eedd">
+<nav style="display:flex;align-items:center;justify-content:space-between;padding:22px 56px;position:relative;z-index:40">
+<div style="display:flex;align-items:center;gap:10px">
+<img src="uploads/beaverkeys-logo-with-outer-stroke.png" style="width:40px;height:40px;object-fit:contain"/>
+<div style="font:800 24px 'Sora',sans-serif;letter-spacing:-0.02em;color:#0e2524">beaver<span style="color:#86cbc8">keys</span></div>
+</div>
+<div style="display:flex;gap:4px">
+<sc-for list="{{navItemsSwitch}}" as="item" hint-placeholder-count="4">
+<div style="position:relative" onMouseEnter="{{ () => openNavMenu('navOpenSwitch', item.id) }}" onMouseLeave="{{ () => closeNavMenu('navOpenSwitch') }}">
+<sc-if value="{{item.isLink}}" hint-placeholder-val="{{false}}">
+<a class="bk-navlink" href="#" style="padding:10px 8px;display:inline-block;color:#c0392b">{{item.label}}</a>
+</sc-if>
+<sc-if value="{{item.isDropdown}}" hint-placeholder-val="{{true}}">
+<div class="bk-navlink" style="padding:10px 8px;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap">{{item.label}} <span style="font-size:9px">▾</span></div>
+<sc-if value="{{item.open}}" hint-placeholder-val="{{false}}">
+<div style="position:absolute;top:100%;left:0;background:#fff;border-radius:16px;box-shadow:0 16px 40px rgba(14,37,36,.18);padding:24px;display:flex;gap:40px">
+<sc-for list="{{item.columns}}" as="col" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:9px;min-width:160px">
+<sc-if value="{{col.heading}}" hint-placeholder-val="{{false}}">
+<div style="font:700 11px 'Sora',sans-serif;letter-spacing:.08em;color:#399999;margin-bottom:2px">{{col.heading}}</div>
+</sc-if>
+<sc-for list="{{col.links}}" as="lnk" hint-placeholder-count="4">
+<a class="bk-navlink" href="#" style="white-space:nowrap;font-size:13.5px">{{lnk.label}}</a>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;gap:20px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4a3d33" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4a3d33" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+<a href="#" class="bk-cta" style="background:#0e2524;color:#fff;padding:10px 20px;border-radius:24px;font-size:13px">Cart (0)</a>
+</div>
+</nav>
+<div style="padding:14px 56px 0;font:500 13px 'IBM Plex Sans',sans-serif;color:#9a8c7c">
+<a href="#" style="color:#9a8c7c;text-decoration:none">Mechanical Keyboards &amp; Parts</a> / <a href="#" style="color:#9a8c7c;text-decoration:none">Switches</a> / <span style="color:#0e2524">Huano Sakura V2</span>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 420px;gap:48px;padding:24px 56px 70px;align-items:start">
+
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;grid-template-columns:1.4fr 1fr;gap:16px">
+<div style="background:#eee4c8;border-radius:20px;overflow:hidden;height:400px">
+<image-slot id="switch-hero-pile" shape="rect" style="width:100%;height:100%" placeholder="bulk shot — pile of Huano Sakura V2 pink switches" src="https://beaverkeys.ca/cdn/shop/files/huano-sakura-v2-cover.png?v=1779119689&width=1200"></image-slot>
+</div>
+<div style="background:#eee4c8;border-radius:20px;overflow:hidden;height:400px">
+<image-slot id="switch-hero-single" shape="rect" fit="contain" style="width:100%;height:100%" placeholder="single switch hero shot, floating with drop shadow"></image-slot>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px">
+<div style="background:#eee4c8;border-radius:16px;overflow:hidden;height:230px">
+<image-slot id="switch-detail-1" shape="rect" style="width:100%;height:100%" placeholder="switches scattered, top-down macro"></image-slot>
+</div>
+<div style="background:#eee4c8;border-radius:16px;overflow:hidden;height:230px">
+<image-slot id="switch-detail-2" shape="rect" fit="contain" style="width:100%;height:100%" placeholder="row of switches, side profile on white"></image-slot>
+</div>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:20px;position:sticky;top:24px">
+<div>
+<div style="font:600 12px 'IBM Plex Sans',sans-serif;letter-spacing:.1em;color:#399999;margin-bottom:10px">HUANO</div>
+<h1 style="font:800 30px/1.15 'Sora',sans-serif;color:#0e2524;margin:0 0 10px;letter-spacing:-0.02em">Huano Sakura V2</h1>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+<span style="color:#399999;font-size:15px;letter-spacing:2px">★★★★★</span>
+<span style="font:500 13px 'IBM Plex Sans',sans-serif;color:#9a8c7c">4.9 (212 reviews)</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<sc-for list="{{switchQuickChips}}" as="chip" hint-placeholder-count="4">
+<span style="font:600 11.5px 'IBM Plex Sans',sans-serif;color:#0e2524;background:#eee4c8;padding:6px 12px;border-radius:20px">{{chip}}</span>
+</sc-for>
+</div>
+</div>
+
+<div style="font:800 28px 'Sora',sans-serif;color:#0e2524">{{switchPrice}} <span style="font:500 14px 'IBM Plex Sans',sans-serif;color:#9a8c7c">CAD</span></div>
+<div style="font:400 12.5px 'IBM Plex Sans',sans-serif;color:#9a8c7c;margin-top:-14px">Shipping calculated at checkout.</div>
+
+<div>
+<div style="font:600 13px 'IBM Plex Sans',sans-serif;color:#0e2524;margin-bottom:10px">Pack Size — {{switchSelectedPack}}</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px">
+<sc-for list="{{switchPackOptions}}" as="pk" hint-placeholder-count="3">
+<div onClick="{{pk.onClick}}" style="cursor:pointer">
+<div style="padding:9px 16px;border-radius:20px;font:500 13px 'IBM Plex Sans',sans-serif;{{pk.chipStyle}}">{{pk.label}} · {{pk.priceLabel}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="display:flex;gap:14px;align-items:center">
+<div style="display:flex;align-items:center;border:1.5px solid #e3ddd2;border-radius:24px;overflow:hidden">
+<div onClick="{{decSwitchQty}}" style="width:38px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;font:600 16px sans-serif;color:#0e2524">−</div>
+<div style="width:36px;text-align:center;font:600 14px 'IBM Plex Sans',sans-serif;color:#0e2524">{{switchQty}}</div>
+<div onClick="{{incSwitchQty}}" style="width:38px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;font:600 16px sans-serif;color:#0e2524">+</div>
+</div>
+<a href="#" class="bk-cta" style="flex:1;background:linear-gradient(135deg,#86cbc8,#1E5F5C);color:#f5eedd;padding:15px 0;border-radius:24px;font-weight:800">Add to Cart</a>
+</div>
+<a href="#" class="bk-cta" style="background:#5a31f4;color:#fff;padding:13px 0;border-radius:24px;font-weight:700;gap:8px">Buy with <span style="font-weight:800;font-style:italic">Shop</span></a>
+<div style="text-align:center"><a href="#" style="font:500 12.5px 'IBM Plex Sans',sans-serif;color:#6b6055;text-decoration:underline">More payment options</a></div>
+
+<div style="display:flex;justify-content:space-between;padding-top:18px;border-top:1px solid #ece7de">
+<sc-for list="{{switchTrust}}" as="t" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;text-align:center">
+<div style="font-size:18px">{{t.icon}}</div>
+<div style="font:500 11px 'IBM Plex Sans',sans-serif;color:#6b6055">{{t.label}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:48px;padding:0 56px 20px">
+<div>
+<div style="display:flex;gap:8px;border-bottom:1px solid #ece7de;margin-bottom:36px">
+<sc-for list="{{switchTabs}}" as="tb" hint-placeholder-count="3">
+<div onClick="{{tb.onClick}}" style="cursor:pointer">
+<div style="padding:14px 22px;font:700 14px 'Sora',sans-serif;{{tb.style}}">{{tb.label}}</div>
+</div>
+</sc-for>
+</div>
+
+<div style="{{switchOverviewStyle}}">
+<p style="font:400 16px/1.7 'IBM Plex Sans',sans-serif;color:#4a3d33;margin:0 0 32px">The Huano Sakura V2 is a linear switch built for smooth, silent keystrokes — factory lubed straight out of the bag, with a POM stem and an RGB-optimized housing for vibrant per-key lighting.</p>
+
+<div style="background:#eee4c8;border-radius:20px;padding:32px;display:flex;flex-direction:column;gap:32px">
+<div style="font:700 15px 'Sora',sans-serif;color:#0e2524;letter-spacing:-0.01em">Feel Profile</div>
+
+<div>
+<div style="display:flex;justify-content:space-between;margin-bottom:12px">
+<span style="font:700 13px 'Sora',sans-serif;color:#0e2524">Actuation Force</span>
+<span style="font:600 13px 'IBM Plex Sans',sans-serif;color:#399999">35g / 45g bottom-out</span>
+</div>
+<div style="position:relative;height:6px;border-radius:6px;background:linear-gradient(90deg,#f5eedd,#86cbc8 55%,#1E5F5C)">
+<div style="position:absolute;left:43.75%;top:50%;width:10px;height:10px;border-radius:50%;background:#0e2524;transform:translate(-50%,-50%)"></div>
+<div style="position:absolute;left:56.25%;top:50%;width:9px;height:9px;background:#399999;transform:translate(-50%,-50%) rotate(45deg)"></div>
+</div>
+<div style="display:flex;justify-content:space-between;margin-top:10px;font:500 11px 'IBM Plex Sans',sans-serif;color:#9a8c7c"><span>Light (0g)</span><span>Heavy (80g)</span></div>
+</div>
+
+<div>
+<div style="display:flex;justify-content:space-between;margin-bottom:12px">
+<span style="font:700 13px 'Sora',sans-serif;color:#0e2524">Travel Distance</span>
+<span style="font:600 13px 'IBM Plex Sans',sans-serif;color:#399999">2.0mm pre-travel / 3.6mm bottom-out</span>
+</div>
+<div style="position:relative;height:6px;border-radius:6px;background:#e3ddd2">
+<div style="position:absolute;left:50%;top:50%;width:10px;height:10px;border-radius:50%;background:#0e2524;transform:translate(-50%,-50%)"></div>
+<div style="position:absolute;left:90%;top:50%;width:9px;height:9px;background:#399999;transform:translate(-50%,-50%) rotate(45deg)"></div>
+</div>
+<div style="display:flex;justify-content:space-between;margin-top:10px;font:500 11px 'IBM Plex Sans',sans-serif;color:#9a8c7c"><span>0mm</span><span>4mm</span></div>
+</div>
+
+<div>
+<div style="font:700 13px 'Sora',sans-serif;color:#0e2524;margin-bottom:12px">Switch Type</div>
+<div style="position:relative;height:6px;border-radius:6px;background:#e3ddd2">
+<div style="position:absolute;left:33.33%;top:0;bottom:0;width:1px;background:#eee4c8"></div>
+<div style="position:absolute;left:66.66%;top:0;bottom:0;width:1px;background:#eee4c8"></div>
+<div style="position:absolute;left:16.67%;top:50%;width:10px;height:10px;border-radius:50%;background:#0e2524;transform:translate(-50%,-50%)"></div>
+</div>
+<div style="display:flex;margin-top:10px">
+<sc-for list="{{switchTypeLabels}}" as="ty" hint-placeholder-count="3">
+<div style="flex:1;text-align:center;font:600 11.5px 'IBM Plex Sans',sans-serif;{{ty.style}}">{{ty.label}}</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="margin-top:8px">
+<div style="font:700 15px 'Sora',sans-serif;color:#0e2524;letter-spacing:-0.01em;margin-bottom:16px">Full Specs</div>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+<sc-for list="{{switchSpecCards}}" as="sp" hint-placeholder-count="12">
+<div style="background:#eee4c8;border-radius:14px;padding:18px">
+<div style="font-size:18px;margin-bottom:10px">{{sp.icon}}</div>
+<div style="font:600 11px 'IBM Plex Sans',sans-serif;letter-spacing:.04em;color:#9a8c7c;margin-bottom:4px">{{sp.label}}</div>
+<div style="font:700 14px 'Sora',sans-serif;color:#0e2524">{{sp.value}}</div>
+</div>
+</sc-for>
+</div>
+
+<div style="margin-top:24px">
+<div style="font:700 15px 'Sora',sans-serif;color:#0e2524;letter-spacing:-0.01em;margin-bottom:16px">Frequently bought together</div>
+<div class="bk-scroll">
+<sc-for list="{{products}}" as="p" hint-placeholder-count="6">
+<div class="bk-pcard" style="flex:0 0 160px">
+<image-slot id="switch-p-{{p.id}}" shape="rounded" radius="14" style="width:160px;height:160px" placeholder="{{p.name}}" src="{{p.image}}"></image-slot>
+<div style="font:700 13px 'Sora',sans-serif;color:#0e2524">{{p.name}}</div>
+<div style="font:600 12px 'IBM Plex Sans',sans-serif;color:#399999">{{p.price}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+</div>
+</div>
+
+<div id="switch-reviews" style="{{switchReviewsStyle}}">
+<div>
+<div style="background:#eee4c8;border:1px solid #ece7de;border-radius:14px;padding:26px">
+<div style="color:#399999;font-size:15px;letter-spacing:2px;margin-bottom:14px">★★★★★</div>
+<div style="font:500 15px/1.7 'IBM Plex Sans',sans-serif;color:#3a3128;margin-bottom:16px">"Smoothest linear I've tried under $5. Zero scratch out of the bag, and the pink housing looks great with my build."</div>
+<div style="font:700 13px 'Sora',sans-serif;color:#0e2524">Anonymous</div>
+<div style="font:400 12px 'IBM Plex Sans',sans-serif;color:#9a8c7c">Verified Buyer</div>
+</div>
+</div>
+</div>
+
+</div>
+<div style="width:420px"></div>
+</div>
+
+<div style="padding:36px 56px;display:flex;justify-content:space-between;font:500 12px 'IBM Plex Sans',sans-serif;color:#9a8c7c;border-top:1px solid #ece7de">
+<div>© 2026 beaverkeys — Ottawa, Canada</div>
+<div style="display:flex;gap:18px"><a href="#">Shipping</a><a href="#">Privacy</a><a href="#">Contact</a></div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "reuse this same Feel Profile pattern for a tactile/clicky switch" · "add a switch comparison table to <a class="dv-oid" href="#3a">3a</a>" · "make the pack size drive a bulk discount"</p>
+</section>
+
+<section class="dv-turn" id="t2">
+<div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Product page redesign — 1b visual language, single efficient layout</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="2a">
+<div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>Sticky buy panel + tabbed content (replaces long two-column scroll)</div>
+<div class="dv-card" style="width:1360px">
+<div style="background:#f5eedd">
+<nav style="display:flex;align-items:center;justify-content:space-between;padding:22px 56px;position:relative;z-index:40">
+<div style="display:flex;align-items:center;gap:10px">
+<img src="uploads/beaverkeys-logo-with-outer-stroke.png" style="width:40px;height:40px;object-fit:contain"/>
+<div style="font:800 24px 'Sora',sans-serif;letter-spacing:-0.02em;color:#0e2524">beaver<span style="color:#86cbc8">keys</span></div>
+</div>
+<div style="display:flex;gap:4px">
+<sc-for list="{{navItemsPdp}}" as="item" hint-placeholder-count="4">
+<div style="position:relative" onMouseEnter="{{ () => openNavMenu('navOpenPdp', item.id) }}" onMouseLeave="{{ () => closeNavMenu('navOpenPdp') }}">
+<sc-if value="{{item.isLink}}" hint-placeholder-val="{{false}}">
+<a class="bk-navlink" href="#" style="padding:10px 8px;display:inline-block;color:#c0392b">{{item.label}}</a>
+</sc-if>
+<sc-if value="{{item.isDropdown}}" hint-placeholder-val="{{true}}">
+<div class="bk-navlink" style="padding:10px 8px;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap">{{item.label}} <span style="font-size:9px">▾</span></div>
+<sc-if value="{{item.open}}" hint-placeholder-val="{{false}}">
+<div style="position:absolute;top:100%;left:0;background:#fff;border-radius:16px;box-shadow:0 16px 40px rgba(14,37,36,.18);padding:24px;display:flex;gap:40px">
+<sc-for list="{{item.columns}}" as="col" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:9px;min-width:160px">
+<sc-if value="{{col.heading}}" hint-placeholder-val="{{false}}">
+<div style="font:700 11px 'Sora',sans-serif;letter-spacing:.08em;color:#399999;margin-bottom:2px">{{col.heading}}</div>
+</sc-if>
+<sc-for list="{{col.links}}" as="lnk" hint-placeholder-count="4">
+<a class="bk-navlink" href="#" style="white-space:nowrap;font-size:13.5px">{{lnk.label}}</a>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;gap:20px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4a3d33" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4a3d33" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+<a href="#" class="bk-cta" style="background:#0e2524;color:#fff;padding:10px 20px;border-radius:24px;font-size:13px">Cart (0)</a>
+</div>
+</nav>
+<div style="padding:14px 56px 0;font:500 13px 'IBM Plex Sans',sans-serif;color:#9a8c7c">
+<a href="#" style="color:#9a8c7c;text-decoration:none">Keyboards</a> / <a href="#" style="color:#9a8c7c;text-decoration:none">Gaming</a> / <span style="color:#0e2524">MonsGeek M1 V5 TMR</span>
+</div>
+
+<div style="display:grid;grid-template-columns:1fr 420px;gap:48px;padding:24px 56px 70px;align-items:start">
+
+<div style="display:grid;grid-template-columns:88px 1fr;gap:16px">
+<div style="display:flex;flex-direction:column;gap:12px">
+<sc-for list="{{pdpImages}}" as="thumb" hint-placeholder-count="6">
+<div onClick="{{ () => setPdpImage($index) }}" style="width:88px;height:88px;border-radius:10px;overflow:hidden;border:2px solid {{ thumb.active ? '#399999' : 'transparent' }};cursor:pointer;background:#eee4c8;flex:none">
+<img src="{{thumb.src}}" style="width:100%;height:100%;object-fit:contain"/>
+</div>
+</sc-for>
+</div>
+<div style="background:#eee4c8;border-radius:20px;display:flex;align-items:center;justify-content:center;height:560px;overflow:hidden">
+<img src="{{pdpMainImage}}" style="max-width:88%;max-height:88%;object-fit:contain"/>
+</div>
+</div>
+
+<div style="display:flex;flex-direction:column;gap:22px;position:sticky;top:24px">
+<div>
+<div style="font:600 12px 'IBM Plex Sans',sans-serif;letter-spacing:.1em;color:#399999;margin-bottom:10px">MONSGEEK</div>
+<h1 style="font:800 30px/1.15 'Sora',sans-serif;color:#0e2524;margin:0 0 12px;letter-spacing:-0.02em">M1 V5 TMR — Black Gradient</h1>
+<div style="display:flex;align-items:center;gap:10px">
+<span style="color:#399999;font-size:15px;letter-spacing:2px">★★★★★</span>
+<a href="#pdp-reviews" style="font:500 13px 'IBM Plex Sans',sans-serif;color:#9a8c7c;text-decoration:none">1 review</a>
+</div>
+</div>
+<div style="font:800 28px 'Sora',sans-serif;color:#0e2524">$230.00 <span style="font:500 14px 'IBM Plex Sans',sans-serif;color:#9a8c7c">CAD</span></div>
+
+<div>
+<div style="font:600 13px 'IBM Plex Sans',sans-serif;color:#0e2524;margin-bottom:10px">Color — {{pdpSelectedColor}}</div>
+<div style="display:flex;gap:10px">
+<sc-for list="{{pdpColors}}" as="c" hint-placeholder-count="3">
+<div onClick="{{ () => selectPdpColor(c.name) }}" title="{{c.name}}" style="width:34px;height:34px;border-radius:50%;background:{{c.swatch}};cursor:pointer;border:2px solid {{ c.name===pdpSelectedColor ? '#399999' : '#e3ddd2' }};box-shadow:0 0 0 2px #f5eedd inset"></div>
+</sc-for>
+</div>
+</div>
+
+<div>
+<div style="font:600 13px 'IBM Plex Sans',sans-serif;color:#0e2524;margin-bottom:10px">Switch — {{pdpSelectedSwitch}}</div>
+<div style="display:flex;flex-wrap:wrap;gap:10px">
+<sc-for list="{{pdpSwitches}}" as="s" hint-placeholder-count="2">
+<div onClick="{{ () => selectPdpSwitch(s) }}" style="padding:9px 16px;border-radius:20px;font:500 13px 'IBM Plex Sans',sans-serif;cursor:pointer;border:1.5px solid {{ s===pdpSelectedSwitch ? '#0e2524' : '#e3ddd2' }};background:{{ s===pdpSelectedSwitch ? '#0e2524' : '#fff' }};color:{{ s===pdpSelectedSwitch ? '#86cbc8' : '#4a3d33' }}">{{s}}</div>
+</sc-for>
+</div>
+</div>
+
+<div style="display:flex;gap:14px;align-items:center">
+<div style="display:flex;align-items:center;border:1.5px solid #e3ddd2;border-radius:24px;overflow:hidden">
+<div onClick="{{decPdpQty}}" style="width:38px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;font:600 16px sans-serif;color:#0e2524">−</div>
+<div style="width:36px;text-align:center;font:600 14px 'IBM Plex Sans',sans-serif;color:#0e2524">{{pdpQty}}</div>
+<div onClick="{{incPdpQty}}" style="width:38px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;font:600 16px sans-serif;color:#0e2524">+</div>
+</div>
+<a href="#" class="bk-cta" style="flex:1;background:linear-gradient(135deg,#86cbc8,#1E5F5C);color:#f5eedd;padding:15px 0;border-radius:24px;font-weight:800">Add to Cart</a>
+</div>
+<a href="#" class="bk-cta" style="border:1.5px solid #0e2524;color:#0e2524;padding:13px 0;border-radius:24px;font-weight:700">Buy it now</a>
+
+<div style="display:flex;justify-content:space-between;padding-top:18px;border-top:1px solid #ece7de">
+<sc-for list="{{pdpTrust}}" as="t" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;text-align:center">
+<div style="font-size:18px">{{t.icon}}</div>
+<div style="font:500 11px 'IBM Plex Sans',sans-serif;color:#6b6055">{{t.label}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div style="padding:0 56px 20px">
+<div style="display:flex;gap:8px;border-bottom:1px solid #ece7de;margin-bottom:36px">
+<sc-for list="{{pdpTabs}}" as="tb" hint-placeholder-count="3">
+<div onClick="{{ () => setPdpTab(tb) }}" style="padding:14px 22px;font:700 14px 'Sora',sans-serif;cursor:pointer;color:{{ tb===pdpActiveTab ? '#0e2524' : '#9a8c7c' }};border-bottom:2px solid {{ tb===pdpActiveTab ? '#399999' : 'transparent' }}">{{tb}}</div>
+</sc-for>
+</div>
+
+<sc-if value="{{pdpTabOverview}}" hint-placeholder-val="{{true}}">
+<div>
+<p style="font:400 16px/1.7 'IBM Plex Sans',sans-serif;color:#4a3d33;max-width:760px;margin:0 0 40px">The MonsGeek M1 V5 TMR is a hybrid gaming keyboard combining TMR sensor technology with full MagMech compatibility — mix magnetic and mechanical switches freely, in a 75% gray-to-black gradient aluminum CNC case with tool-free rapid disassembly.</p>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+<sc-for list="{{pdpFeatures}}" as="f" hint-placeholder-count="6">
+<div style="background:#eee4c8;border-radius:14px;padding:22px">
+<div style="font-size:22px;margin-bottom:12px">{{f.icon}}</div>
+<div style="font:700 14px 'Sora',sans-serif;color:#0e2524;margin-bottom:6px">{{f.title}}</div>
+<div style="font:400 13px/1.5 'IBM Plex Sans',sans-serif;color:#6b6055">{{f.desc}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{pdpTabSpecs}}" hint-placeholder-val="{{false}}">
+<div style="max-width:760px;border:1px solid #ece7de;border-radius:14px;overflow:hidden">
+<sc-for list="{{pdpSpecs}}" as="s" hint-placeholder-count="8">
+<div style="display:grid;grid-template-columns:200px 1fr;padding:14px 22px;background:{{ $index % 2 === 0 ? '#eee4c8' : '#fff' }}">
+<div style="font:600 13px 'IBM Plex Sans',sans-serif;color:#9a8c7c">{{s.key}}</div>
+<div style="font:500 13px 'IBM Plex Sans',sans-serif;color:#0e2524">{{s.value}}</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{pdpTabReviews}}" hint-placeholder-val="{{false}}">
+<div id="pdp-reviews" style="max-width:760px">
+<div style="background:#eee4c8;border:1px solid #ece7de;border-radius:14px;padding:26px">
+<div style="color:#399999;font-size:15px;letter-spacing:2px;margin-bottom:14px">★★★★★</div>
+<div style="font:500 15px/1.7 'IBM Plex Sans',sans-serif;color:#3a3128;margin-bottom:16px">"No seriously you guys are the GOAT .. and this keyboard is also the goat. Monsgeek has rlly upped their game in terms of software — the foams this baby comes with makes up for the RGB not being my favourite."</div>
+<div style="font:700 13px 'Sora',sans-serif;color:#0e2524">Anonymous</div>
+<div style="font:400 12px 'IBM Plex Sans',sans-serif;color:#9a8c7c">Verified Buyer</div>
+</div>
+</div>
+</sc-if>
+</div>
+
+<div style="padding:70px 56px 90px;border-top:1px solid #ece7de">
+<h2 style="font:800 26px 'Sora',sans-serif;color:#0e2524;margin:0 0 28px;letter-spacing:-0.02em">Complete the build</h2>
+<div class="bk-scroll">
+<sc-for list="{{products}}" as="p" hint-placeholder-count="6">
+<div class="bk-pcard" style="flex:0 0 200px">
+<image-slot id="pdp-p-{{p.id}}" shape="rounded" radius="14" style="width:200px;height:200px" placeholder="{{p.name}}" src="{{p.image}}"></image-slot>
+<div style="font:700 13px 'Sora',sans-serif;color:#0e2524">{{p.name}}</div>
+<div style="font:600 12px 'IBM Plex Sans',sans-serif;color:#399999">{{p.price}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+
+<div style="padding:36px 56px;display:flex;justify-content:space-between;font:500 12px 'IBM Plex Sans',sans-serif;color:#9a8c7c;border-top:1px solid #ece7de">
+<div>© 2026 beaverkeys — Ottawa, Canada</div>
+<div style="display:flex;gap:18px"><a href="#">Shipping</a><a href="#">Privacy</a><a href="#">Contact</a></div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "make gallery images zoomable" · "add a size/layout comparison to <a class="dv-oid" href="#2a">2a</a>" · "apply this product-page pattern to <a class="dv-oid" href="#1a">1a</a>'s style"</p>
+</section>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Landing page directions — warm amber accent, product-photo-friendly white background</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1a">
+<div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Clean minimal — whitespace, thin type, tiny amber accents</div>
+<div class="dv-card" style="width:1360px">
+<div style="background:#fdfcfa">
+<nav style="display:flex;align-items:center;justify-content:space-between;padding:26px 56px;border-bottom:1px solid #ece7de">
+<div style="font:800 22px 'Sora',sans-serif;letter-spacing:-0.02em;color:#241d15">beaverkeys</div>
+<div style="display:flex;gap:36px">
+<a class="bk-navlink" href="#">Switches</a><a class="bk-navlink" href="#">Keyboards</a><a class="bk-navlink" href="#">Keycaps</a><a class="bk-navlink" href="#">Deskmats</a><a class="bk-navlink" href="#">Sale</a>
+</div>
+<div style="display:flex;gap:20px;align-items:center">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4a3d33" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4a3d33" stroke-width="2"><path d="M6 6h15l-1.5 9h-13z"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+</div>
+</nav>
+<div style="display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:100px 56px;gap:60px">
+<div>
+<div style="font:600 13px 'IBM Plex Sans',sans-serif;letter-spacing:.14em;color:#a8631f;margin-bottom:20px">NEW ARRIVAL</div>
+<h1 style="font:400 64px/1.05 'Sora',sans-serif;color:#241d15;margin:0 0 26px;letter-spacing:-0.02em">Wobkey boards<br>are here.</h1>
+<p style="font:400 17px/1.6 'IBM Plex Sans',sans-serif;color:#6b6055;margin:0 0 36px;max-width:420px">Zen65 &amp; Crush80 — hand-picked, factory-lubed, ready to ship from Ottawa.</p>
+<a href="#" class="bk-cta" style="background:#a8631f;color:#fff;padding:15px 32px;border-radius:6px">Shop Now</a>
+</div>
+<image-slot id="bk-1a-hero" shape="rounded" radius="16" fit="contain" style="width:100%;height:420px" placeholder="hero product photo — Zen65 keyboard, white bg" src="uploads/hmx-aperol-cover-image.webp"></image-slot>
+</div>
+<div style="padding:0 56px 90px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:28px">
+<h2 style="font:600 26px 'Sora',sans-serif;color:#241d15;margin:0">New Arrivals</h2>
+<a href="#" style="font:500 14px 'IBM Plex Sans',sans-serif;text-decoration:none">View all &rarr;</a>
+</div>
+<div class="bk-scroll">
+<sc-for list="{{products}}" as="p" hint-placeholder-count="6">
+<div class="bk-pcard">
+<image-slot id="bk-1a-p-{{p.id}}" shape="rounded" radius="10" style="width:220px;height:220px" placeholder="{{p.name}} — product photo" src="{{p.image}}"></image-slot>
+<div style="font:600 13px 'IBM Plex Sans',sans-serif;color:#241d15;letter-spacing:.01em">{{p.name}}</div>
+<div style="font:400 13px 'IBM Plex Sans',sans-serif;color:#9a8c7c">{{p.price}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="padding:80px 56px;background:#f8f4ee">
+<h2 style="font:600 26px 'Sora',sans-serif;color:#241d15;margin:0 0 8px">Let customers speak for us</h2>
+<p style="font:400 14px 'IBM Plex Sans',sans-serif;color:#9a8c7c;margin:0 0 36px">from 378 reviews</p>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:28px">
+<sc-for list="{{reviews}}" as="r" hint-placeholder-count="3">
+<div style="background:#fff;border:1px solid #ece7de;border-radius:10px;padding:26px">
+<div style="color:#a8631f;font-size:14px;letter-spacing:2px;margin-bottom:14px">★★★★★</div>
+<div style="font:500 14px/1.6 'IBM Plex Sans',sans-serif;color:#3a3128;margin-bottom:16px">"{{r.quote}}"</div>
+<div style="font:600 13px 'IBM Plex Sans',sans-serif;color:#241d15">{{r.name}}</div>
+<div style="font:400 12px 'IBM Plex Sans',sans-serif;color:#9a8c7c">{{r.product}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="padding:40px 56px;border-top:1px solid #ece7de;display:flex;justify-content:space-between;font:400 12px 'IBM Plex Sans',sans-serif;color:#9a8c7c">
+<div>© 2026 beaverkeys — shipping from Ottawa, Canada</div>
+<div style="display:flex;gap:18px"><a href="#">Shipping</a><a href="#">Privacy</a><a href="#">Contact</a></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1b">
+<div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Bold/energetic — big type, amber blocks, playful chips</div>
+<div class="dv-card" style="width:1360px">
+<div style="background:#f5eedd">
+<nav style="display:flex;align-items:center;justify-content:space-between;padding:22px 56px;position:relative;z-index:40">
+<div style="display:flex;align-items:center;gap:10px">
+<img src="uploads/beaverkeys-logo-with-outer-stroke.png" style="width:40px;height:40px;object-fit:contain"/>
+<div style="font:800 24px 'Sora',sans-serif;letter-spacing:-0.02em;color:#0e2524">beaver<span style="color:#86cbc8">keys</span></div>
+</div>
+<div style="display:flex;gap:4px">
+<sc-for list="{{navItemsHome}}" as="item" hint-placeholder-count="4">
+<div style="position:relative" onMouseEnter="{{ () => openNavMenu('navOpenHome', item.id) }}" onMouseLeave="{{ () => closeNavMenu('navOpenHome') }}">
+<sc-if value="{{item.isLink}}" hint-placeholder-val="{{false}}">
+<a class="bk-navlink" href="#" style="padding:10px 8px;display:inline-block;color:#c0392b">{{item.label}}</a>
+</sc-if>
+<sc-if value="{{item.isDropdown}}" hint-placeholder-val="{{true}}">
+<div class="bk-navlink" style="padding:10px 8px;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap">{{item.label}} <span style="font-size:9px">▾</span></div>
+<sc-if value="{{item.open}}" hint-placeholder-val="{{false}}">
+<div style="position:absolute;top:100%;left:0;background:#fff;border-radius:16px;box-shadow:0 16px 40px rgba(14,37,36,.18);padding:24px;display:flex;gap:40px">
+<sc-for list="{{item.columns}}" as="col" hint-placeholder-count="3">
+<div style="display:flex;flex-direction:column;gap:9px;min-width:160px">
+<sc-if value="{{col.heading}}" hint-placeholder-val="{{false}}">
+<div style="font:700 11px 'Sora',sans-serif;letter-spacing:.08em;color:#399999;margin-bottom:2px">{{col.heading}}</div>
+</sc-if>
+<sc-for list="{{col.links}}" as="lnk" hint-placeholder-count="4">
+<a class="bk-navlink" href="#" style="white-space:nowrap;font-size:13.5px">{{lnk.label}}</a>
+</sc-for>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;align-items:center;gap:20px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4a3d33" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#4a3d33" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+<a href="#" class="bk-cta" style="background:#0e2524;color:#fff;padding:10px 20px;border-radius:24px;font-size:13px">Cart (0)</a>
+</div>
+</nav>
+<div onMouseEnter="{{onHeroEnter}}" onMouseLeave="{{onHeroLeave}}" style="position:relative;background:{{heroActive.gradient}};margin:0 40px;border-radius:24px;padding:80px 60px;display:grid;grid-template-columns:1.1fr 1fr;align-items:center;gap:40px;overflow:hidden;transition:background .5s">
+<div style="position:absolute;top:-60px;right:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.15)"></div>
+<div onClick="{{heroPrev}}" style="position:absolute;left:20px;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;font:700 16px sans-serif;color:#0e2524">‹</div>
+<div onClick="{{heroNext}}" style="position:absolute;right:20px;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:10;font:700 16px sans-serif;color:#0e2524">›</div>
+<div>
+<span style="display:inline-block;background:#0e2524;color:#86cbc8;font:700 12px 'Sora',sans-serif;letter-spacing:.1em;padding:6px 14px;border-radius:20px;margin-bottom:22px">{{heroActive.badge}}</span>
+<h1 style="font:800 68px/0.98 'Sora',sans-serif;color:#0e2524;margin:0 0 22px;letter-spacing:-0.03em">{{heroActive.h1}}<br/>{{heroActive.h2}}</h1>
+<p style="font:500 17px/1.5 'IBM Plex Sans',sans-serif;color:#3a2a12;margin:0 0 30px;max-width:400px">{{heroActive.sub}}</p>
+<a href="#" class="bk-cta" style="background:#0e2524;color:#86cbc8;padding:17px 36px;border-radius:10px;font-weight:700">{{heroActive.cta}} →</a>
+<div style="display:flex;gap:9px;margin-top:36px">
+<sc-for list="{{heroDots}}" as="d" hint-placeholder-count="3">
+<div onClick="{{ () => goHeroSlide(d.i) }}" style="width:{{d.width}};height:8px;border-radius:4px;background:{{d.bg}};cursor:pointer;transition:width .3s"></div>
+</sc-for>
+</div>
+</div>
+<image-slot id="bk-1b-hero" shape="rounded" radius="18" fit="contain" style="width:100%;height:380px" placeholder="hero product photo — Zen65 on colorful desk" src="{{heroActive.image}}"></image-slot>
+</div>
+<div style="padding:90px 56px 90px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:30px">
+<h2 style="font:800 32px 'Sora',sans-serif;color:#0e2524;margin:0;letter-spacing:-0.02em">New Arrivals 🔥</h2>
+<a href="#" style="font:700 14px 'IBM Plex Sans',sans-serif;text-decoration:none">View all →</a>
+</div>
+<div class="bk-scroll">
+<sc-for list="{{products}}" as="p" hint-placeholder-count="6">
+<div class="bk-pcard" style="flex:0 0 230px">
+<div style="position:relative">
+<image-slot id="bk-1b-p-{{p.id}}" shape="rounded" radius="16" style="width:230px;height:230px" placeholder="{{p.name}} — product photo" src="{{p.image}}"></image-slot>
+</div>
+<div style="font:700 14px 'Sora',sans-serif;color:#0e2524">{{p.name}}</div>
+<div style="font:600 13px 'IBM Plex Sans',sans-serif;color:#399999">{{p.price}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="padding:80px 56px;background:#0e2524">
+<h2 style="font:800 32px 'Sora',sans-serif;color:#86cbc8;margin:0 0 8px;letter-spacing:-0.02em">Customers love us</h2>
+<p style="font:500 14px 'IBM Plex Sans',sans-serif;color:rgba(134,203,200,.6);margin:0 0 36px">378 five-star reviews</p>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+<sc-for list="{{reviews}}" as="r" hint-placeholder-count="3">
+<div style="background:rgba(255,255,255,.06);border-radius:16px;padding:28px">
+<div style="color:#86cbc8;font-size:15px;letter-spacing:2px;margin-bottom:14px">★★★★★</div>
+<div style="font:500 14px/1.6 'IBM Plex Sans',sans-serif;color:#f5eedd;margin-bottom:18px">"{{r.quote}}"</div>
+<div style="font:700 13px 'Sora',sans-serif;color:#86cbc8">{{r.name}}</div>
+<div style="font:400 12px 'IBM Plex Sans',sans-serif;color:rgba(134,203,200,.5)">{{r.product}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="padding:36px 56px;display:flex;justify-content:space-between;font:500 12px 'IBM Plex Sans',sans-serif;color:#9a8c7c">
+<div>© 2026 beaverkeys — Ottawa, Canada</div>
+<div style="display:flex;gap:18px"><a href="#">Shipping</a><a href="#">Privacy</a><a href="#">Contact</a></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dv-opt" id="1c">
+<div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Techy/premium — dark nav, sharp grid, amber as line accent</div>
+<div class="dv-card" style="width:1360px">
+<div style="background:#faf8f4">
+<nav style="display:flex;align-items:center;justify-content:space-between;padding:24px 56px;background:#221e19">
+<div style="font:700 20px 'Sora',sans-serif;letter-spacing:.02em;color:#fff">BEAVER<span style="color:#d99a4e">KEYS</span></div>
+<div style="display:flex;gap:32px">
+<a href="#" style="color:#c9c2b8;text-decoration:none;font:500 13px 'IBM Plex Sans',sans-serif;letter-spacing:.03em">SWITCHES</a>
+<a href="#" style="color:#c9c2b8;text-decoration:none;font:500 13px 'IBM Plex Sans',sans-serif;letter-spacing:.03em">KEYBOARDS</a>
+<a href="#" style="color:#c9c2b8;text-decoration:none;font:500 13px 'IBM Plex Sans',sans-serif;letter-spacing:.03em">KEYCAPS</a>
+<a href="#" style="color:#c9c2b8;text-decoration:none;font:500 13px 'IBM Plex Sans',sans-serif;letter-spacing:.03em">DESKMATS</a>
+</div>
+<a href="#" class="bk-cta" style="border:1px solid #d99a4e;color:#d99a4e;padding:9px 20px;font-size:12px;letter-spacing:.05em">CART / 0</a>
+</nav>
+<div style="height:3px;background:linear-gradient(90deg,#d99a4e,transparent)"></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;align-items:stretch;border-bottom:1px solid #e3ddd2">
+<div style="padding:100px 56px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid #e3ddd2">
+<div style="font:600 12px ui-monospace,Menlo,monospace;letter-spacing:.15em;color:#d99a4e;margin-bottom:20px">/ NEW-DROP · WOBKEY</div>
+<h1 style="font:700 54px/1.08 'Sora',sans-serif;color:#221e19;margin:0 0 24px;letter-spacing:-0.02em">Wobkey Boards<br>Are Here.</h1>
+<p style="font:400 16px/1.6 'IBM Plex Sans',sans-serif;color:#6b6055;margin:0 0 34px;max-width:380px">Zen65 &amp; Crush80. Precision-tuned, factory-lubed, shipped from Ottawa.</p>
+<a href="#" class="bk-cta" style="background:#221e19;color:#fff;padding:15px 30px;border-radius:2px">SHOP NOW</a>
+</div>
+<image-slot id="bk-1c-hero" shape="rect" fit="contain" style="width:100%;height:460px" placeholder="hero product photo — Zen65, studio shot" src="uploads/hmx-aperol-cover-image.webp"></image-slot>
+</div>
+<div style="padding:80px 56px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:30px">
+<h2 style="font:700 24px 'Sora',sans-serif;color:#221e19;margin:0;letter-spacing:-0.01em">NEW ARRIVALS</h2>
+<a href="#" style="font:600 13px 'IBM Plex Sans',sans-serif;text-decoration:none;letter-spacing:.03em">VIEW ALL →</a>
+</div>
+<div class="bk-scroll">
+<sc-for list="{{products}}" as="p" hint-placeholder-count="6">
+<div class="bk-pcard">
+<image-slot id="bk-1c-p-{{p.id}}" shape="rounded" radius="8" style="width:220px;height:220px" placeholder="{{p.name}} — product photo" src="{{p.image}}"></image-slot>
+<div style="font:600 13px 'IBM Plex Sans',sans-serif;color:#221e19">{{p.name}}</div>
+<div style="font:400 12px ui-monospace,Menlo,monospace;color:#d99a4e">{{p.price}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="padding:80px 56px;border-top:1px solid #e3ddd2">
+<h2 style="font:700 24px 'Sora',sans-serif;color:#221e19;margin:0 0 8px;letter-spacing:-0.01em">LET CUSTOMERS SPEAK FOR US</h2>
+<p style="font:400 13px ui-monospace,Menlo,monospace;color:#9a8c7c;margin:0 0 34px">378 VERIFIED REVIEWS</p>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#e3ddd2;border:1px solid #e3ddd2">
+<sc-for list="{{reviews}}" as="r" hint-placeholder-count="3">
+<div style="background:#faf8f4;padding:26px">
+<div style="color:#d99a4e;font-size:14px;letter-spacing:2px;margin-bottom:14px">★★★★★</div>
+<div style="font:400 14px/1.6 'IBM Plex Sans',sans-serif;color:#3a3128;margin-bottom:16px">"{{r.quote}}"</div>
+<div style="font:600 13px 'Sora',sans-serif;color:#221e19">{{r.name}}</div>
+<div style="font:400 12px ui-monospace,Menlo,monospace;color:#9a8c7c">{{r.product}}</div>
+</div>
+</sc-for>
+</div>
+</div>
+<div style="padding:36px 56px;background:#221e19;display:flex;justify-content:space-between;font:400 12px 'IBM Plex Sans',sans-serif;color:#8a8072">
+<div>© 2026 BEAVERKEYS — SHIPPING FROM OTTAWA, CANADA</div>
+<div style="display:flex;gap:18px"><a href="#" style="color:#c9c2b8">Shipping</a><a href="#" style="color:#c9c2b8">Privacy</a><a href="#" style="color:#c9c2b8">Contact</a></div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Try next: "make <a class="dv-oid" href="#1a">1a</a> full page with more product rows" · "combine hero of <a class="dv-oid" href="#1b">1b</a> with card style of <a class="dv-oid" href="#1a">1a</a>" · "add a category shop-by-type section to <a class="dv-oid" href="#1c">1c</a>"</p>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    pdpImageIdx: 0,
+    pdpColor: 'Black Gradient',
+    pdpSwitch: 'Akko AstroAim Magnetic',
+    pdpQty: 1,
+    pdpTab: 'Overview',
+    navOpenHome: null,
+    navOpenPdp: null,
+    navOpenSwitch: null,
+    heroIdx: 0,
+    heroPaused: false,
+    switchPack: '10 PCS',
+    switchQty: 1,
+    switchTab: 'Overview',
+  };
+  switchPackList() {
+    return [
+      {label:'10 PCS', price:4.90},
+      {label:'35 PCS', price:16.90},
+      {label:'90 PCS', price:39.90},
+    ];
+  }
+  heroSlideList() {
+    return [
+      {badge:'JUST DROPPED', h1:'WOBKEY BOARDS', h2:'ARE HERE.', sub:'Zen65 & Crush80. Factory-lubed. Shipped fast from Ottawa.', cta:'SHOP NOW', gradient:'linear-gradient(135deg,#f3c98a,#c07f2c)', image:'uploads/hmx-aperol-cover-image.webp'},
+      {badge:'LIMITED TIME', h1:'UP TO 30% OFF', h2:'SWITCHES.', sub:'Linear, tactile, and silent — stock up before they\'re gone.', cta:'SHOP SALE', gradient:'linear-gradient(135deg,#f2b6a0,#c0603f)', image:'uploads/hmx-aperol-cover-image.webp'},
+      {badge:'FREE SHIPPING', h1:'ORDERS $200+', h2:'SHIP FREE.', sub:'Fast, tracked shipping across Canada — every order, every time.', cta:'START SHOPPING', gradient:'linear-gradient(135deg,#f3d9a0,#b8862f)', image:'uploads/hmx-aperol-cover-image.webp'},
+    ];
+  }
+  componentDidMount() {
+    this._heroTimer = setInterval(() => {
+      if (!this.state.heroPaused) {
+        this.setState(s => ({heroIdx: (s.heroIdx + 1) % this.heroSlideList().length}));
+      }
+    }, 4500);
+  }
+  componentWillUnmount() {
+    clearInterval(this._heroTimer);
+  }
+  navBase() {
+    return [
+      {id:'mkp', label:'Mechanical Keyboards & Parts', isLink:false, isDropdown:true, columns:[
+        {heading:'Switches', links:[{label:'All Switches'},{label:'Linear'},{label:'Tactile'},{label:'Silent'},{label:'Low Profile'}]},
+        {heading:'Keyboards', links:[{label:'All Keyboards'},{label:'Prebuilt Keyboards'},{label:'Barebone Keyboards'},{label:'Gaming Keyboards'}]},
+        {heading:'Shop', links:[{label:'Keycaps'},{label:'Computer Mice'},{label:'Deskmats'},{label:'Accessories'},{label:'Services'}]},
+      ]},
+      {id:'gaming', label:'Gaming', isLink:false, isDropdown:true, columns:[
+        {heading:null, links:[{label:'All'},{label:'Keyboards'},{label:'Mice'},{label:'Headsets'}]},
+      ]},
+      {id:'sale', label:'Sale', isLink:true, isDropdown:false, columns:[]},
+      {id:'more', label:'More', isLink:false, isDropdown:true, columns:[
+        {heading:null, links:[{label:'Contact'},{label:'About'},{label:'Updates'}]},
+      ]},
+    ];
+  }
+  buildNavItems(openId) {
+    return this.navBase().map(i => ({...i, open: i.id === openId}));
+  }
+  openNavMenu(which, id) { this.setState({[which]: id}); }
+  closeNavMenu(which) { this.setState({[which]: null}); }
+  pdpImageList() {
+    return [
+      'https://beaverkeys.ca/cdn/shop/files/monsgeek-m1v5tmr-cover.png?v=1778463917&width=1200',
+      'https://beaverkeys.ca/cdn/shop/files/MonsGeek-M1-V5-TMR-Left-Details.png?v=1778463270&width=1200',
+      'https://beaverkeys.ca/cdn/shop/files/MonsGeek-M1-V5-TMR-Front.png?v=1778463269&width=1200',
+      'https://beaverkeys.ca/cdn/shop/files/MonsGeek-M1-V5-TMR_e0da97cf-0310-4922-958b-e7c1d8d53a32.png?v=1778463269&width=1200',
+      'https://beaverkeys.ca/cdn/shop/files/MonsGeek-M1-V5-TMR-Right-Details.png?v=1778463269&width=1200',
+      'https://beaverkeys.ca/cdn/shop/files/MonsGeek-M1-V5-TMR-Two-Sides.png?v=1778463269&width=1200',
+    ];
+  }
+  renderVals() {
+    const imgs = this.pdpImageList();
+    const switchPacks = this.switchPackList();
+    const selectedPack = switchPacks.find(p => p.label === this.state.switchPack) || switchPacks[0];
+    return {
+      navItemsSwitch: this.buildNavItems(this.state.navOpenSwitch),
+      switchQuickChips: ['Linear', '35g Actuation', 'Factory Lubed', 'POM Stem'],
+      switchPackOptions: switchPacks.map(p => {
+        const active = p.label === this.state.switchPack;
+        return {...p, active, priceLabel: '$' + p.price.toFixed(2),
+          onClick: () => this.setState({switchPack: p.label}),
+          chipStyle: active ? 'border:1.5px solid #0e2524;background:#0e2524;color:#86cbc8' : 'border:1.5px solid #e3ddd2;background:#fff;color:#4a3d33'};
+      }),
+      switchSelectedPack: this.state.switchPack,
+      selectSwitchPack: (label) => this.setState({switchPack: label}),
+      switchPrice: '$' + selectedPack.price.toFixed(2),
+      switchQty: this.state.switchQty,
+      incSwitchQty: () => this.setState(s => ({switchQty: s.switchQty + 1})),
+      decSwitchQty: () => this.setState(s => ({switchQty: Math.max(1, s.switchQty - 1)})),
+      switchTrust: [
+        {icon:'🚚', label:'Free shipping $200+'},
+        {icon:'🧴', label:'Factory lubed & tested'},
+        {icon:'↩︎', label:'30-day returns'},
+      ],
+      switchTabs: ['Overview', 'Reviews'].map(label => {
+        const active = label === this.state.switchTab;
+        return {label, active, onClick: () => this.setState({switchTab: label}),
+          style: active ? 'color:#0e2524;border-bottom:2px solid #399999' : 'color:#9a8c7c;border-bottom:2px solid transparent'};
+      }),
+      switchOverviewStyle: this.state.switchTab === 'Overview' ? 'display:block' : 'display:none',
+      switchReviewsStyle: this.state.switchTab === 'Reviews' ? 'display:block' : 'display:none',
+      switchTypeLabels: [
+        {label:'Linear', style:'color:#0e2524;font-weight:700'},
+        {label:'Tactile', style:'color:#9a8c7c;font-weight:500'},
+        {label:'Clicky', style:'color:#9a8c7c;font-weight:500'},
+      ],
+      switchSpecCards: [
+        {icon:'🔀', label:'Switch Type', value:'Linear'},
+        {icon:'🏭', label:'Manufacturer', value:'Huano'},
+        {icon:'🧬', label:'Stem Material', value:'POM'},
+        {icon:'🏠', label:'Top Housing', value:'POK'},
+        {icon:'🧱', label:'Bottom Housing', value:'Nylon'},
+        {icon:'⚡', label:'Actuation Force', value:'35g'},
+        {icon:'🔻', label:'Bottom-out Force', value:'45g'},
+        {icon:'📏', label:'Pre-travel', value:'2.0mm'},
+        {icon:'📐', label:'Total Travel', value:'3.6mm'},
+        {icon:'🌀', label:'Spring', value:'23mm single-stage'},
+        {icon:'🧴', label:'Factory Lubed', value:'Yes'},
+      ],
+      heroActive: this.heroSlideList()[this.state.heroIdx],
+      heroDots: this.heroSlideList().map((_, i) => {
+        const active = i === this.state.heroIdx;
+        return {i, active, width: active ? '22px' : '8px', bg: active ? '#241d15' : 'rgba(36,29,21,.3)'};
+      }),
+      goHeroSlide: (i) => this.setState({heroIdx: i}),
+      heroPrev: () => this.setState(s => ({heroIdx: (s.heroIdx - 1 + this.heroSlideList().length) % this.heroSlideList().length})),
+      heroNext: () => this.setState(s => ({heroIdx: (s.heroIdx + 1) % this.heroSlideList().length})),
+      onHeroEnter: () => this.setState({heroPaused: true}),
+      onHeroLeave: () => this.setState({heroPaused: false}),
+      navItemsHome: this.buildNavItems(this.state.navOpenHome),
+      navItemsPdp: this.buildNavItems(this.state.navOpenPdp),
+      openNavMenu: (which, id) => this.openNavMenu(which, id),
+      closeNavMenu: (which) => this.closeNavMenu(which),
+      pdpImages: imgs.map((url, i) => ({src: url, active: i === this.state.pdpImageIdx})),
+      pdpMainImage: imgs[this.state.pdpImageIdx],
+      setPdpImage: (i) => this.setState({pdpImageIdx: i}),
+      pdpColors: [
+        {name:'Black Gradient', swatch:'linear-gradient(135deg,#6b6b6b,#111)'},
+        {name:'New Black Gradient', swatch:'linear-gradient(135deg,#3a3a3a,#000)'},
+        {name:'Black/White Transparent', swatch:'linear-gradient(135deg,#e8e8e8,#222)'},
+      ],
+      pdpSelectedColor: this.state.pdpColor,
+      selectPdpColor: (name) => this.setState({pdpColor: name}),
+      pdpSwitches: ['Akko AstroAim Magnetic', 'Mechanical (choose on next step)'],
+      pdpSelectedSwitch: this.state.pdpSwitch,
+      selectPdpSwitch: (s) => this.setState({pdpSwitch: s}),
+      pdpQty: this.state.pdpQty,
+      incPdpQty: () => this.setState(s => ({pdpQty: s.pdpQty + 1})),
+      decPdpQty: () => this.setState(s => ({pdpQty: Math.max(1, s.pdpQty - 1)})),
+      pdpTrust: [
+        {icon:'🚚', label:'Free shipping $200+'},
+        {icon:'↩︎', label:'30-day returns'},
+        {icon:'💬', label:'Live build support'},
+      ],
+      pdpTabs: ['Overview', 'Specs', 'Reviews'],
+      pdpActiveTab: this.state.pdpTab,
+      setPdpTab: (t) => this.setState({pdpTab: t}),
+      pdpTabOverview: this.state.pdpTab === 'Overview',
+      pdpTabSpecs: this.state.pdpTab === 'Specs',
+      pdpTabReviews: this.state.pdpTab === 'Reviews',
+      pdpFeatures: [
+        {icon:'⚡', title:'TMR Sensor', desc:'0.01mm Rapid Trigger, adjustable 0.1–3.4mm actuation.'},
+        {icon:'📡', title:'32K Scanning', desc:'Detects position changes in 0.03–0.05ms.'},
+        {icon:'🧲', title:'MagMech Compatible', desc:'Mix magnetic and mechanical switches freely.'},
+        {icon:'🔓', title:'Ball-Catch Case', desc:'Tool-free, screwless rapid disassembly.'},
+        {icon:'🔋', title:'8,000mAh Battery', desc:'Extended wireless use without frequent charging.'},
+        {icon:'📶', title:'Tri-Mode', desc:'Bluetooth 5.0, 2.4GHz, or USB-C wired.'},
+      ],
+      pdpSpecs: [
+        {key:'Layout', value:'75% (82 keys) — US-ANSI'},
+        {key:'Structure', value:'Aluminum CNC, Gasket Mount'},
+        {key:'Sensor', value:'TMR, 0.01mm precision'},
+        {key:'Polling Rate', value:'8,000Hz (wired & 2.4GHz)'},
+        {key:'Keycap', value:'OEM Profile PBT Double-shot'},
+        {key:'Hot-swappable', value:'Yes (3-pin & 5-pin)'},
+        {key:'Connectivity', value:'Bluetooth 5.0 / 2.4GHz / USB-C'},
+        {key:'In the box', value:'Keyboard, manual, USB-C cable, keycap + switch puller, receiver'},
+      ],
+      products: [
+        {id:1, name:'EPBT Spectrum R2', price:'From $19.00', image:'https://beaverkeys.ca/cdn/shop/files/767f6780-7014-47bd-9f2f-9ffd3c7be836_9a2de96e-f740-4c94-a16c-d1b19f1b61da.png?v=1780763008&width=533'},
+        {id:2, name:'JTK Winner', price:'From $14.00', image:'https://beaverkeys.ca/cdn/shop/files/QQ_20230425170403.jpg?v=1780753103&width=533'},
+        {id:3, name:'Huano Sakura V2', price:'$4.90', image:'https://beaverkeys.ca/cdn/shop/files/huano-sakura-v2-cover.png?v=1779119689&width=533'},
+        {id:4, name:'Wingtree Puer Tea', price:'$4.90', image:'https://beaverkeys.ca/cdn/shop/files/wingtree-puer-tea-cover-image.png?v=1779118688&width=533'},
+        {id:5, name:'HMX Cthulhu', price:'$4.90', image:'uploads/hmx-aperol-cover-image.webp'},
+        {id:6, name:'Weikav Stars21', price:'$79.00', image:'https://beaverkeys.ca/cdn/shop/files/weikav-stars21-cover-image.png?v=1779116922&width=533'},
+      ],
+      reviews: [
+        {id:1, quote:'Fast shipping and Peter gave me personal help picking switches. Great experience.', name:'Salar M.', product:'Keygeek Y2'},
+        {id:2, quote:'My favourite switches for non-silent — snappy return, weight is just right.', name:'Brandon C.', product:'Weikav Stars21'},
+        {id:3, quote:'Great keycaps, good price, and fast shipping.', name:'Manuel B.', product:'Gateron Mini I'},
+      ],
+    };
+  }
+}
+
+</script>
+</body>
+</html>
