@@ -309,6 +309,7 @@
         "review_2",
         "review_3"
       ],
+      "disabled": true,
       "name": "t:names.beaverkeys_reviews",
       "settings": {
         "heading": "Real customer reviews",
