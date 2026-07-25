@@ -198,10 +198,19 @@
   @media screen and (max-width: 749px) {
     .product-information__media {
       grid-column: 1 / -1;
+      grid-row: 1;
     }
 
     .product-details {
       grid-column: 2 / 3;
+      grid-row: 2;
+    }
+
+    /* Buy buttons (.product-details) must land before switch-specs so shoppers
+       don't have to scroll past specs to reach them. Desktop is unaffected;
+       it uses its own grid-template-columns and never reaches this rule. */
+    .product-information__switch-specs {
+      grid-row: 3;
     }
   }
 
