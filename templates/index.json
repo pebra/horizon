@@ -848,7 +848,7 @@
       },
       "name": "Switches",
       "settings": {
-        "collection": "keycaps",
+        "collection": "switches",
         "layout_type": "grid",
         "carousel_on_mobile": true,
         "max_products": 8,
