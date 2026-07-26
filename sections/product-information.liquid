@@ -29,6 +29,11 @@
     id: 'keyboard-specs',
     closest.product: closest.product
   -%}
+  {%- content_for 'block',
+    type: 'keycap-specs',
+    id: 'keycap-specs',
+    closest.product: closest.product
+  -%}
 {% endcapture %}
 
 {% capture additional_blocks %}

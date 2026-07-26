@@ -405,6 +405,14 @@
         "firmware_support": "Firmware Support",
         "supported_switches": "Supported Switches",
         "empty_state": "Add keyboard spec metafields to this product to populate the Full Specs."
+      },
+      "keycap_specs": {
+        "number_of_keys": "Number of Keys",
+        "manufacturing_process": "Manufacturing Process",
+        "material": "Material",
+        "profile": "Profile",
+        "thickness": "Thickness",
+        "empty_state": "Add keycap spec metafields to this product to populate the Full Specs."
       }
     }
   }

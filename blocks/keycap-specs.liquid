@@ -1,0 +1,216 @@
+{%- doc -%}
+  Renders a keycap set's "Full Specs" grid, driven entirely by the `custom`
+  metafield namespace on the product (keycap_number_of_keys,
+  keycap_manufacturing_process, keycap_material, keycap_profile,
+  keycap_thickness).
+
+  Every field is optional: any metafield can be missing and the block will
+  only render the cards it actually has data for. If nothing is populated the
+  block renders nothing on the storefront.
+{%- enddoc -%}
+
+{%- liquid
+  assign block_settings = block.settings
+  assign product = closest.product
+  assign specs = product.metafields.custom
+
+  assign number_of_keys = specs.keycap_number_of_keys.value
+  assign manufacturing_process = specs.keycap_manufacturing_process.value
+  assign material = specs.keycap_material.value
+  assign profile = specs.keycap_profile.value
+  assign thickness = specs.keycap_thickness.value
+
+  assign has_full_specs = false
+  if number_of_keys != blank or manufacturing_process != blank or material != blank or profile != blank or thickness != blank
+    assign has_full_specs = true
+  endif
+
+  assign has_content = has_full_specs
+-%}
+
+{% if has_content or request.visual_preview_mode %}
+  <div
+    class="keycap-specs spacing-style"
+    style="
+      {% render 'spacing-style', settings: block_settings %}
+    "
+    {{ block.shopify_attributes }}
+  >
+    {% if has_full_specs %}
+      <div class="keycap-specs__full">
+        {% if block_settings.full_specs_heading != blank %}
+          <h3 class="keycap-specs__panel-heading">{{ block_settings.full_specs_heading | escape }}</h3>
+        {% endif %}
+        <div class="keycap-specs__grid">
+          {% if number_of_keys != blank %}
+            <div class="keycap-specs__card">
+              <span class="keycap-specs__card-icon" aria-hidden="true">🔢</span>
+              <span class="keycap-specs__card-label">{{ 'products.product.keycap_specs.number_of_keys' | t }}</span>
+              <span class="keycap-specs__card-value">{{ number_of_keys }}</span>
+            </div>
+          {% endif %}
+          {% if manufacturing_process != blank %}
+            <div class="keycap-specs__card">
+              <span class="keycap-specs__card-icon" aria-hidden="true">🏭</span>
+              <span class="keycap-specs__card-label">{{ 'products.product.keycap_specs.manufacturing_process' | t }}</span>
+              <span class="keycap-specs__card-value">{{ manufacturing_process }}</span>
+            </div>
+          {% endif %}
+          {% if material != blank %}
+            <div class="keycap-specs__card">
+              <span class="keycap-specs__card-icon" aria-hidden="true">🧪</span>
+              <span class="keycap-specs__card-label">{{ 'products.product.keycap_specs.material' | t }}</span>
+              <span class="keycap-specs__card-value">{{ material }}</span>
+            </div>
+          {% endif %}
+          {% if profile != blank %}
+            <div class="keycap-specs__card">
+              <span class="keycap-specs__card-icon" aria-hidden="true">⛰️</span>
+              <span class="keycap-specs__card-label">{{ 'products.product.keycap_specs.profile' | t }}</span>
+              <span class="keycap-specs__card-value">{{ profile }}</span>
+            </div>
+          {% endif %}
+          {% if thickness != blank %}
+            <div class="keycap-specs__card">
+              <span class="keycap-specs__card-icon" aria-hidden="true">📏</span>
+              <span class="keycap-specs__card-label">{{ 'products.product.keycap_specs.thickness' | t }}</span>
+              <span class="keycap-specs__card-value">{{ thickness }}</span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% else %}
+      <p class="keycap-specs__empty-state">{{ 'products.product.keycap_specs.empty_state' | t }}</p>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .keycap-specs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg, var(--padding-lg));
+  }
+
+  .keycap-specs__full {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-lg);
+    background: rgb(var(--color-foreground-rgb) / var(--opacity-5));
+    border-radius: var(--style-border-radius-inputs, 12px);
+    padding: var(--padding-lg);
+  }
+
+  .keycap-specs__panel-heading {
+    margin: 0;
+  }
+
+  .keycap-specs__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--padding-md);
+  }
+
+  @media screen and (max-width: 749px) {
+    .keycap-specs__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .keycap-specs__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-3xs);
+    background: var(--color-background);
+    border-radius: var(--style-border-radius-inputs, 10px);
+    padding: var(--padding-md);
+  }
+
+  .keycap-specs__card-icon {
+    font-size: 1.125rem;
+  }
+
+  .keycap-specs__card-label {
+    font-size: var(--font-size--xs, 0.75rem);
+    letter-spacing: 0.04em;
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+  }
+
+  .keycap-specs__card-value {
+    font-weight: var(--font-weight-semibold, 700);
+  }
+
+  .keycap-specs__empty-state {
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+    font-style: italic;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Keycap specs",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Reads product.metafields.custom.keycap_* to render a Full Specs grid. Any missing metafield is skipped automatically."
+    },
+    {
+      "type": "text",
+      "id": "full_specs_heading",
+      "label": "Full specs heading",
+      "default": "Full Specs"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Keycap specs",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}
