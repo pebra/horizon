@@ -394,6 +394,17 @@
         "stem_material": "Stem Material",
         "sound_profile": "Sound Profile",
         "empty_state": "Add switch spec metafields to this product to populate the Feel Profile and Full Specs."
+      },
+      "keyboard_specs": {
+        "number_of_keys": "Number of Keys",
+        "hotswap": "Hotswap",
+        "yes": "Yes",
+        "no": "No",
+        "case_material": "Case Material",
+        "connectivity": "Connectivity",
+        "firmware_support": "Firmware Support",
+        "supported_switches": "Supported Switches",
+        "empty_state": "Add keyboard spec metafields to this product to populate the Full Specs."
       }
     }
   }

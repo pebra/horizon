@@ -24,6 +24,11 @@
     id: 'switch-specs',
     closest.product: closest.product
   -%}
+  {%- content_for 'block',
+    type: 'keyboard-specs',
+    id: 'keyboard-specs',
+    closest.product: closest.product
+  -%}
 {% endcapture %}
 
 {% capture additional_blocks %}

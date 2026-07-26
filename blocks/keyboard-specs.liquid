@@ -1,0 +1,237 @@
+{%- doc -%}
+  Renders a keyboard's "Full Specs" grid, driven entirely by the `custom`
+  metafield namespace on the product (keyboard_number_of_keys,
+  keyboard_hotswap, keyboard_case_material, keyboard_connectivity,
+  keyboard_firmware_support, keyboard_supported_switches).
+
+  Every field is optional: any metafield can be missing and the block will
+  only render the cards it actually has data for. If nothing is populated the
+  block renders nothing on the storefront.
+{%- enddoc -%}
+
+{%- liquid
+  assign block_settings = block.settings
+  assign product = closest.product
+  assign specs = product.metafields.custom
+
+  assign number_of_keys = specs.keyboard_number_of_keys.value
+  assign case_material = specs.keyboard_case_material.value
+  assign connectivity = specs.keyboard_connectivity.value
+  assign firmware_support = specs.keyboard_firmware_support.value
+  assign supported_switches = specs.keyboard_supported_switches.value
+
+  # `false != blank` is true in Liquid, so a boolean metafield set to false
+  # would otherwise look "empty". Check the metafield object itself instead.
+  assign has_hotswap = false
+  if specs.keyboard_hotswap != blank
+    assign has_hotswap = true
+    assign hotswap = specs.keyboard_hotswap.value
+  endif
+
+  assign has_full_specs = false
+  if number_of_keys != blank or has_hotswap or case_material != blank or connectivity != blank or firmware_support != blank or supported_switches != blank
+    assign has_full_specs = true
+  endif
+
+  assign has_content = has_full_specs
+-%}
+
+{% if has_content or request.visual_preview_mode %}
+  <div
+    class="keyboard-specs spacing-style"
+    style="
+      {% render 'spacing-style', settings: block_settings %}
+    "
+    {{ block.shopify_attributes }}
+  >
+    {% if has_full_specs %}
+      <div class="keyboard-specs__full">
+        {% if block_settings.full_specs_heading != blank %}
+          <h3 class="keyboard-specs__panel-heading">{{ block_settings.full_specs_heading | escape }}</h3>
+        {% endif %}
+        <div class="keyboard-specs__grid">
+          {% if number_of_keys != blank %}
+            <div class="keyboard-specs__card">
+              <span class="keyboard-specs__card-icon" aria-hidden="true">🔢</span>
+              <span class="keyboard-specs__card-label">{{ 'products.product.keyboard_specs.number_of_keys' | t }}</span>
+              <span class="keyboard-specs__card-value">{{ number_of_keys }}</span>
+            </div>
+          {% endif %}
+          {% if has_hotswap %}
+            <div class="keyboard-specs__card">
+              <span class="keyboard-specs__card-icon" aria-hidden="true">🔄</span>
+              <span class="keyboard-specs__card-label">{{ 'products.product.keyboard_specs.hotswap' | t }}</span>
+              <span class="keyboard-specs__card-value">
+                {% if hotswap %}
+                  {{ 'products.product.keyboard_specs.yes' | t }}
+                {% else %}
+                  {{ 'products.product.keyboard_specs.no' | t }}
+                {% endif %}
+              </span>
+            </div>
+          {% endif %}
+          {% if case_material != blank %}
+            <div class="keyboard-specs__card">
+              <span class="keyboard-specs__card-icon" aria-hidden="true">📦</span>
+              <span class="keyboard-specs__card-label">{{ 'products.product.keyboard_specs.case_material' | t }}</span>
+              <span class="keyboard-specs__card-value">{{ case_material }}</span>
+            </div>
+          {% endif %}
+          {% if connectivity != blank %}
+            <div class="keyboard-specs__card">
+              <span class="keyboard-specs__card-icon" aria-hidden="true">📡</span>
+              <span class="keyboard-specs__card-label">{{ 'products.product.keyboard_specs.connectivity' | t }}</span>
+              <span class="keyboard-specs__card-value">{{ connectivity }}</span>
+            </div>
+          {% endif %}
+          {% if firmware_support != blank %}
+            <div class="keyboard-specs__card">
+              <span class="keyboard-specs__card-icon" aria-hidden="true">💾</span>
+              <span class="keyboard-specs__card-label">{{ 'products.product.keyboard_specs.firmware_support' | t }}</span>
+              <span class="keyboard-specs__card-value">{{ firmware_support }}</span>
+            </div>
+          {% endif %}
+          {% if supported_switches != blank %}
+            <div class="keyboard-specs__card">
+              <span class="keyboard-specs__card-icon" aria-hidden="true">🔀</span>
+              <span class="keyboard-specs__card-label">{{ 'products.product.keyboard_specs.supported_switches' | t }}</span>
+              <span class="keyboard-specs__card-value">{{ supported_switches }}</span>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% else %}
+      <p class="keyboard-specs__empty-state">{{ 'products.product.keyboard_specs.empty_state' | t }}</p>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .keyboard-specs {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg, var(--padding-lg));
+  }
+
+  .keyboard-specs__full {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-lg);
+    background: rgb(var(--color-foreground-rgb) / var(--opacity-5));
+    border-radius: var(--style-border-radius-inputs, 12px);
+    padding: var(--padding-lg);
+  }
+
+  .keyboard-specs__panel-heading {
+    margin: 0;
+  }
+
+  .keyboard-specs__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--padding-md);
+  }
+
+  @media screen and (max-width: 749px) {
+    .keyboard-specs__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .keyboard-specs__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--padding-3xs);
+    background: var(--color-background);
+    border-radius: var(--style-border-radius-inputs, 10px);
+    padding: var(--padding-md);
+  }
+
+  .keyboard-specs__card-icon {
+    font-size: 1.125rem;
+  }
+
+  .keyboard-specs__card-label {
+    font-size: var(--font-size--xs, 0.75rem);
+    letter-spacing: 0.04em;
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+  }
+
+  .keyboard-specs__card-value {
+    font-weight: var(--font-weight-semibold, 700);
+  }
+
+  .keyboard-specs__empty-state {
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+    font-style: italic;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Keyboard specs",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Reads product.metafields.custom.keyboard_* to render a Full Specs grid. Any missing metafield is skipped automatically."
+    },
+    {
+      "type": "text",
+      "id": "full_specs_heading",
+      "label": "Full specs heading",
+      "default": "Quick Specs"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Keyboard specs",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}
