@@ -709,7 +709,7 @@
               "type": "_product-list-text",
               "name": "t:names.collection_title",
               "settings": {
-                "text": "<h2>Keycaps</h2>",
+                "text": "<h2>Switches</h2>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -947,7 +947,7 @@
             "stars_color": "",
             "arrows_color": "#000000",
             "transition_speed": 5,
-            "header_text": "Customers are saying",
+            "header_text": "Reviews",
             "show_average_rating": true,
             "rating_display": "default"
           }
