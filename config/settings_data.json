@@ -86,7 +86,10 @@
       "color1": "#eee4c8",
       "color2": "#e3ddd2",
       "color3": "#ece7de",
-      "color4": "#FF885D"
+      "color4": "#ff885d",
+      "color5": "#1E5F5C",
+      "color6": "#86CBC8",
+      "color7": "#399999"
     }
   },
   "presets": {
