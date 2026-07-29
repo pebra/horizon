@@ -38,8 +38,8 @@
             "image": "shopify://shop_images/KNOB-1.jpg",
             "button_label": "Get Yours",
             "button_link": "shopify://products/weikav-nut75",
-            "gradient_start": "#DD8355",
-            "gradient_end": "#2d7a77"
+            "gradient_start": "{{ settings.color_palette.color6 }}",
+            "gradient_end": "#DD8355"
           },
           "blocks": {}
         },
