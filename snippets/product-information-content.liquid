@@ -192,6 +192,9 @@
   .product-information__switch-specs {
     grid-row: 2;
     grid-column: 1 / -1;
+    /* Separate the specs from the media/details row above; the grid itself has
+       no row-gap, so without this they'd butt directly against each other. */
+    margin-block-start: calc(var(--gap, 0) / 2);
   }
 
   /* Mobile styles */
@@ -347,6 +350,17 @@
     /* Align the switch-specs row under whichever column the media occupies */
     .product-information__switch-specs--media-none {
       grid-column: 1 / -1;
+    }
+
+    /* Mirror the inline padding that .product-information__media carries in each
+       media position, so the specs box lines up flush with the media column
+       above it instead of overhanging by half the column gap. */
+    .product-information__switch-specs--media-left {
+      padding-right: calc(var(--gap, 0) / 2);
+    }
+
+    .product-information__switch-specs--media-right {
+      padding-left: calc(var(--gap, 0) / 2);
     }
 
     .product-information__switch-specs--media-left:not(.product-information__switch-specs--half) {
