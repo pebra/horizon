@@ -19,7 +19,7 @@
     on:focus="/pauseAutoplay"
     on:blur="/resumeAutoplay"
   >
-    <div class="beaverkeys-hero__viewport">
+    <div class="beaverkeys-hero__viewport" ref="viewport">
       {% content_for 'blocks' %}
     </div>
 
@@ -96,6 +96,9 @@
     position: relative;
     border-radius: var(--beaverkeys-hero-radius);
     overflow: hidden;
+    /* Allow vertical page scroll but let us handle horizontal swipes. */
+    touch-action: pan-y;
+    user-select: none;
   }
 
   .beaverkeys-hero__slide {

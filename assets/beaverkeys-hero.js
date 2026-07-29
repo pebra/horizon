@@ -1,10 +1,12 @@
 import { Component } from '@theme/component';
 
 const DEFAULT_AUTOPLAY_MS = 4500;
+const SWIPE_THRESHOLD_PX = 45;
 
 /**
  * @typedef {Object} Refs
  * @property {HTMLElement[]} slides
+ * @property {HTMLElement} [viewport]
  * @property {HTMLButtonElement[]} [dots]
  * @property {HTMLButtonElement} [prevButton]
  * @property {HTMLButtonElement} [nextButton]
@@ -20,14 +22,67 @@ class BeaverkeysHeroCarousel extends Component {
   #activeIndex = 0;
   #manuallyPaused = false;
 
+  /** @type {number | null} */
+  #pointerId = null;
+  #pointerStartX = 0;
+  #pointerStartY = 0;
+  #handlePointerDown = this.#onPointerDown.bind(this);
+  #handlePointerUp = this.#onPointerUp.bind(this);
+  #handlePointerCancel = this.#onPointerCancel.bind(this);
+
   connectedCallback() {
     super.connectedCallback();
     this.#startAutoplay();
+
+    const target = this.refs.viewport ?? this;
+    target.addEventListener('pointerdown', this.#handlePointerDown);
+    target.addEventListener('pointerup', this.#handlePointerUp);
+    target.addEventListener('pointercancel', this.#handlePointerCancel);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.#stopAutoplay();
+
+    const target = this.refs.viewport ?? this;
+    target.removeEventListener('pointerdown', this.#handlePointerDown);
+    target.removeEventListener('pointerup', this.#handlePointerUp);
+    target.removeEventListener('pointercancel', this.#handlePointerCancel);
+  }
+
+  /** @param {PointerEvent} event */
+  #onPointerDown(event) {
+    // Ignore secondary mouse buttons; let clicks on links/buttons behave normally.
+    if (event.button != null && event.button !== 0) return;
+
+    this.#pointerId = event.pointerId;
+    this.#pointerStartX = event.clientX;
+    this.#pointerStartY = event.clientY;
+  }
+
+  /** @param {PointerEvent} event */
+  #onPointerUp(event) {
+    if (this.#pointerId === null || event.pointerId !== this.#pointerId) return;
+
+    const deltaX = event.clientX - this.#pointerStartX;
+    const deltaY = event.clientY - this.#pointerStartY;
+    this.#pointerId = null;
+
+    // Only act on a mostly-horizontal drag past the threshold, so vertical
+    // scrolling and plain taps/clicks are left untouched.
+    if (Math.abs(deltaX) < SWIPE_THRESHOLD_PX || Math.abs(deltaX) <= Math.abs(deltaY)) return;
+
+    if (deltaX < 0) {
+      this.goNext();
+    } else {
+      this.goPrevious();
+    }
+    this.#restartAutoplay();
+  }
+
+  /** @param {PointerEvent} event */
+  #onPointerCancel(event) {
+    if (event.pointerId === this.#pointerId) this.#pointerId = null;
   }
 
   goNext() {
