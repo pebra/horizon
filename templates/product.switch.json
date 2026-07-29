@@ -330,7 +330,7 @@
           "type": "switch-specs",
           "static": true,
           "settings": {
-            "feel_profile_heading": "Feel Profile",
+            "feel_profile_heading": "Quick Profile",
             "full_specs_heading": "Full Specs",
             "video_heading": "Switch Sound & Feel",
             "padding-block-start": 24,
