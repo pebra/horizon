@@ -30,15 +30,15 @@
         "slide_2": {
           "type": "_beaverkeys-hero-slide",
           "settings": {
-            "badge": "Limited time",
-            "heading_line_1": "Up to 30% off",
-            "heading_line_2": "switches.",
-            "subheading": "Linear, tactile, and silent — stock up before they're gone.",
-            "product": "wobkey-crush-80-reboot-pro",
-            "image": "shopify://shop_images/wobkey-crush80-reboot-cover.png",
-            "button_label": "Shop sale",
-            "button_link": "shopify://collections/all",
-            "gradient_start": "#a9d9d6",
+            "badge": "New arrival",
+            "heading_line_1": "Weikav Nut75",
+            "heading_line_2": "",
+            "subheading": "Knob - Ball Catch System - HMX Switches",
+            "product": "weikav-nut75",
+            "image": "shopify://shop_images/KNOB-1.jpg",
+            "button_label": "Get Yours",
+            "button_link": "shopify://products/weikav-nut75",
+            "gradient_start": "#DD8355",
             "gradient_end": "#2d7a77"
           },
           "blocks": {}
@@ -67,7 +67,7 @@
       ],
       "name": "t:names.beaverkeys_hero",
       "settings": {
-        "autoplay": true,
+        "autoplay": false,
         "autoplay_speed": 4.5
       }
     },
