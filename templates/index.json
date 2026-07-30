@@ -39,7 +39,7 @@
             "button_label": "Get Yours",
             "button_link": "shopify://products/weikav-nut75",
             "gradient_start": "{{ settings.color_palette.color6 }}",
-            "gradient_end": "#DD8355"
+            "gradient_end": "#dd8355"
           },
           "blocks": {}
         },
@@ -49,7 +49,7 @@
             "badge": "Recommendation of the week",
             "heading_line_1": "BSUN GUYU",
             "heading_line_2": "",
-            "subheading": "Full & rounded sound",
+            "subheading": "Full, well balanced sound",
             "product": "bsun-guyu",
             "image": "shopify://shop_images/resized_2000_x_20250912_0086.jpg",
             "button_label": "Shop now",
