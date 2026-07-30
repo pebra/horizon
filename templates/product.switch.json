@@ -178,17 +178,9 @@
                   },
                   "blocks": {}
                 },
-                "review_bk01": {
-                  "type": "review",
-                  "settings": {
-                    "stars_style": "shaded",
-                    "show_number": true,
-                    "text_color": "#399999",
-                    "type_preset": "paragraph",
-                    "width": "fit-content",
-                    "alignment": "left"
-                  },
-                  "blocks": {}
+                "judge_me_reviews_preview_badge_h9m36C": {
+                  "type": "shopify://apps/judge-me-reviews/blocks/preview_badge/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+                  "settings": {}
                 },
                 "price_tVjtKg": {
                   "type": "price",
@@ -242,7 +234,7 @@
               "block_order": [
                 "text_vendor_bk01",
                 "text_xpVMaM",
-                "review_bk01",
+                "judge_me_reviews_preview_badge_h9m36C",
                 "price_tVjtKg",
                 "text_shipping_bk01"
               ]
