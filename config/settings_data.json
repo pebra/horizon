@@ -12,6 +12,7 @@
     "logo": "shopify://shop_images/beaverkeys-montserrat-horizontal-dual-color-dark.png",
     "logo_height": 64,
     "logo_height_mobile": 28,
+    "favicon": "shopify://shop_images/logo-no-text-solid-color-tail.png",
     "type_body_font": "merriweather_n4",
     "type_subheading_font": "merriweather_n5",
     "type_heading_font": "montserrat_n7",
