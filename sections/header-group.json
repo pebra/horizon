@@ -14,13 +14,28 @@
     "header_announcements_9jGBFp": {
       "type": "header-announcements",
       "blocks": {
+        "announcement_hD7HJE": {
+          "type": "_announcement",
+          "name": "t:names.announcement",
+          "settings": {
+            "text": "Keygeek Y2 restock arriving around Aug 24",
+            "link": "",
+            "font": "var(--font-subheading--family)",
+            "font_size": "0.875rem",
+            "weight": "",
+            "letter_spacing": "normal",
+            "case": "none",
+            "text_color": ""
+          },
+          "blocks": {}
+        },
         "announcement_BxgCk9": {
           "type": "_announcement",
           "settings": {
             "text": "Free shipping for orders over $200 CAD",
             "link": "",
             "font": "var(--font-subheading--family)",
-            "font_size": "0.75rem",
+            "font_size": "0.875rem",
             "weight": "",
             "letter_spacing": "normal",
             "case": "none",
@@ -30,6 +45,7 @@
         }
       },
       "block_order": [
+        "announcement_hD7HJE",
         "announcement_BxgCk9"
       ],
       "name": "t:names.announcement_bar",
