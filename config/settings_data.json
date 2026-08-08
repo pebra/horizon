@@ -11,7 +11,7 @@
   "current": {
     "logo": "shopify://shop_images/beaverkeys-montserrat-horizontal-dual-color-dark.png",
     "logo_height": 64,
-    "logo_height_mobile": 28,
+    "logo_height_mobile": 42,
     "favicon": "shopify://shop_images/logo-no-text-solid-color-tail.png",
     "type_body_font": "merriweather_n4",
     "type_subheading_font": "merriweather_n5",
@@ -104,8 +104,6 @@
           "background_color": "#FFFFFF",
           "font_color": "#000000",
           "button_color": "#000000",
-          "secondary_color": "#FFFFFF",
-          "ternary_color": "#6A6A6A",
           "button_icon": "chat_bubble",
           "button_text": "chat_with_us",
           "button_horizontal_position": "bottom_right",
