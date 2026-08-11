@@ -12,6 +12,23 @@
     "beaverkeys_hero": {
       "type": "beaverkeys-hero",
       "blocks": {
+        "beaverkeys_hero_slide_83Ncg3": {
+          "type": "_beaverkeys-hero-slide",
+          "name": "t:names.beaverkeys_hero_slide",
+          "settings": {
+            "badge": "new partnership",
+            "heading_line_1": "GMK sets",
+            "heading_line_2": "are here.",
+            "subheading": "Choose from three in stock sets.",
+            "product": "",
+            "image": "shopify://shop_images/gmk_x_beaverkeys2_32185fb0-c439-444f-8b1c-a811f50409a5.jpg",
+            "button_label": "Shop now",
+            "button_link": "https://beaverkeys.ca/collections/keycaps?filter.p.vendor=GMK&sort_by=created-descending&grid=default",
+            "gradient_start": "#86cbc8",
+            "gradient_end": "#1e5f5c"
+          },
+          "blocks": {}
+        },
         "slide_1": {
           "type": "_beaverkeys-hero-slide",
           "settings": {
@@ -61,6 +78,7 @@
         }
       },
       "block_order": [
+        "beaverkeys_hero_slide_83Ncg3",
         "slide_1",
         "slide_2",
         "slide_3"
