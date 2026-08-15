@@ -12,6 +12,23 @@
     "beaverkeys_hero": {
       "type": "beaverkeys-hero",
       "blocks": {
+        "beaverkeys_hero_slide_AHKFCg": {
+          "type": "_beaverkeys-hero-slide",
+          "name": "Summer Clearance",
+          "settings": {
+            "badge": "Sale",
+            "heading_line_1": "Summer",
+            "heading_line_2": "Clearance",
+            "subheading": "Up to 50% off!",
+            "product": "",
+            "image": "shopify://shop_images/summer-clearance-banner-2026_caa0bdf7-d288-4ef8-a6b8-c6d71217ea58.png",
+            "button_label": "Shop now",
+            "button_link": "shopify://collections/summer-clearance-2026",
+            "gradient_start": "#FF885D",
+            "gradient_end": "{{ settings.color_palette.color2 }}"
+          },
+          "blocks": {}
+        },
         "beaverkeys_hero_slide_83Ncg3": {
           "type": "_beaverkeys-hero-slide",
           "name": "t:names.beaverkeys_hero_slide",
@@ -62,6 +79,7 @@
         },
         "slide_3": {
           "type": "_beaverkeys-hero-slide",
+          "disabled": true,
           "settings": {
             "badge": "Recommendation of the week",
             "heading_line_1": "BSUN GUYU",
@@ -78,6 +96,7 @@
         }
       },
       "block_order": [
+        "beaverkeys_hero_slide_AHKFCg",
         "beaverkeys_hero_slide_83Ncg3",
         "slide_1",
         "slide_2",
