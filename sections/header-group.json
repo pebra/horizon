@@ -18,7 +18,7 @@
           "type": "_announcement",
           "name": "t:names.announcement",
           "settings": {
-            "text": "Keygeek Y2 restock arriving around Aug 24",
+            "text": "Restock for Keygeek Y2, Akko Rosewood, and Huano Sakura is still in transit",
             "link": "",
             "font": "var(--font-subheading--family)",
             "font_size": "0.875rem",
