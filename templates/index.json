@@ -15,6 +15,7 @@
         "beaverkeys_hero_slide_AHKFCg": {
           "type": "_beaverkeys-hero-slide",
           "name": "Summer Clearance",
+          "disabled": true,
           "settings": {
             "badge": "Sale",
             "heading_line_1": "Summer",
@@ -24,7 +25,7 @@
             "image": "shopify://shop_images/summer-clearance-banner-2026_caa0bdf7-d288-4ef8-a6b8-c6d71217ea58.png",
             "button_label": "Shop now",
             "button_link": "shopify://collections/summer-clearance-2026",
-            "gradient_start": "#FF885D",
+            "gradient_start": "#ff885d",
             "gradient_end": "{{ settings.color_palette.color2 }}"
           },
           "blocks": {}
