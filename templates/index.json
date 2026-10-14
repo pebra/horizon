@@ -19,12 +19,12 @@
             "badge": "Back in stock",
             "heading_line_1": "Your favourites",
             "heading_line_2": "restocked.",
-            "subheading": "Keygeek Y2, Sakura V2, Monsgeek M2 V5",
+            "subheading": "Keygeek Y2, Sakura V2, Monsgeek M2 V5, and many more",
             "product": "",
             "image": "shopify://shop_images/Gemini_Generated_Image_xj4qyhxj4qyhxj4q.jpg",
             "button_label": "Shop now",
             "button_link": "shopify://collections/back-in-stock",
-            "gradient_start": "#DD8355",
+            "gradient_start": "#dd8355",
             "gradient_end": "{{ settings.color_palette.color1 }}"
           },
           "blocks": {}
