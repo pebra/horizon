@@ -1,0 +1,214 @@
+{%- liquid
+  assign block_settings = block.settings
+  assign product = closest.product
+  assign form_id = block.id | prepend: 'BackInStockForm-'
+
+  assign show_form = false
+  if product != blank
+    if request.design_mode or product.selected_or_first_available_variant.available == false
+      assign show_form = true
+    endif
+  endif
+-%}
+
+<script
+  src="{{ 'back-in-stock.js' | asset_url }}"
+  type="module"
+></script>
+
+<back-in-stock-component
+  id="BackInStock-{{ block.id }}"
+  class="back-in-stock spacing-style"
+  style="{% render 'spacing-style', settings: block_settings %}"
+  data-product-id="{{ product.id }}"
+  {% unless show_form %}
+    hidden
+  {% endunless %}
+  {{ block.shopify_attributes }}
+>
+  {%- if show_form -%}
+    {%- form 'customer', id: form_id, class: 'back-in-stock__form' -%}
+      <input
+        type="hidden"
+        name="contact[tags]"
+        value="restock-{{ product.handle }}-{{ product.id }}"
+      >
+
+      {%- if form.posted_successfully? -%}
+        <p
+          class="back-in-stock__message"
+          tabindex="-1"
+          autofocus
+        >
+          <span
+            class="svg-wrapper icon-success"
+            aria-hidden="true"
+          >
+            {{- 'icon-checkmark.svg' | inline_asset_content -}}
+          </span>
+          {{ 'blocks.back_in_stock.success' | t }}
+        </p>
+      {%- else -%}
+        <label for="BackInStockEmail-{{ block.id }}">
+          {{- 'blocks.back_in_stock.label' | t -}}
+        </label>
+        <div class="back-in-stock__fields">
+          <div class="field">
+            <input
+              id="BackInStockEmail-{{ block.id }}"
+              class="back-in-stock__input field__input"
+              type="email"
+              name="contact[email]"
+              autocorrect="off"
+              autocapitalize="off"
+              autocomplete="email"
+              placeholder="{{ 'blocks.email_signup.placeholder' | t }}"
+              required
+              aria-describedby="{% if form.errors %}BackInStockError-{{ block.id }} {% endif %}BackInStockConsent-{{ block.id }}"
+              {% if form.errors %}
+                autofocus
+                aria-invalid="true"
+              {% endif %}
+            >
+          </div>
+          <button
+            type="submit"
+            class="back-in-stock__button button"
+          >
+            {{- 'blocks.back_in_stock.submit' | t -}}
+          </button>
+        </div>
+
+        {%- if form.errors -%}
+          <p
+            id="BackInStockError-{{ block.id }}"
+            class="back-in-stock__message"
+          >
+            <span
+              class="svg-wrapper icon-error"
+              aria-hidden="true"
+            >
+              {{- 'icon-error.svg' | inline_asset_content -}}
+            </span>
+            {{ form.errors.translated_fields.email | capitalize }}
+            {{ form.errors.messages.email }}
+          </p>
+        {%- endif -%}
+
+        <p
+          id="BackInStockConsent-{{ block.id }}"
+          class="back-in-stock__consent"
+        >
+          {{ 'blocks.back_in_stock.consent' | t: shop: shop.name }}
+        </p>
+      {%- endif -%}
+    {%- endform -%}
+  {%- endif -%}
+</back-in-stock-component>
+
+{% stylesheet %}
+  .back-in-stock:not([hidden]) {
+    display: block;
+    width: 100%;
+  }
+
+  /* Quick add fetches a section that doesn't include this block, so it can't follow variant changes there. */
+  .quick-add-modal__content .back-in-stock {
+    display: none;
+  }
+
+  .back-in-stock__form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+  }
+
+  .back-in-stock__fields {
+    display: flex;
+    gap: var(--gap-xs);
+  }
+
+  .back-in-stock__input {
+    min-width: 0;
+  }
+
+  .back-in-stock__button {
+    flex-shrink: 0;
+  }
+
+  .back-in-stock__message {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xs);
+    margin: 0;
+  }
+
+  .back-in-stock__consent {
+    margin: 0;
+    font-size: var(--font-size--xs);
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-subdued-text));
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:names.back_in_stock",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "t:content.back_in_stock_description"
+    },
+    {
+      "type": "header",
+      "content": "t:content.padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "t:settings.top",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "t:settings.bottom",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-start",
+      "label": "t:settings.left",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding-inline-end",
+      "label": "t:settings.right",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:names.back_in_stock",
+      "category": "t:categories.product"
+    }
+  ]
+}
+{% endschema %}

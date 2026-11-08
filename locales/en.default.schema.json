@@ -40,6 +40,7 @@
     "background": "Background",
     "background_image": "Background image",
     "background_video": "Background video",
+    "back_in_stock_description": "Customers only see this form when the selected variant is sold out. It stays visible in the theme editor so you can preview it.",
     "beaverkeys_button": "Button",
     "beaverkeys_gradient": "Gradient",
     "beaverkeys_product": "Product",
@@ -258,6 +259,7 @@
     "media_type_info": "Features are populated from your menu links"
   },
   "names": {
+    "back_in_stock": "Back in stock form",
     "beaverkeys_hero": "Hero: BeaverKeys",
     "beaverkeys_hero_slide": "Slide",
     "beaverkeys_review": "Review",

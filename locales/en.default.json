@@ -125,6 +125,12 @@
     "sort": "Sort"
   },
   "blocks": {
+    "back_in_stock": {
+      "label": "Get an email when this is back in stock",
+      "submit": "Notify me",
+      "consent": "By signing up, you agree to receive this alert and other marketing emails from {{ shop }}. You can unsubscribe at any time.",
+      "success": "You're on the list. We'll email you when this is back in stock."
+    },
     "contact_form": {
       "name": "Name",
       "email": "Email",
