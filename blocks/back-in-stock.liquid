@@ -2,6 +2,7 @@
   assign block_settings = block.settings
   assign product = closest.product
   assign form_id = block.id | prepend: 'BackInStockForm-'
+  assign scoped_button_class = block_settings.style_class | append: '--' | append: block.id
 
   assign show_form = false
   if product != blank
@@ -10,6 +11,8 @@
     endif
   endif
 -%}
+
+{% render 'button-custom-styles', block_settings: block_settings, block_id: block.id %}
 
 <script
   src="{{ 'back-in-stock.js' | asset_url }}"
@@ -49,14 +52,17 @@
           {{ 'blocks.back_in_stock.success' | t }}
         </p>
       {%- else -%}
-        <label for="BackInStockEmail-{{ block.id }}">
+        <label
+          class="back-in-stock__label"
+          for="BackInStockEmail-{{ block.id }}"
+        >
           {{- 'blocks.back_in_stock.label' | t -}}
         </label>
         <div class="back-in-stock__fields">
           <div class="field">
             <input
               id="BackInStockEmail-{{ block.id }}"
-              class="back-in-stock__input field__input"
+              class="back-in-stock__input field__input field__input--button-radius"
               type="email"
               name="contact[email]"
               autocorrect="off"
@@ -73,7 +79,7 @@
           </div>
           <button
             type="submit"
-            class="back-in-stock__button button"
+            class="back-in-stock__button {{ block_settings.style_class }} {{ scoped_button_class }}"
           >
             {{- 'blocks.back_in_stock.submit' | t -}}
           </button>
@@ -118,9 +124,20 @@
   }
 
   .back-in-stock__form {
+    --color-input-background: var(--color-background);
+
     display: flex;
     flex-direction: column;
-    gap: var(--gap-xs);
+    gap: var(--padding-md);
+    padding: var(--padding-xl);
+    background: rgb(var(--color-foreground-rgb) / var(--opacity-5));
+    border: var(--style-border-width) solid rgb(var(--color-foreground-rgb) / var(--opacity-10));
+    border-radius: var(--style-border-radius-buttons-primary);
+  }
+
+  .back-in-stock__label {
+    font-size: var(--font-size--md);
+    font-weight: 700;
   }
 
   .back-in-stock__fields {
@@ -143,6 +160,10 @@
     margin: 0;
   }
 
+  .back-in-stock__message:focus-visible {
+    outline: none;
+  }
+
   .back-in-stock__consent {
     margin: 0;
     font-size: var(--font-size--xs);
@@ -158,6 +179,56 @@
     {
       "type": "paragraph",
       "content": "t:content.back_in_stock_description"
+    },
+    {
+      "type": "select",
+      "id": "style_class",
+      "label": "t:settings.style",
+      "options": [
+        {
+          "value": "button",
+          "label": "t:options.primary"
+        },
+        {
+          "value": "button-secondary",
+          "label": "t:options.secondary"
+        },
+        {
+          "value": "button-custom",
+          "label": "t:options.custom"
+        }
+      ],
+      "default": "button-custom",
+      "info": "t:info.edit_button_style_in_theme_settings"
+    },
+    {
+      "type": "header",
+      "content": "t:content.button_colors",
+      "visible_if": "{{ block.settings.style_class == \"button-custom\" }}"
+    },
+    {
+      "type": "color",
+      "id": "custom_button_background",
+      "label": "t:settings.background",
+      "default": "{{ settings.color_palette.color5 }}",
+      "alpha": true,
+      "visible_if": "{{ block.settings.style_class == 'button-custom' }}"
+    },
+    {
+      "type": "color",
+      "id": "custom_button_text",
+      "label": "t:settings.text",
+      "default": "{{ settings.color_palette.background }}",
+      "alpha": true,
+      "visible_if": "{{ block.settings.style_class == 'button-custom' }}"
+    },
+    {
+      "type": "color",
+      "id": "custom_button_border",
+      "label": "t:settings.borders",
+      "default": "{{ settings.color_palette.color5 }}",
+      "alpha": true,
+      "visible_if": "{{ block.settings.style_class == 'button-custom' }}"
     },
     {
       "type": "header",

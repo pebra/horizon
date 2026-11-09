@@ -1,3 +1,57 @@
 .price, .compare-at-price, .unit-price {
   font-weight: 700;
 }
+
+.variant-picker__form .variant-option + .variant-option {
+  margin-top: var(--margin-2xl);
+}
+
+.variant-picker__form .variant-option + div.variant-option,
+.variant-picker__form .variant-option + fieldset.variant-option legend {
+  position: relative;
+}
+
+.variant-picker__form .variant-option + fieldset.variant-option legend {
+  width: 100%;
+}
+
+/* Fieldsets notch a top border around the legend and offset absolute children below it, so the divider hangs off the legend. */
+.variant-picker__form .variant-option + div.variant-option::before,
+.variant-picker__form .variant-option + fieldset.variant-option legend::before {
+  content: '';
+  position: absolute;
+  inset-block-start: calc(var(--margin-2xl) / -2);
+  inset-inline: 0;
+  border-block-start: 1px solid rgb(var(--color-foreground-rgb) / var(--opacity-15));
+}
+
+.variant-picker__form .variant-option--buttons legend,
+.variant-picker__form .variant-option--dropdowns > label {
+  font-weight: 700;
+}
+
+.variant-picker__form .variant-option__swatch-value {
+  font-weight: 400;
+}
+
+.variant-picker__form .variant-option--default-width-buttons {
+  gap: var(--gap-xs);
+}
+
+.variant-picker__form .variant-option--default-width-buttons .variant-option__button-label {
+  flex: 0 1 auto;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: var(--padding-xs) var(--padding-md);
+  white-space: normal;
+}
+
+@media screen and (min-width: 750px) {
+  .variant-picker__form .variant-option--default-width-buttons .variant-option__button-label {
+    min-height: 2.25rem;
+  }
+}
+
+.variant-picker__form .variant-option__button-label:has([data-option-available='false']) {
+  --color-variant-border: rgb(var(--color-foreground-rgb) / var(--opacity-30));
+}
