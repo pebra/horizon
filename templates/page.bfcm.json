@@ -1,0 +1,26 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "countdown": {
+      "type": "beaverkeys-countdown",
+      "settings": {
+        "end_time": "2026-11-22T19:00:00-05:00",
+        "badge": "Black Friday · Cyber Monday",
+        "heading": "",
+        "ribbon_text": "Black Friday · Cyber Monday",
+        "live_message": "The sale is live!"
+      }
+    }
+  },
+  "order": [
+    "countdown"
+  ]
+}

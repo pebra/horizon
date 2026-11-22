@@ -230,6 +230,8 @@
     "beaverkeys_product_autofill": "Optional. When set, automatically supplies the image and link below unless you override them.",
     "beaverkeys_image_override": "Overrides the image from the product above, if selected.",
     "beaverkeys_link_override": "Overrides the link from the product above, if selected.",
+    "beaverkeys_countdown_end": "Date and time with UTC offset, e.g. 2026-11-22T19:00:00-05:00 for 7 p.m. Eastern (use -04:00 during daylight saving time).",
+    "beaverkeys_heading_page_title": "Leave blank to use the page title.",
     "actions_display_style": "Icons are always used on mobile",
     "applies_on_image_only": "Applies to images only",
     "aspect_ratio_adjusted": "Adjusted in some layouts",
@@ -261,6 +263,7 @@
   "names": {
     "back_in_stock": "Back in stock form",
     "beaverkeys_hero": "Hero: BeaverKeys",
+    "beaverkeys_countdown": "Countdown: BeaverKeys",
     "beaverkeys_hero_slide": "Slide",
     "beaverkeys_review": "Review",
     "beaverkeys_reviews": "Reviews: BeaverKeys",
@@ -747,6 +750,9 @@
   },
   "settings": {
     "beaverkeys_badge_label": "Badge label",
+    "beaverkeys_countdown_end": "Countdown ends at",
+    "beaverkeys_live_message": "Message after countdown ends",
+    "beaverkeys_ribbon_text": "Ribbon text",
     "beaverkeys_gradient_end": "Gradient end",
     "beaverkeys_gradient_start": "Gradient start",
     "beaverkeys_heading_line_1": "Heading line 1",
