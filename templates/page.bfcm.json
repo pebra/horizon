@@ -16,7 +16,9 @@
         "badge": "Black Friday · Cyber Monday",
         "heading": "",
         "ribbon_text": "Black Friday · Cyber Monday",
-        "live_message": "The sale is live!"
+        "live_message": "The sale is live!",
+        "button_label": "Shop the sale",
+        "button_link": "/collections/bfcm-2026"
       }
     }
   },

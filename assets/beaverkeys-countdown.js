@@ -12,12 +12,12 @@ const SECONDS_PER_MINUTE = 60;
  * @property {HTMLElement} hours
  * @property {HTMLElement} minutes
  * @property {HTMLElement} seconds
- * @property {HTMLElement} liveMessage
+ * @property {HTMLElement} reveal
  *
  * @extends {Component<Refs>}
  */
 class BeaverkeysCountdown extends Component {
-  requiredRefs = ['timer', 'daysUnit', 'days', 'hours', 'minutes', 'seconds', 'liveMessage'];
+  requiredRefs = ['timer', 'daysUnit', 'days', 'hours', 'minutes', 'seconds', 'reveal'];
 
   /** @type {number | undefined} */
   #timer;
@@ -45,7 +45,7 @@ class BeaverkeysCountdown extends Component {
       window.clearInterval(this.#timer);
       this.dataset.state = 'live';
       this.refs.timer.hidden = true;
-      this.refs.liveMessage.hidden = false;
+      this.refs.reveal.hidden = false;
       return;
     }
 

@@ -97,16 +97,25 @@
         </div>
       </div>
 
-      <p
-        class="beaverkeys-countdown__live"
+      <div
+        class="beaverkeys-countdown__reveal"
         role="status"
-        ref="liveMessage"
+        ref="reveal"
         {% if remaining > 0 %}
           hidden
         {% endif %}
       >
-        {{ section.settings.live_message }}
-      </p>
+        <p class="beaverkeys-countdown__live">{{ section.settings.live_message }}</p>
+        {% if section.settings.button_label != blank and section.settings.button_link != blank %}
+          <a
+            href="{{ section.settings.button_link }}"
+            class="beaverkeys-countdown__cta"
+          >
+            {{- section.settings.button_label }}
+            <span aria-hidden="true">→</span>
+          </a>
+        {% endif %}
+      </div>
 
       {% if page_resource.content != blank %}
         <div class="beaverkeys-countdown__body rte">
@@ -254,7 +263,7 @@
 
   .beaverkeys-countdown__timer[hidden],
   .beaverkeys-countdown__unit[hidden],
-  .beaverkeys-countdown__live[hidden] {
+  .beaverkeys-countdown__reveal[hidden] {
     display: none;
   }
 
@@ -306,10 +315,66 @@
     color: var(--beaverkeys-countdown-teal);
   }
 
+  .beaverkeys-countdown__reveal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+    margin-block-end: 52px;
+    animation: beaverkeys-countdown-reveal 0.5s ease-out;
+  }
+
+  @keyframes beaverkeys-countdown-reveal {
+    from {
+      opacity: 0;
+      scale: 0.92;
+    }
+  }
+
   .beaverkeys-countdown__live {
     font: 800 28px/1.1 var(--font-heading--family);
     color: var(--beaverkeys-countdown-orange);
-    margin: 0 0 44px;
+    margin: 0;
+  }
+
+  .beaverkeys-countdown__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--beaverkeys-countdown-orange);
+    color: var(--beaverkeys-countdown-ink);
+    font: 800 17px/1 var(--font-heading--family);
+    text-decoration: none;
+    padding: 20px 40px;
+    border-radius: 14px;
+    box-shadow:
+      0 6px 0 #c8603c,
+      0 14px 24px rgb(0 0 0 / 0.35);
+    transition:
+      translate 0.15s ease-out,
+      box-shadow 0.15s ease-out;
+  }
+
+  .beaverkeys-countdown__cta:hover {
+    translate: 0 3px;
+    box-shadow:
+      0 3px 0 #c8603c,
+      0 8px 16px rgb(0 0 0 / 0.3);
+  }
+
+  .beaverkeys-countdown__cta:focus-visible {
+    outline: 2px solid var(--beaverkeys-countdown-cream);
+    outline-offset: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .beaverkeys-countdown__reveal {
+      animation: none;
+    }
+
+    .beaverkeys-countdown__cta {
+      transition: none;
+    }
   }
 
   .beaverkeys-countdown__body {
@@ -374,6 +439,22 @@
       "id": "live_message",
       "label": "t:settings.beaverkeys_live_message",
       "default": "The sale is live!"
+    },
+    {
+      "type": "header",
+      "content": "t:content.beaverkeys_button",
+      "info": "t:info.beaverkeys_countdown_button"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "t:settings.label",
+      "default": "Shop the sale"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "t:settings.link"
     }
   ],
   "presets": [
