@@ -64,13 +64,6 @@ class VolumePricingInfoComponent extends Component {
   }
 }
 
-async function registerVolumePricingInfo() {
-  // connectedCallback refreshes the parent component's refs, so the parent must upgrade first.
-  await customElements.whenDefined('anchored-popover-component');
-
-  if (!customElements.get('volume-pricing-info')) {
-    customElements.define('volume-pricing-info', VolumePricingInfoComponent);
-  }
+if (!customElements.get('volume-pricing-info')) {
+  customElements.define('volume-pricing-info', VolumePricingInfoComponent);
 }
-
-registerVolumePricingInfo();

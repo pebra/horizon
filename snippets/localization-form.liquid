@@ -25,11 +25,8 @@
   endif
 
   assign show_popular_countries = false
-  assign other_countries = localization.available_countries
   if localization.available_countries.size > 9 and popular_countries.size > 1
     assign show_popular_countries = true
-    # Popular countries get their own list above, so drop them here to avoid listing a country twice.
-    assign other_countries = localization.available_countries | reject: 'popular?'
   endif
 
   assign show_currencies = false
@@ -110,7 +107,7 @@
           class="visually-hidden"
           id="{{ localization_style }}-CountryLabel"
         >
-          {{- 'accessibility.country_region' | t -}}
+          Country/Region
         </h2>
         {% if show_country_filter %}
           <div
@@ -187,7 +184,7 @@
             >
               {{- 'content.no_results_found' | t -}}
             </span>
-            {%- for country in other_countries -%}
+            {%- for country in localization.available_countries -%}
               {% liquid
                 assign aliases = ''
                 case country.iso_code
@@ -338,8 +335,8 @@
   }
 
   localization-form-component .country-filter__search-icon {
-    inset-inline-start: 8px;
-    inset-inline-end: auto;
+    left: 8px;
+    right: auto;
     color: var(--color-foreground-muted);
     pointer-events: none;
   }
@@ -462,7 +459,7 @@
     background-color: var(--color-background);
     padding-block: var(--padding-3xs);
     padding-inline: var(--padding-xs) calc(var(--icon-size-xs) + var(--padding-xs));
-    text-align: end;
+    text-align: right;
     cursor: pointer;
     max-width: 40vw;
     text-overflow: ellipsis;
@@ -487,13 +484,10 @@
   }
 
   .language-selector .svg-wrapper.icon-caret {
-    /* Match the select's token rather than inheriting. The header row paints
-       color: var(--color, var(--color-foreground)) and only restates --color-foreground per state. */
-    color: var(--color-foreground);
     width: var(--icon-size-xs);
     height: var(--icon-size-xs);
     position: absolute;
-    inset-inline-end: 12px;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
@@ -509,7 +503,7 @@
   }
 
   .language-selector--collapse-space .svg-wrapper.icon-caret {
-    inset-inline-end: 0;
+    right: 0;
   }
 
   .localization-form .icon-checkmark {
@@ -529,8 +523,7 @@
     width: 100%;
     height: 44px;
     font-size: var(--font-size-lg);
-    padding-block: var(--padding-md);
-    padding-inline: calc(var(--margin-md) + var(--padding-xl)) var(--padding-lg);
+    padding: var(--padding-md) var(--padding-lg) var(--padding-md) calc(var(--margin-md) + var(--padding-xl));
     border: 1px solid var(--color-foreground);
     color: var(--color-input-text);
     background-color: var(--color-input-background);
@@ -551,7 +544,7 @@
 
   .country-filter .field__label {
     font-size: var(--font-size-lg);
-    inset-inline-start: var(--margin-2xl);
+    left: var(--margin-2xl);
     top: var(--margin-xl);
     pointer-events: none;
     position: absolute;
@@ -569,7 +562,7 @@
     height: fit-content;
     position: absolute;
     padding: 0;
-    inset-inline-end: 8px;
+    right: 8px;
     top: 50%;
     transform: translateY(-50%);
     align-items: center;

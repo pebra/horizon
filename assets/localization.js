@@ -264,6 +264,10 @@ class LocalizationFormComponent extends Component {
 
     resetButton.toggleAttribute('hidden', !searchValue);
 
+    if (popularCountries) {
+      popularCountries.toggleAttribute('hidden', Boolean(searchValue));
+    }
+
     const wrapper = this.querySelector('.country-selector-form__wrapper');
     if (wrapper) {
       wrapper.classList.toggle('is-searching', !!searchValue);
@@ -293,15 +297,6 @@ class LocalizationFormComponent extends Component {
           countryEl.setAttribute('hidden', '');
         }
       }
-    }
-
-    // Popular countries are only listed in their own list, so it stays visible while it still has a match.
-    if (popularCountries) {
-      const hasVisiblePopularCountry = Array.from(popularCountries.children).some(
-        (country) => !country.hasAttribute('hidden')
-      );
-
-      popularCountries.toggleAttribute('hidden', !hasVisiblePopularCountry);
     }
 
     if (liveRegion && labelResultsCount) {

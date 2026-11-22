@@ -203,8 +203,8 @@
 {% stylesheet %}
   .sticky-add-to-cart__bar {
     position: fixed;
-    bottom: max(20px, var(--safe-area-inset-bottom));
-    left: 50%; /* stylelint-disable-line csstools/use-logical -- centring pair with a physical translateX(-50%) */
+    bottom: 20px;
+    left: 50%;
     opacity: 0;
     transform: translateX(-50%) translateY(calc(100% + 40px));
     z-index: calc(var(--layer-sticky) - 1); /* Below sticky header */
@@ -260,7 +260,7 @@
   }
 
   .sticky-add-to-cart__info[data-has-image='false'] {
-    padding-inline-start: var(--padding-lg);
+    padding-left: var(--padding-lg);
   }
 
   .sticky-add-to-cart__image {
@@ -316,10 +316,6 @@
       max-width: none;
       border-radius: 0;
 
-      /* Full-bleed bar touches the physical bottom edge (viewport-fit=cover); keep the
-         controls above the home indicator while the background fills the safe area */
-      padding-block-end: calc(var(--padding-sm) + var(--safe-area-inset-bottom));
-
       &::before {
         --border: 1px;
       }
@@ -330,7 +326,7 @@
     }
 
     .sticky-add-to-cart__info[data-has-image='false'] {
-      padding-inline-start: 0;
+      padding-left: 0;
     }
 
     .sticky-add-to-cart__title {
@@ -431,11 +427,11 @@
       "options": [
         {
           "value": "left",
-          "label": "t:options.direction_start"
+          "label": "t:options.left"
         },
         {
           "value": "right",
-          "label": "t:options.direction_end"
+          "label": "t:options.right"
         }
       ],
       "default": "left"

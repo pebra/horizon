@@ -29,22 +29,12 @@ export class ZoomDialog extends Component {
   connectedCallback() {
     super.connectedCallback();
     this.refs.dialog.addEventListener('scroll', this.handleScroll);
-    this.refs.dialog.addEventListener('close', this.#onDialogClose);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.refs.dialog.removeEventListener('scroll', this.handleScroll);
-    this.refs.dialog.removeEventListener('close', this.#onDialogClose);
   }
-
-  /**
-   * Announces the close on `window` however the dialog closed, including the
-   * browser closing it on a close request such as the Android Back button.
-   */
-  #onDialogClose = () => {
-    window.dispatchEvent(new DialogCloseEvent());
-  };
 
   /**
    * Opens the zoom dialog.
@@ -192,6 +182,7 @@ export class ZoomDialog extends Component {
   closeDialog() {
     const { dialog } = this.refs;
     dialog.close();
+    window.dispatchEvent(new DialogCloseEvent());
   }
 
   /**

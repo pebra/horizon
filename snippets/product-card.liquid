@@ -12,14 +12,14 @@
 
 {% assign block_settings = block.settings %}
 
-{% if request.visual_preview_mode %}
-  {% style %}
+{% style %}
+  {% if request.visual_preview_mode %}
     product-card[data-product-transition] {
       width: 100%;
       min-width: 250px;
     }
-  {% endstyle %}
-{% endif %}
+  {% endif %}
+{% endstyle %}
 
 {% liquid
   assign has_quick_add = false
@@ -50,7 +50,7 @@
   endif
 
   assign onboarding = false
-  if product.id == blank
+  if product.id == empty or product == blank
     assign onboarding = true
   endif
 
@@ -74,6 +74,7 @@
     data-placeholder="true"
   {% endif %}
   {%- unless onboarding -%}
+    {% # theme-check-disable-next-line UnknownFilter %}
     view-event-payload="{{ product | standard_event_data: 'view', context: product_view_context | escape }}"
   {%- endunless -%}
 >
