@@ -74,7 +74,17 @@
     "search_suggestions_available": "Zoek naar beschikbare suggesties voor '{{ query }}'",
     "price_filter_low": "Lage prijs",
     "price_filter_high": "Hoge prijs",
-    "view_disclosure_information_for_product": "Informatie over productvermeldingen bekijken voor {{ product_title }}"
+    "view_disclosure_information_for_product": "Informatie over productvermeldingen bekijken voor {{ product_title }}",
+    "show_submenu": "Submenu {{ title }} weergeven",
+    "link_to_product": "Product: {{ title }}",
+    "link_to_blog": "Blog: {{ title }}",
+    "link_to_page": "Pagina: {{ title }}",
+    "link_to_article": "Artikel: {{ title }}",
+    "link_to_policy": "Beleid: {{ title }}",
+    "link_to_home": "Home",
+    "link_to_catalog": "Alle producten",
+    "link_to_collections": "Alle collecties",
+    "link_to_collection": "Collectie: {{ title }}"
   },
   "actions": {
     "add_to_cart": "Aan winkelwagen toevoegen",
@@ -116,7 +126,8 @@
     "show_all_options": "Alle opties weergeven",
     "open": "Openen",
     "back_to": "Terug naar {{ title }}",
-    "zoom_media": "In-/uitzoomen op media {{ index }}"
+    "zoom_media": "In-/uitzoomen op media {{ index }}",
+    "back_to_main_menu": "Terug naar hoofdmenu"
   },
   "content": {
     "reviews": "recensies",
@@ -274,7 +285,25 @@
     },
     "item_count_cutoff": "Meer dan {{ count }} artikelen",
     "quick_order_list": "Snelle bestellijst",
-    "product_disclosures": "Productvermeldingen"
+    "product_disclosures": "Productvermeldingen",
+    "duties_and_taxes_included_shipping_at_checkout_with_policy_with_fees_html": "Douanerechten en belastingen inbegrepen. Kortingen, toeslagen en <a href=\"{{ link }}\">verzending</a> worden berekend bij de checkout.",
+    "duties_and_taxes_included_shipping_at_checkout_with_policy_without_discounts_with_fees_html": "Douanerechten en belastingen inbegrepen. Toeslagen en verzending worden berekend bij de checkout.",
+    "duties_and_taxes_included_shipping_at_checkout_without_policy_with_fees": "Douanerechten en belastingen inbegrepen. Kortingen, toeslagen en verzending worden berekend bij de checkout.",
+    "duties_and_taxes_included_shipping_at_checkout_without_policy_without_discounts_with_fees": "Douanerechten en belastingen inbegrepen. Toeslagen en verzending worden berekend bij de checkout.",
+    "duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_with_fees_html": "Douanerechten inbegrepen. Belastingen, kortingen, toeslagen en <a href=\"{{ link }}\">verzending</a> worden berekend bij de checkout.",
+    "duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_without_discounts_with_fees_html": "Douanerechten inbegrepen. Toeslagen en verzending worden berekend bij de checkout.",
+    "duties_included_taxes_at_checkout_shipping_at_checkout_without_policy_with_fees": "Douanerechten inbegrepen. Belastingen, kortingen, toeslagen en verzending worden berekend bij de checkout.",
+    "duties_included_taxes_at_checkout_shipping_at_checkout_without_policy_without_discounts_with_fees": "Douanerechten inbegrepen. Toeslagen en verzending worden berekend bij de checkout.",
+    "taxes_at_checkout_shipping_at_checkout_with_policy_with_fees_html": "Belastingen, kortingen, toeslagen en <a href=\"{{ link }}\">verzending</a> worden berekend bij de checkout.",
+    "taxes_at_checkout_shipping_at_checkout_with_policy_without_discounts_with_fees_html": "Belastingen, toeslagen en <a href=\"{{ link }}\">verzending</a> worden berekend bij de checkout.",
+    "taxes_at_checkout_shipping_at_checkout_without_policy_with_fees": "Belastingen, kortingen, toeslagen en verzending worden berekend bij de checkout.",
+    "taxes_at_checkout_shipping_at_checkout_without_policy_without_discounts_with_fees": "Belastingen, toeslagen en verzending worden berekend bij de checkout.",
+    "taxes_included_shipping_at_checkout_with_policy_with_fees_html": "Belastingen inbegrepen. Kortingen, toeslagen en <a href=\"{{ link }}\">verzending</a> worden berekend bij de checkout.",
+    "taxes_included_shipping_at_checkout_without_policy_with_fees": "Belastingen inbegrepen. Kortingen, toeslagen en verzending worden berekend bij de checkout.",
+    "in_store_available": "Op voorraad in de winkel",
+    "in_store_also_available": "Ook te koop in de winkel: je kunt dit hier persoonlijk kopen",
+    "in_store_only": "Persoonlijk te koop in deze winkel. Afhalen is hier niet mogelijk.",
+    "in_store_available_at_html": "Op voorraad bij <b>{{ location }}</b>"
   },
   "gift_cards": {
     "issued": {
@@ -285,9 +314,9 @@
       "add_to_apple_wallet": "Aan Apple Wallet toevoegen",
       "qr_image_alt": "QR-code — scan om cadeaubon te verzilveren",
       "copy_code": "Cadeauboncode kopiëren",
-      "expiration_date": "Verloopt op {{ expires_on }}",
       "copy_code_success": "Code gekopieerd",
-      "expired": "Verlopen"
+      "expired": "Verlopen",
+      "expiration_date_html": "Vervalt op <bdi>{{ expires_on }}</bdi>"
     }
   },
   "blogs": {

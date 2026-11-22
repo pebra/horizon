@@ -76,7 +76,17 @@
     "search_suggestions_available": "Predlogi za iskanje, ki so na voljo za »{{ query }}«",
     "price_filter_low": "Nizka cena",
     "price_filter_high": "Visoka cena",
-    "view_disclosure_information_for_product": "Ogled informacij o razkritjih za {{ product_title }}"
+    "view_disclosure_information_for_product": "Ogled informacij o razkritjih za {{ product_title }}",
+    "show_submenu": "Prikaži podmeni {{ title }}",
+    "link_to_product": "Izdelek: {{ title }}",
+    "link_to_blog": "Blog: {{ title }}",
+    "link_to_page": "Stran: {{ title }}",
+    "link_to_article": "Članek: {{ title }}",
+    "link_to_policy": "Pravilnik: {{ title }}",
+    "link_to_home": "Domača stran",
+    "link_to_catalog": "Vsi izdelki",
+    "link_to_collections": "Vse zbirke",
+    "link_to_collection": "Zbirka: {{ title }}"
   },
   "actions": {
     "add_to_cart": "Dodaj v košarico",
@@ -120,7 +130,8 @@
     "show_all_options": "Prikaži vse možnosti",
     "open": "Odpri",
     "back_to": "Nazaj na: {{ title }}",
-    "zoom_media": "Povečava predstavnosti {{ index }}"
+    "zoom_media": "Povečava predstavnosti {{ index }}",
+    "back_to_main_menu": "Nazaj na glavni meni"
   },
   "content": {
     "reviews": "ocen.",
@@ -286,7 +297,25 @@
       "two": "Toliko izdelkov je dodanih v košarico: {{ count }}"
     },
     "quick_order_list": "Seznam za hitro naročanje",
-    "product_disclosures": "Razkritja o izdelku"
+    "product_disclosures": "Razkritja o izdelku",
+    "duties_and_taxes_included_shipping_at_checkout_with_policy_with_fees_html": "Dajatve in davki vključeni. Popusti, pristojbine in <a href=\"{{ link }}\">dostava</a> se obračunajo na blagajni.",
+    "duties_and_taxes_included_shipping_at_checkout_with_policy_without_discounts_with_fees_html": "Dajatve in davki vključeni. Pristojbine in dostava se obračunajo na blagajni.",
+    "duties_and_taxes_included_shipping_at_checkout_without_policy_with_fees": "Dajatve in davki vključeni. Popusti, pristojbine in dostava se obračunajo na blagajni.",
+    "duties_and_taxes_included_shipping_at_checkout_without_policy_without_discounts_with_fees": "Dajatve in davki vključeni. Pristojbine in dostava se obračunajo na blagajni.",
+    "duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_with_fees_html": "Dajatve vključene. Davki, popusti, pristojbine in <a href=\"{{ link }}\">dostava</a> se obračunajo na blagajni.",
+    "duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_without_discounts_with_fees_html": "Dajatve vključene. Pristojbine in dostava se obračunajo na blagajni.",
+    "duties_included_taxes_at_checkout_shipping_at_checkout_without_policy_with_fees": "Dajatve vključene. Davki, popusti, pristojbine in dostava se obračunajo na blagajni.",
+    "duties_included_taxes_at_checkout_shipping_at_checkout_without_policy_without_discounts_with_fees": "Dajatve vključene. Pristojbine in dostava se obračunajo na blagajni.",
+    "taxes_at_checkout_shipping_at_checkout_with_policy_with_fees_html": "Davki, popusti, pristojbine in <a href=\"{{ link }}\">dostava</a> se obračunajo na blagajni.",
+    "taxes_at_checkout_shipping_at_checkout_with_policy_without_discounts_with_fees_html": "Davki, pristojbine in <a href=\"{{ link }}\">dostava</a> se obračunajo na blagajni.",
+    "taxes_at_checkout_shipping_at_checkout_without_policy_with_fees": "Davki, popusti, pristojbine in dostava se obračunajo na blagajni.",
+    "taxes_at_checkout_shipping_at_checkout_without_policy_without_discounts_with_fees": "Davki, pristojbine in dostava se obračunajo na blagajni.",
+    "taxes_included_shipping_at_checkout_with_policy_with_fees_html": "Davki vključeni. Popusti, pristojbine in <a href=\"{{ link }}\">dostava</a> se obračunajo na blagajni.",
+    "taxes_included_shipping_at_checkout_without_policy_with_fees": "Davki vključeni. Popusti, pristojbine in dostava se obračunajo na blagajni.",
+    "in_store_available": "Na zalogi v trgovini",
+    "in_store_also_available": "Na prodaj tudi v trgovini — tukaj lahko izdelek kupite osebno",
+    "in_store_only": "Kupite osebno v tej trgovini. Prevzem tukaj ni na voljo.",
+    "in_store_available_at_html": "Na zalogi na lokaciji <b>{{ location }}</b>"
   },
   "gift_cards": {
     "issued": {
@@ -297,9 +326,9 @@
       "add_to_apple_wallet": "Dodaj v Apple Wallet",
       "qr_image_alt": "Koda QR – optično jo preberite za unovčenje darilnega bona",
       "copy_code": "Kopiraj kodo darilnega bona",
-      "expiration_date": "Poteče {{ expires_on }}",
       "copy_code_success": "Koda je uspešno kopirana",
-      "expired": "Poteklo"
+      "expired": "Poteklo",
+      "expiration_date_html": "Poteče <bdi>{{ expires_on }}</bdi>"
     }
   },
   "placeholders": {

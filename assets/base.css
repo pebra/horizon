@@ -13,16 +13,9 @@ body {
 }
 
 :root {
-  --hover-lift-amount: 4px;
-  --hover-scale-amount: 1.03;
-  --hover-subtle-zoom-amount: 1.015;
-  --hover-shadow-color: var(--color-shadow);
   --hover-transition-duration: 0.25s;
   --hover-transition-timing: ease-out;
-  --surface-transition-duration: 0.3s;
-  --surface-transition-timing: var(--ease-out-quad);
   --submenu-animation-speed: 360ms;
-  --submenu-animation-easing: cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
 html {
@@ -40,16 +33,23 @@ html {
   }
 }
 
-html[scroll-lock],
-html[scroll-lock] .page-wrapper {
+html[scroll-lock] {
   overflow: hidden;
+}
+
+/* Only lock .page-wrapper where it is the scroll container. Below 990px the document scrolls, and
+   overflow on .page-wrapper would make it the sticky header's scroll container, moving the header off screen. */
+@media (min-width: 990px) {
+  html[scroll-lock] .page-wrapper {
+    overflow: hidden;
+  }
 }
 
 .page-wrapper {
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
-  transition: margin-right var(--animation-speed) var(--animation-timing-fade-out);
+  transition: margin-inline-end var(--animation-speed) var(--animation-timing-fade-out);
 }
 
 @media (min-width: 990px) {
@@ -64,10 +64,15 @@ html[scroll-lock] .page-wrapper {
   .page-wrapper--drawer-open shopify-account::part(dialog) {
     translate: calc(-1 * var(--theme-drawer-width, var(--sidebar-width)));
   }
+
+  /* The theme drawer opens from the inline-end edge, so the shift mirrors in RTL */
+  [dir='rtl'] .page-wrapper--drawer-open shopify-account::part(dialog) {
+    translate: var(--theme-drawer-width, var(--sidebar-width));
+  }
 }
 
 .page-wrapper--drawer-open {
-  margin-right: var(--theme-drawer-width, var(--sidebar-width));
+  margin-inline-end: var(--theme-drawer-width, var(--sidebar-width));
   transition-timing-function: var(--animation-timing-fade-in);
 }
 
@@ -81,8 +86,13 @@ svg {
 }
 
 img {
-  width: 100%;
   height: auto;
+}
+
+/* Theme images fill their container. Images in blog post content keep the size from their width
+   attribute or their intrinsic size, and max-width keeps them inside the column. */
+img:where(:not(.blog-post-content img)) {
+  width: 100%;
 }
 
 input,
@@ -115,38 +125,7 @@ select {
 
 .product-card__content {
   position: relative;
-}
-
-.product-card__content {
   cursor: pointer;
-}
-
-@media (any-pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .card-hover-effect-lift .product-card:hover,
-  .card-hover-effect-lift .collection-card:hover,
-  .card-hover-effect-lift .predictive-search-results__card:hover {
-    transform: translateY(calc(-1 * var(--hover-lift-amount)));
-  }
-
-  .card-hover-effect-scale .product-card:hover,
-  .card-hover-effect-scale .collection-card:hover,
-  .card-hover-effect-scale .predictive-search-results__card:hover {
-    transform: scale(var(--hover-scale-amount));
-  }
-
-  .card-hover-effect-subtle-zoom .card-gallery,
-  .card-hover-effect-subtle-zoom .collection-card__image,
-  .card-hover-effect-subtle-zoom .product-card__image {
-    overflow: hidden;
-    transition: transform var(--hover-transition-duration) var(--hover-transition-timing);
-  }
-
-  .card-hover-effect-subtle-zoom .product-card:hover .card-gallery,
-  .card-hover-effect-subtle-zoom .collection-card:hover .collection-card__image,
-  .card-hover-effect-subtle-zoom .product-card:hover .product-card__image,
-  .card-hover-effect-subtle-zoom .predictive-search-results__card:hover {
-    transform: scale(var(--hover-subtle-zoom-amount));
-  }
 }
 
 dialog {
@@ -292,12 +271,14 @@ p:empty {
   flex-grow: 1;
 }
 
-/* Set up page widths & margins */
+/* Set up page widths & margins. Gutters grow to the device safe-area insets (viewport-fit=cover)
+   so section backgrounds bleed edge-to-edge while content stays clear of the notch; taking the
+   larger of both insets keeps the centered page grid symmetric. */
 .page-width-wide,
 .page-width-normal,
 .page-width-narrow,
 .page-width-content {
-  --page-margin: 16px;
+  --page-margin: max(16px, var(--safe-area-inset-left, 0px), var(--safe-area-inset-right, 0px));
 }
 
 @media screen and (min-width: 750px) {
@@ -305,7 +286,7 @@ p:empty {
   .page-width-normal,
   .page-width-narrow,
   .page-width-content {
-    --page-margin: 40px;
+    --page-margin: max(40px, var(--safe-area-inset-left, 0px), var(--safe-area-inset-right, 0px));
   }
 }
 
@@ -320,8 +301,7 @@ p:empty {
   --page-width: calc(var(--page-content-width) + (var(--page-margin) * 2));
 }
 
-.page-width-narrow,
-.page-width-content {
+.page-width-narrow {
   /* NOTE: This results in a page width of 1400px because of how we set up margins with grid */
   --page-content-width: var(--narrow-page-width);
   --page-width: calc(var(--page-content-width) + (var(--page-margin) * 2));
@@ -404,18 +384,12 @@ p:empty {
   }
 }
 
-/* Some page-width sections should still extend all the way to the right edge of the page, e.g. collection carousel */
-.section--page-width.section--full-width-right > * {
-  grid-column: 2 / 4;
-}
-
 /* For full-width sections with margin, content still spans full width but with space on the sides */
 .section--full-width.section--full-width-margin > * {
   grid-column: 1 / -1;
 
   @media screen and (min-width: 750px) {
-    padding-left: var(--page-margin);
-    padding-right: var(--page-margin);
+    padding-inline: var(--page-margin);
   }
 }
 
@@ -528,17 +502,8 @@ p:empty {
   }
 }
 
-.flex {
-  display: flex;
-  gap: var(--gap-md);
-}
-
 .flip-x {
   scale: -1 1;
-}
-
-.flip-y {
-  scale: 1 -1;
 }
 
 .list-unstyled {
@@ -548,9 +513,9 @@ p:empty {
 }
 
 .text-left {
-  --text-align: left;
+  --text-align: start;
 
-  text-align: left;
+  text-align: start;
 }
 
 .text-center {
@@ -560,9 +525,9 @@ p:empty {
 }
 
 .text-right {
-  --text-align: right;
+  --text-align: end;
 
-  text-align: right;
+  text-align: end;
 }
 
 .text-inherit {
@@ -574,7 +539,7 @@ p:empty {
 }
 
 .justify-left {
-  justify-content: left;
+  justify-content: flex-start;
 }
 
 .justify-center {
@@ -582,32 +547,7 @@ p:empty {
 }
 
 .justify-right {
-  justify-content: right;
-}
-
-.title--aligned-center {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.background-image-container {
-  overflow: hidden;
-  position: absolute;
-  inset: 0;
-  opacity: var(--image-opacity);
-}
-
-.background-image-container img,
-.background-image-container svg {
-  object-fit: cover;
-  width: 100%;
-  height: 100%;
-}
-
-.background-image-fit img,
-.background-image-fit svg {
-  object-fit: contain;
+  justify-content: flex-end;
 }
 
 .svg-wrapper {
@@ -866,140 +806,9 @@ p:not(.h1, .h2, .h3, .h4, .h5, .h6) a:where(:not(.button, .button-secondary)),
   background-position: center center;
 }
 
-details[open] .summary-closed {
-  display: none;
-}
-
-details:not([open]) .summary-open {
-  display: none;
-}
-
-details[open] > summary .icon-animated > svg {
-  transform: rotate(180deg);
-}
-
 /* iOS fix: hide the default arrow on the summary */
 summary::-webkit-details-marker {
   display: none;
-}
-
-/* When header is transparent, pull the first main content section up to sit under the floating header */
-body:has(.header[transparent]) .content-for-layout > .shopify-section:first-child {
-  margin-top: calc(var(--header-group-height) * -1);
-}
-
-body:has(.header[transparent]) #header-group > .header-section {
-  z-index: var(--layer-menu-drawer);
-}
-
-/* All other header group content should be beneath the floating header,
-but above the rest of the page content */
-body:has(.header[transparent]) #header-group > *:not(.header-section) {
-  z-index: calc(var(--layer-menu-drawer) - 1);
-}
-
-.text-block {
-  width: 100%;
-}
-
-.text-block > *:first-child,
-.text-block > *:first-child:empty + * {
-  margin-block-start: 0;
-}
-
-.text-block > *:last-child,
-.text-block > *:has(+ *:last-child:empty) {
-  margin-block-end: 0;
-}
-
-/* This is to deal with the margin applied to the p when custom styles are enabled. The p isn't the first child anymore due to the style tag */
-.text-block > style + * {
-  margin-block-start: 0;
-}
-
-/* Dialog */
-.dialog-modal {
-  border: none;
-  box-shadow: var(--shadow-popover);
-
-  @media screen and (min-width: 750px) {
-    border-radius: var(--style-border-radius-popover);
-    max-width: var(--normal-content-width);
-  }
-
-  @media screen and (max-width: 749px) {
-    max-width: 100%;
-    max-height: 100%;
-    height: 100dvh;
-    width: 100dvw;
-    padding: var(--padding-md);
-  }
-}
-
-.dialog-modal::backdrop {
-  transition: backdrop-filter var(--animation-speed) var(--animation-easing);
-  backdrop-filter: brightness(1);
-  background: rgb(var(--backdrop-color-rgb) / var(--backdrop-opacity));
-}
-
-.dialog-modal[open] {
-  animation: elementSlideInTop var(--animation-speed) var(--animation-easing) forwards;
-
-  &::backdrop {
-    animation: backdropFilter var(--animation-speed) var(--animation-easing) forwards;
-    transition: opacity var(--animation-speed) var(--animation-easing);
-  }
-}
-
-.dialog-modal.dialog-closing {
-  animation: elementSlideOutTop var(--animation-speed) var(--animation-easing) forwards;
-
-  &::backdrop {
-    opacity: 0;
-  }
-}
-
-/* stylelint-disable value-keyword-case */
-.dialog-drawer {
-  --dialog-drawer-opening-animation: move-and-fade;
-  --dialog-drawer-closing-animation: move-and-fade;
-}
-
-.dialog-drawer--right {
-  --dialog-drawer-opening-animation: move-and-fade;
-  --dialog-drawer-closing-animation: move-and-fade;
-}
-/* stylelint-enable value-keyword-case */
-
-.dialog-drawer[open] {
-  --start-x: var(--custom-transform-from, 100%);
-  --end-x: var(--custom-transform-to, 0px);
-  --start-opacity: 1;
-
-  animation: var(--dialog-drawer-opening-animation) var(--animation-speed) var(--animation-easing) forwards;
-}
-
-.dialog-drawer[open].dialog-closing {
-  --start-x: 0px;
-  --end-x: 100%;
-  --start-opacity: 1;
-  --end-opacity: 1;
-
-  animation: var(--dialog-drawer-closing-animation) var(--animation-speed) var(--animation-easing);
-}
-
-.dialog-drawer--right[open] {
-  --start-x: -100%;
-  --start-opacity: 1;
-}
-
-.dialog-drawer--right[open].dialog-closing {
-  --start-x: 0px;
-  --end-x: -100%;
-  --start-opacity: 1;
-  --end-opacity: 1;
-
-  animation: var(--dialog-drawer-closing-animation) var(--animation-speed) var(--animation-easing);
 }
 
 /* Buttons */
@@ -1035,6 +844,8 @@ button.shopify-payment-button__button--unbranded {
 
 .button {
   font-family: var(--button-font-family-primary);
+  font-style: var(--button-font-style-primary);
+  font-weight: var(--button-font-weight-primary);
   text-transform: var(--button-text-case-primary);
   border-radius: var(--style-border-radius-buttons-primary);
 }
@@ -1045,12 +856,16 @@ button.shopify-payment-button__button--unbranded {
 
 .button-secondary {
   font-family: var(--button-font-family-secondary);
+  font-style: var(--button-font-style-secondary);
+  font-weight: var(--button-font-weight-secondary);
   text-transform: var(--button-text-case-secondary);
   border-radius: var(--style-border-radius-buttons-secondary);
 }
 
 button.shopify-payment-button__button--unbranded {
   font-family: var(--button-font-family-primary);
+  font-style: var(--button-font-style-primary);
+  font-weight: var(--button-font-weight-primary);
   text-transform: var(--button-text-case-primary);
 }
 
@@ -1119,6 +934,8 @@ button.shopify-payment-button__button--unbranded:hover:not([disabled]) {
   --button-focus-outline-color: var(--color-primary-button-focus-outline);
 
   font-family: var(--button-font-family-primary);
+  font-style: var(--button-font-style-primary);
+  font-weight: var(--button-font-weight-primary);
   text-transform: var(--button-text-case-primary);
   border-radius: var(--style-border-radius-buttons-primary);
   outline-color: var(--button-focus-outline-color, var(--button-background-color));
@@ -1149,6 +966,11 @@ button.shopify-payment-button__button--unbranded:hover:not([disabled]) {
   font-size: var(--font-paragraph--size);
 }
 
+/* Link-style buttons that also carry a button class keep the paragraph weight, not the button font weight */
+.button-unstyled:where(.button, .button-secondary, .button-custom) {
+  font-weight: var(--font-paragraph--weight);
+}
+
 .button-unstyled:hover {
   background-color: inherit;
 }
@@ -1173,18 +995,9 @@ button.shopify-payment-button__button--unbranded:hover:not([disabled]) {
   box-shadow: none;
 }
 
-/* Collapsible row */
-
+/* Caret icon transition */
 .icon-caret svg {
   transition: transform var(--animation-speed) var(--animation-easing);
-}
-
-.icon-caret--forward svg {
-  transform: rotate(-90deg);
-}
-
-.icon-caret--backward svg {
-  transform: rotate(90deg);
 }
 
 summary {
@@ -1199,35 +1012,13 @@ summary:hover {
   color: rgb(var(--color-foreground-rgb) / var(--opacity-80));
 }
 
-summary .svg-wrapper {
-  margin-inline-start: auto;
-  height: var(--icon-size-xs);
-  width: var(--icon-size-xs);
-  transition: transform var(--animation-speed) var(--animation-easing);
-}
-
-/* Shared plus/minus icon animations */
-summary .icon-plus :is(.horizontal, .vertical) {
-  transition: transform var(--animation-speed) var(--animation-easing);
-  transform: rotate(0deg);
-  transform-origin: 50% 50%;
-  opacity: 1;
-}
-
-details[open] > summary .icon-plus .horizontal {
-  transform: rotate(90deg);
-}
-
-details[open] > summary .icon-plus .vertical {
-  transform: rotate(90deg);
-  opacity: 0;
-}
-
 /* Animate the UI elements in only after the view transition is complete */
 .close-button {
   position: fixed;
-  top: var(--margin-lg);
-  right: var(--margin-lg);
+
+  /* Keep the fixed close button clear of the status bar and inline-end notch (viewport-fit=cover) */
+  top: max(var(--margin-lg), var(--safe-area-inset-top, 0px));
+  inset-inline-end: max(var(--margin-lg), var(--safe-area-inset-right, 0px));
   width: var(--minimum-touch-target);
   height: var(--minimum-touch-target);
   z-index: var(--layer-flat);
@@ -1238,6 +1029,11 @@ details[open] > summary .icon-plus .vertical {
 
   /* For the outline radius */
   border-radius: 50%;
+}
+
+/* Safe-area env() values are physical; in RTL the button sits by the left-side notch */
+[dir='rtl'] .close-button {
+  inset-inline-end: max(var(--margin-lg), var(--safe-area-inset-left, 0px));
 }
 
 /* This triggers iOS < 16.4. The outline bug is not recognized as a lack of @supports */
@@ -1298,56 +1094,6 @@ details[open] > summary .icon-plus .vertical {
   }
 }
 
-.price,
-.compare-at-price,
-.unit-price {
-  white-space: nowrap;
-}
-
-.unit-price {
-  display: block;
-  font-size: min(0.85em, var(--font-paragraph--size));
-  color: rgb(var(--color-rgb, var(--color-foreground-rgb)) / var(--opacity-subdued-text));
-}
-
-.tax-note.tax-note.tax-note {
-  font-size: min(0.85em, var(--font-paragraph--size));
-  font-weight: var(--font-paragraph--weight);
-  color: rgb(var(--color-rgb, var(--color-foreground-rgb)) / var(--opacity-subdued-text));
-}
-
-.tax-note:empty {
-  display: none;
-}
-
-product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) > *:not(.tax-note) {
-  margin-block: 0;
-}
-
-/* Volume pricing note should match unit-price styling (small, grey text) */
-product-price .volume-pricing-note,
-product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) .volume-pricing-note {
-  display: block;
-  font-family: var(--font-body--family);
-  font-weight: normal;
-  font-size: var(--font-size--xs);
-  line-height: normal;
-  letter-spacing: normal;
-  text-transform: none;
-  color: rgb(var(--color-rgb, var(--color-foreground-rgb)) / var(--opacity-subdued-text));
-}
-
-.compare-at-price {
-  color: rgb(var(--color-rgb, var(--color-foreground-rgb)) / var(--opacity-subdued-text));
-  text-decoration-line: line-through;
-  text-decoration-thickness: 1.5px;
-  text-decoration-color: rgb(var(--color-rgb, var(--color-foreground-rgb)) / var(--opacity-30));
-}
-
-.price-item__group {
-  display: inline-block;
-}
-
 /* Spacing style */
 .spacing-style {
   --spacing-scale: var(--spacing-scale-md);
@@ -1370,10 +1116,7 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) .volume-pricing-note {
   --margin-inline: 0px;
   --margin-inline-start: var(--margin-inline, 0px);
   --margin-inline-end: var(--margin-inline, 0px);
-}
 
-.spacing-style,
-.inherit-spacing {
   padding-block: calc(var(--padding-block-start) + var(--section-top-offset, 0px)) var(--padding-block-end);
   padding-inline: var(--padding-inline-start) var(--padding-inline-end);
   margin-block: var(--margin-block-start) var(--margin-block-end);
@@ -1517,7 +1260,7 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) .volume-pricing-note {
 
 .field__input {
   flex-grow: 1;
-  text-align: left;
+  text-align: start;
   border-radius: var(--style-border-radius-inputs);
   transition: box-shadow var(--animation-speed) ease, background-color var(--animation-speed) ease;
   padding: var(--input-padding);
@@ -1549,7 +1292,7 @@ product-price.text-block:is(.h1, .h2, .h3, .h4, .h5, .h6) .volume-pricing-note {
 .field__label {
   color: rgb(var(--color-input-text-rgb) / var(--opacity-80));
   font-size: var(--font-paragraph--size);
-  left: var(--input-padding-x);
+  inset-inline-start: var(--input-padding-x);
   top: 50%;
   transform: translateY(-50%);
   margin-bottom: 0;
@@ -1656,7 +1399,7 @@ input[type='radio'] {
   content: '';
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 50%; /* stylelint-disable-line csstools/use-logical -- centring pair with a physical translate(-50%) */
   transform: translate(-50%, -50%);
   width: calc(var(--checkbox-size) / 2);
   height: calc(var(--checkbox-size) / 2);
@@ -1705,7 +1448,7 @@ input[type='radio'] {
   content: '';
   position: absolute;
   top: 50%;
-  left: 50%;
+  left: 50%; /* stylelint-disable-line csstools/use-logical -- centring pair with a physical translate(-50%) */
   transform: translate(-50%, -50%);
   width: var(--checkbox-size);
   height: var(--checkbox-size);
@@ -1749,24 +1492,6 @@ input[type='radio'] {
   color: var(--input-disabled-text-color);
   cursor: not-allowed;
 }
-
-/* Flexbox for labels wrapping radio buttons or checkboxes */
-label:has(input[type='radio']),
-label:has(input[type='checkbox']) {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--padding-2xs);
-  cursor: pointer;
-}
-
-label:has(input[type='radio']:disabled),
-label:has(input[type='checkbox']:disabled) {
-  cursor: not-allowed;
-}
-
-/* ------------------------------------------------------------------------------ */
-
-/* ------------------------------------------------------------------------------ */
 
 /* Animation declarations - to be kept at the bottom of the file for ease of find */
 @keyframes grow {
@@ -1822,18 +1547,6 @@ label:has(input[type='checkbox']:disabled) {
   to {
     transform: translateY(var(--padding-sm));
     opacity: 0;
-  }
-}
-
-@keyframes elementSlideInBottom {
-  from {
-    transform: translateY(calc(-1 * var(--padding-sm)));
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
   }
 }
 
@@ -1921,31 +1634,6 @@ label:has(input[type='checkbox']:disabled) {
   }
 }
 
-@keyframes dialogZoom {
-  from {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-
-  to {
-    opacity: 0;
-    transform: scale(0.95) translateY(1em);
-  }
-}
-
-@keyframes thumbnail-selected {
-  0%,
-  100% {
-    box-shadow: 0 0 0 2px transparent;
-    scale: 0.9;
-  }
-
-  50% {
-    box-shadow: 0 0 0 2px #000;
-    scale: 1;
-  }
-}
-
 @keyframes backdropFilter {
   from {
     backdrop-filter: brightness(1);
@@ -2002,12 +1690,23 @@ label:has(input[type='checkbox']:disabled) {
 
 /* Slideshow Arrow Hover Animation - must stay in base.css for proper CSS cascade */
 
-:not(.media-gallery--carousel)
-  > :is(slideshow-component:hover, slideshow-component:focus-within):not(:has(slideshow-controls:hover))
-  > slideshow-container
-  > slideshow-arrows
-  .slideshow-control {
+slideshow-container[animate-arrows]:hover > slideshow-arrows .slideshow-control,
+slideshow-component:focus-within > slideshow-container[animate-arrows] > slideshow-arrows .slideshow-control {
   animation: arrowsSlideIn var(--animation-speed) var(--animation-easing) forwards;
+}
+
+/* Clipped controls preserve accessible paging without intercepting touch taps. */
+@media (hover: none) and (pointer: coarse) {
+  .resource-list__carousel > [animate-arrows] > :where(slideshow-arrows) > .slideshow-control:not(:focus-visible) {
+    position: absolute;
+    clip: rect(0 0 0 0);
+    animation: none;
+  }
+
+  .resource-list__carousel > [animate-arrows] > :where(slideshow-arrows) > .slideshow-control:focus-visible {
+    opacity: 1;
+    animation: none;
+  }
 }
 
 @keyframes arrowsSlideIn {
@@ -2034,10 +1733,6 @@ label:has(input[type='checkbox']:disabled) {
   width: 100%;
 }
 
-.section-resource-list__content:empty {
-  display: none;
-}
-
 .section-resource-list__header:is(:empty, :has(.group-block-content:empty)),
 .section-resource-list__content:empty {
   display: none;
@@ -2057,8 +1752,7 @@ label:has(input[type='checkbox']:disabled) {
   position: relative;
 }
 
-.group-block:has(> video-background-component),
-.group-block:has(> .background-image-container) {
+.group-block:has(> video-background-component) {
   overflow: hidden;
 }
 
@@ -2108,19 +1802,6 @@ label:has(input[type='checkbox']:disabled) {
   flex-basis: var(--size-style-height);
 }
 
-/* Animation transitions */
-.transition-background-color {
-  transition: background-color var(--animation-speed-medium) ease-in-out;
-}
-
-.transition-transform {
-  transition: transform var(--animation-speed-medium) var(--animation-timing-bounce);
-}
-
-.transition-border-color {
-  transition: border-color var(--animation-speed-medium) var(--animation-timing-hover);
-}
-
 /* Global scrollbar styles */
 
 /* Webkit browsers */
@@ -2142,22 +1823,6 @@ label:has(input[type='checkbox']:disabled) {
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: rgb(var(--color-foreground-rgb) / var(--opacity-60));
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
-}
-
-.product-card:hover,
-.collection-card:hover,
-.predictive-search-results__card--product:hover,
-.predictive-search-results__card:hover {
-  position: relative;
-  z-index: var(--layer-raised);
-  transition: transform var(--hover-transition-duration) var(--hover-transition-timing),
-    box-shadow var(--hover-transition-duration) var(--hover-transition-timing);
 }
 
 /* Prevent iOS zoom on input focus by ensuring minimum 16px font size on mobile */
@@ -2200,7 +1865,7 @@ main > .shopify-section:first-child .section:not(.disable-section-top-offset) {
     --section-top-offset: calc(var(--header-height) * var(--transparent-header-offset-boolean));
 
     /* Any nested sections should not be offset */
-    :is(.spacing-style, .inherit-spacing) {
+    .spacing-style {
       --section-top-offset: 0px;
     }
   }

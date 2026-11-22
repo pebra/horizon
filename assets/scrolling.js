@@ -1,4 +1,4 @@
-import { debounce, throttle, prefersReducedMotion } from '@theme/utilities';
+import { debounce, throttle, prefersReducedMotion, isRTL } from '@theme/utilities';
 
 /**
  * Timeout duration (in milliseconds) after which scroll is considered to have ended.
@@ -102,8 +102,7 @@ export class Scroller {
     let value;
 
     if (input instanceof HTMLElement) {
-      const paddingStart = calculatePaddingStart(this.element, this.axis);
-      value = input[`offset${this.#edge}`] - paddingStart;
+      value = this.#startPosition(input);
     } else {
       value = input;
     }
@@ -160,6 +159,24 @@ export class Scroller {
       [this.#edge.toLowerCase()]: value,
       behavior: instant ? 'instant' : 'smooth',
     });
+  }
+
+  /**
+   * The scroll position that aligns an element with the scroller's inline (or block) start.
+   * @param {HTMLElement} element - A child of the scroller.
+   * @returns {number}
+   */
+  #startPosition(element) {
+    const paddingStart = calculatePaddingStart(this.element, this.axis);
+
+    // offsetLeft is physical, measured from the left edge, but in RTL the start
+    // edge is on the right and scrollLeft runs from 0 there to negative values.
+    // Align the element's right edge with the scroller's start instead.
+    if (this.axis === 'x' && isRTL(this.element)) {
+      return element.offsetLeft + element.offsetWidth - this.element.clientWidth + paddingStart;
+    }
+
+    return element[`offset${this.#edge}`] - paddingStart;
   }
 
   /**
@@ -316,6 +333,13 @@ export function scrollIntoView(element, { ancestor, behavior = 'smooth', block =
   const elemRect = element.getBoundingClientRect();
   const ancestorRect = ancestor.getBoundingClientRect();
 
+  // Rect positions are physical, so logical inline alignments swap sides in RTL
+  const rtl = isRTL(ancestor);
+  /** @type {'start' | 'center' | 'end'} */
+  let inlineAlignment = inline;
+  if (rtl && inline === 'start') inlineAlignment = 'end';
+  if (rtl && inline === 'end') inlineAlignment = 'start';
+
   /**
    * Calculates the scroll offset for an element.
    * @param {'start' | 'center' | 'end'} alignment - The alignment of the element.
@@ -354,7 +378,7 @@ export function scrollIntoView(element, { ancestor, behavior = 'smooth', block =
   const scrollLeft =
     ancestor.scrollWidth > ancestor.clientWidth
       ? calculateScrollOffset(
-          inline,
+          inlineAlignment,
           ancestorRect.left,
           ancestor.clientWidth,
           elemRect.left,
@@ -398,15 +422,18 @@ class ScrollHint extends HTMLElement {
   #update = () => {
     const { scrollTop, scrollHeight, clientHeight, scrollLeft, scrollWidth, clientWidth } = this;
     const scrollDirection = scrollWidth > clientWidth ? 'horizontal' : 'vertical';
+    // In RTL, scrollLeft is 0 at rest and goes negative, so use the absolute distance
+    const rtl = scrollDirection === 'horizontal' && isRTL(this);
     const scrollPercentage =
       scrollDirection === 'vertical'
         ? scrollTop / (scrollHeight - clientHeight)
-        : scrollLeft / (scrollWidth - clientWidth);
+        : Math.abs(scrollLeft) / (scrollWidth - clientWidth);
+    const gradientDirection = scrollDirection === 'vertical' ? 'bottom' : rtl ? 'left' : 'right';
 
     this.style.maskImage = Number.isNaN(scrollPercentage)
       ? ''
       : `linear-gradient(
-        to ${scrollDirection === 'vertical' ? 'bottom' : 'right'},
+        to ${gradientDirection},
         transparent ${scrollPercentage > 0 ? 1 : 0}%,
         black ${scrollPercentage < 0.1 ? scrollPercentage * 100 : 10}%,
         black ${scrollPercentage > 0.9 ? scrollPercentage * 100 : 90}%,

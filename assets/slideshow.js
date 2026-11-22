@@ -3,6 +3,8 @@ import {
   center,
   closest,
   clamp,
+  getDirectionMultiplier,
+  isRTL,
   mediaQueryLarge,
   prefersReducedMotion,
   preventDefault,
@@ -14,6 +16,7 @@ import { SlideshowSelectEvent } from '@theme/events';
 
 // The threshold for determining visibility of slides.
 const SLIDE_VISIBLITY_THRESHOLD = 0.7;
+const DRAG_THRESHOLD = 5;
 
 /**
  * Shared viewport observer manager for lazy scroll enablement.
@@ -196,7 +199,10 @@ export class Slideshow extends Component {
     for (const slide of this.refs.slides) {
       if (slide.hasAttribute('reveal')) {
         slide.removeAttribute('reveal');
-        slide.setAttribute('aria-hidden', 'true');
+        // A revealed slide keeps its aria-hidden state only while it is the current slide and is no
+        // longer hidden (a variant image the product card just chose). Every other revealed slide
+        // leaves the slideshow; a selection that moves to it exposes it again below.
+        if (slide.hasAttribute('hidden') || slide !== currentSlide) slide.setAttribute('aria-hidden', 'true');
       }
     }
 
@@ -653,7 +659,7 @@ export class Slideshow extends Component {
     const { axis } = this.#scroll;
     const { scroller } = this.refs;
     const centers = visibleSlides.map((slide) => center(slide, axis));
-    const referencePoint = visibleSlides.length > 1 ? scroller.getBoundingClientRect()[axis] : center(scroller, axis);
+    const referencePoint = visibleSlides.length > 1 ? this.#startEdge(scroller, axis) : center(scroller, axis);
     const closestCenter = closest(centers, referencePoint);
     const closestVisibleSlide = visibleSlides[centers.indexOf(closestCenter)];
 
@@ -664,6 +670,20 @@ export class Slideshow extends Component {
     return (this.current = index);
   };
 
+  /**
+   * The viewport coordinate of the scroller's start edge: its left edge, or its
+   * right edge when a horizontal slideshow renders right-to-left.
+   * @param {HTMLElement} scroller - The scroller element.
+   * @param {'x' | 'y'} axis - The scroll axis.
+   * @returns {number}
+   */
+  #startEdge(scroller, axis) {
+    const rect = scroller.getBoundingClientRect();
+    if (axis === 'x' && isRTL(scroller)) return rect.right;
+
+    return rect[axis];
+  }
+
   #dragging = false;
 
   /**
@@ -673,6 +693,7 @@ export class Slideshow extends Component {
   #handleMouseDown = (event) => {
     const { slides } = this;
 
+    if (event.button !== 0) return;
     if (!slides || slides.length <= 1) return;
     if (!(event.target instanceof Element)) return;
     if (this.disabled || this.#dragging) return;
@@ -687,16 +708,17 @@ export class Slideshow extends Component {
     // Store initial position but don't start handling yet
     const { axis } = this.#scroll;
     const startPosition = event[axis];
+    // Pointer positions are physical; in RTL a horizontal slideshow advances leftwards.
+    const directionMultiplier = axis === 'x' ? getDirectionMultiplier(this) : 1;
 
     const controller = new AbortController();
     const { signal } = controller;
+    const clickController = new AbortController();
     const startTime = performance.now();
     let previous = startPosition;
     let velocity = 0;
     let moved = false;
     let distanceTravelled = 0;
-
-    this.#dragging = true;
 
     /**
      * Handles the 'pointermove' event to update the scroll position.
@@ -706,22 +728,16 @@ export class Slideshow extends Component {
       const current = event[axis];
       const initialDelta = startPosition - current;
 
-      if (!initialDelta) return;
+      if (!moved && (!initialDelta || Math.abs(initialDelta) < DRAG_THRESHOLD)) return;
 
       if (!moved) {
-        moved = true;
-        this.setPointerCapture(event.pointerId);
-
-        // Prevent clicks once the user starts dragging
-        document.addEventListener('click', preventDefault, { once: true, signal });
-
-        const movingRight = initialDelta < 0;
-        const movingLeft = initialDelta > 0;
+        const movingBackward = initialDelta * directionMultiplier < 0;
+        const movingForward = initialDelta * directionMultiplier > 0;
 
         // Check if the current slideshow should handle this drag
         const closestSlideshow = this.parentElement?.closest('slideshow-component');
         const isNested = closestSlideshow instanceof Slideshow && closestSlideshow !== this;
-        const cannotMoveInDirection = (movingRight && this.atStart) || (movingLeft && this.atEnd);
+        const cannotMoveInDirection = (movingBackward && this.atStart) || (movingForward && this.atEnd);
 
         // Abort and let the parent slideshow handle the drag if we're moving in a direction where nested slideshow can't move
         if (isNested && cannotMoveInDirection) {
@@ -729,8 +745,16 @@ export class Slideshow extends Component {
           return;
         }
 
+        moved = true;
+        this.#dragging = true;
+        this.setPointerCapture(event.pointerId);
+
+        // Prevent clicks once the user starts dragging
+        document.addEventListener('click', preventDefault, { once: true, signal: clickController.signal });
+
         this.pause();
         this.setAttribute('dragging', '');
+        this.#scroll.snap = false;
       }
 
       // Stop the event from bubbling up to parent slideshow components
@@ -751,14 +775,17 @@ export class Slideshow extends Component {
      */
     const onPointerUp = async (event) => {
       controller.abort();
+      if (event.type !== 'pointerup') clickController.abort();
+      this.#dragging = false;
+
+      if (!moved) return;
+
       const { current, slides } = this;
       const { scroller } = this.refs;
 
-      this.#dragging = false;
-
       if (!slides?.length || !scroller) return;
 
-      const direction = Math.sign(velocity);
+      const direction = Math.sign(velocity) * directionMultiplier;
       const next = this.#sync();
 
       const modifier = current !== next || Math.abs(velocity) < 10 || distanceTravelled < 10 ? 0 : direction;
@@ -797,8 +824,6 @@ export class Slideshow extends Component {
       this.#scroll.snap = true;
       this.resume();
     };
-
-    this.#scroll.snap = false;
 
     document.addEventListener('pointermove', onPointerMove, { signal });
     document.addEventListener('pointerup', onPointerUp, { signal });

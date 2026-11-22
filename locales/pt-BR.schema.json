@@ -329,7 +329,6 @@
     "icon_background": "Plano de fundo do ícone",
     "icons": "Ícones",
     "image_border_radius": "Raio do canto da imagem",
-    "installments": "Parcelas",
     "integrated_button": "Botão integrado",
     "language_selector": "Seletor de idiomas",
     "large": "Grande",
@@ -574,7 +573,10 @@
     "input_style": "Estilo do campo",
     "selected_button_style": "Estilo do botão selecionado",
     "open_by_default": "Aberto por padrão",
-    "title_preset": "Predefinição de título"
+    "title_preset": "Predefinição de título",
+    "customer_account_menu": "Menu da conta de cliente",
+    "shop_pay_payment_options": "Exibir opções de pagamento do Shop Pay",
+    "show_physical_stores": "Exibir lojas físicas"
   },
   "options": {
     "apple": "Apple",
@@ -850,7 +852,13 @@
     "below_media": "Abaixo da mídia",
     "full_frame": "Tela cheia",
     "icons": "Ícones",
-    "input_field": "Campo de entrada"
+    "input_field": "Campo de entrada",
+    "direction_bottom_start": "Inferior à esquerda",
+    "direction_center": "Centro",
+    "direction_end": "Direita",
+    "direction_start": "Esquerda",
+    "direction_top_end": "Superior à direita",
+    "direction_top_start": "Superior à esquerda"
   },
   "content": {
     "advanced": "Avançado",
@@ -899,7 +907,7 @@
     "media": "Mídia",
     "media_1": "Mídia 1",
     "media_2": "Mídia 2",
-    "menu_appearance_paragraph": "Afeta submenus no desktop e o menu principal no celular.",
+    "menu_appearance_paragraph": "Afeta os submenus no desktop e o menu principal em dispositivos móveis.",
     "menu": "Menu",
     "mobile_layout": "Layout para celular",
     "padding": "Preenchimento",
@@ -972,9 +980,9 @@
     "button_colors": "Cores do botão",
     "cart_bubble": "Bolha do carrinho",
     "type": "Tipo",
-    "cart_summary_mobile_colors": "No mobile, as cores do resumo são herdadas da seção do carrinho.",
-    "local_pickup_description": "Mostre locais de retirada próximos quando a retirada local da loja virtual estiver configurada. [Saiba mais](https://help.shopify.com/en/manual/fulfillment/setup/delivery-methods/pickup-in-store)",
-    "local_pickup": "Retirada local",
+    "cart_summary_mobile_colors": "Em dispositivos móveis, as cores do resumo são herdadas da seção do carrinho.",
+    "local_pickup_description": "Mostrar locais de retirada próximos quando a retirada no local da loja virtual estiver configurada. [Saiba mais](https://help.shopify.com/en/manual/fulfillment/setup/delivery-methods/pickup-in-store)",
+    "local_pickup": "Retirada no local",
     "gift_card_products": "Produtos de cartão-presente",
     "disclosures": "Divulgações",
     "disclosures_metafield_content": "Avisos de segurança e divulgações regulatórias obrigatórios para este produto.",
@@ -1084,7 +1092,7 @@
     "checkout_buttons": "Permite que os compradores finalizem a compra mais rapidamente e pode melhorar a conversão. [Saiba mais](https://help.shopify.com/manual/online-store/dynamic-checkout)",
     "custom_heading": "Título personalizado",
     "edit_presets_in_theme_settings": "Edite as predefinições nas [configurações do tema](/editor?context=theme&category=typography)",
-    "edit_button_style_in_theme_settings": "Edite os estilos dos botões primário e secundário nas [configurações do tema](/editor?context=theme&category=buttons)",
+    "edit_button_style_in_theme_settings": "Edite os estilos de botão primário e secundário nas [configurações do tema](/editor?context=theme&category=buttons)",
     "enable_filtering_info": "Personalize os filtros com o [app Search & Discovery](https://help.shopify.com/manual/online-store/search-and-discovery/filters)",
     "grid_layout_on_mobile": "O layout em grade é usado para celular",
     "logo_font": "Aplica-se apenas quando um logo não está selecionado",
@@ -1102,7 +1110,9 @@
     "page_text_color_default_info": "Padrão para seções do tema",
     "actions_display_style": "Os ícones são sempre usados em dispositivos móveis",
     "edit_input_field_in_theme_settings": "Editar campo de entrada nas [configurações do tema](/editor?context=theme&category=input%20fields)",
-    "edit_variants_in_theme_settings": "Edite o estilo da variante nas [configurações do tema](/editor?context=theme&category=variant%20pickers)"
+    "edit_variants_in_theme_settings": "Edite o estilo da variante nas [configurações do tema](/editor?context=theme&category=variant%20pickers)",
+    "shop_pay_payment_options": "Exibe os selos do Parcelamento do Shop Pay e de HSA/FSA quando disponíveis.",
+    "show_physical_stores_help": "Listar também os locais marcados como loja física que têm o produto em estoque, mesmo quando não oferecem retirada."
   },
   "categories": {
     "basic": "Básico",

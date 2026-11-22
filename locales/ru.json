@@ -76,7 +76,17 @@
     "search_suggestions_available": "Доступны поисковые подсказки для \"{{ query }}\"",
     "price_filter_low": "Низкая цена",
     "price_filter_high": "Высокая цена",
-    "view_disclosure_information_for_product": "Просмотреть дополнительную информацию о товаре {{ product_title }}"
+    "view_disclosure_information_for_product": "Просмотреть дополнительную информацию о товаре {{ product_title }}",
+    "show_submenu": "Показать подменю {{ title }}",
+    "link_to_product": "Товар: {{ title }}",
+    "link_to_blog": "Блог: {{ title }}",
+    "link_to_page": "Страница: {{ title }}",
+    "link_to_article": "Статья: {{ title }}",
+    "link_to_policy": "Политика: {{ title }}",
+    "link_to_home": "Главная",
+    "link_to_catalog": "Все товары",
+    "link_to_collections": "Все коллекции",
+    "link_to_collection": "Коллекция: {{ title }}"
   },
   "actions": {
     "add_to_cart": "Добавить в корзину",
@@ -120,7 +130,8 @@
     "show_all_options": "Показать все варианты",
     "open": "Открыть",
     "back_to": "Вернуться к {{ title }}",
-    "zoom_media": "Увеличить медиафайл {{ index }}"
+    "zoom_media": "Увеличить медиафайл {{ index }}",
+    "back_to_main_menu": "Назад в главное меню"
   },
   "content": {
     "reviews": "отз.",
@@ -286,7 +297,25 @@
     "item_count_cutoff": "Более {{ count }} товаров",
     "price_range": "Ценовой диапазон",
     "quick_order_list": "Список быстрых заказов",
-    "product_disclosures": "Дополнительная информация о товаре"
+    "product_disclosures": "Дополнительная информация о товаре",
+    "duties_and_taxes_included_shipping_at_checkout_with_policy_with_fees_html": "Пошлины и налоги включены. Скидки, сборы и <a href=\"{{ link }}\">доставка</a> рассчитываются при оформлении заказа.",
+    "duties_and_taxes_included_shipping_at_checkout_with_policy_without_discounts_with_fees_html": "Пошлины и налоги включены. Сборы и доставка рассчитываются при оформлении заказа.",
+    "duties_and_taxes_included_shipping_at_checkout_without_policy_with_fees": "Пошлины и налоги включены. Скидки, сборы и доставка рассчитываются при оформлении заказа.",
+    "duties_and_taxes_included_shipping_at_checkout_without_policy_without_discounts_with_fees": "Пошлины и налоги включены. Сборы и доставка рассчитываются при оформлении заказа.",
+    "duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_with_fees_html": "Пошлины включены. Налоги, скидки, сборы и <a href=\"{{ link }}\">доставка</a> рассчитываются при оформлении заказа.",
+    "duties_included_taxes_at_checkout_shipping_at_checkout_with_policy_without_discounts_with_fees_html": "Пошлины включены. Сборы и доставка рассчитываются при оформлении заказа.",
+    "duties_included_taxes_at_checkout_shipping_at_checkout_without_policy_with_fees": "Пошлины включены. Налоги, скидки, сборы и доставка рассчитываются при оформлении заказа.",
+    "duties_included_taxes_at_checkout_shipping_at_checkout_without_policy_without_discounts_with_fees": "Пошлины включены. Сборы и доставка рассчитываются при оформлении заказа.",
+    "taxes_at_checkout_shipping_at_checkout_with_policy_with_fees_html": "Налоги, скидки, сборы и <a href=\"{{ link }}\">доставка</a> рассчитываются при оформлении заказа.",
+    "taxes_at_checkout_shipping_at_checkout_with_policy_without_discounts_with_fees_html": "Налоги, сборы и <a href=\"{{ link }}\">доставка</a> рассчитываются при оформлении заказа.",
+    "taxes_at_checkout_shipping_at_checkout_without_policy_with_fees": "Налоги, скидки, сборы и доставка рассчитываются при оформлении заказа.",
+    "taxes_at_checkout_shipping_at_checkout_without_policy_without_discounts_with_fees": "Налоги, сборы и доставка рассчитываются при оформлении заказа.",
+    "taxes_included_shipping_at_checkout_with_policy_with_fees_html": "Налоги включены. Скидки, сборы и <a href=\"{{ link }}\">доставка</a> рассчитываются при оформлении заказа.",
+    "taxes_included_shipping_at_checkout_without_policy_with_fees": "Налоги включены. Скидки, сборы и доставка рассчитываются при оформлении заказа.",
+    "in_store_available": "В наличии в магазине",
+    "in_store_also_available": "Также продается в магазине — вы можете купить этот товар здесь лично",
+    "in_store_only": "Товар можно купить лично в этом магазине. Самовывоз здесь недоступен.",
+    "in_store_available_at_html": "В наличии в магазине <b>{{ location }}</b>"
   },
   "gift_cards": {
     "issued": {
@@ -297,9 +326,9 @@
       "add_to_apple_wallet": "Добавить в Apple Wallet",
       "qr_image_alt": "Отсканируйте QR-код, чтобы использовать подарочную карту",
       "copy_code": "Скопировать код подарочной карты",
-      "expiration_date": "Срок действия истекает {{ expires_on }}",
       "copy_code_success": "Код скопирован",
-      "expired": "Срок действия истек"
+      "expired": "Срок действия истек",
+      "expiration_date_html": "Истекает <bdi>{{ expires_on }}</bdi>"
     }
   },
   "blogs": {

@@ -115,9 +115,9 @@
   <product-component
     class="{{ product_grid_class }}"
     data-product-grid-content
-    {% # theme-check-disable UnknownFilter %}
-    view-event-payload="{{ product | standard_event_data: 'view' | escape }}"
-    {% # theme-check-enable UnknownFilter %}
+    {% unless product.id == blank %}
+      view-event-payload="{{ product | standard_event_data: 'view' | escape }}"
+    {% endunless %}
   >
     {% assign render_order_array = render_order | split: ',' %}
     {% capture media %}
@@ -231,18 +231,17 @@
       }
     }
 
-    /* Position when there is media */
+    /* Position when there is media. Gap paddings are logical properties to respect reading direction */
     .product-information__grid:not(.product-information--media-none) {
-      /* Media on the left side */
       &.product-information--media-left {
         grid-template-columns: 1fr min(50vw, var(--sidebar-width));
 
         .product-information__media {
-          padding-right: calc(var(--gap, 0) / 2);
+          padding-inline-end: calc(var(--gap, 0) / 2);
         }
 
         .product-details {
-          padding-left: calc(var(--gap, 0) / 2);
+          padding-inline-start: calc(var(--gap, 0) / 2);
         }
 
         &:has(.media-gallery--extend) {
@@ -250,17 +249,16 @@
         }
       }
 
-      /* Media on the right side */
       &.product-information--media-right {
         grid-template-columns: min(50vw, var(--sidebar-width)) 1fr;
 
         .product-information__media {
-          padding-left: calc(var(--gap, 0) / 2);
+          padding-inline-start: calc(var(--gap, 0) / 2);
           order: 1;
         }
 
         .product-details {
-          padding-right: calc(var(--gap, 0) / 2);
+          padding-inline-end: calc(var(--gap, 0) / 2);
           order: 0;
         }
 
@@ -388,20 +386,21 @@
     }
   }
 
-  /* Wider sidebar for large screens */
+  /* Wider sidebar for large screens. A zero track minimum keeps unbreakable product details content,
+     such as text joined with non-breaking spaces, from widening its track past the 2:1 ratio. */
   @media screen and (min-width: 1200px) {
     .product-information__grid:not(
         .product-information__grid--half,
         .product-information--media-none
       ).product-information--media-left {
-      grid-template-columns: 2fr 1fr;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
     }
 
     .product-information__grid:not(
         .product-information__grid--half,
         .product-information--media-none
       ).product-information--media-right {
-      grid-template-columns: 1fr 2fr;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
     }
   }
 
@@ -416,8 +415,34 @@
     }
   }
 
-  /* If the header is sticky, make product details content stick underneath the header */
-  body:has(#header-group #header-component[data-sticky-state='active']) .product-details.sticky-content--desktop {
+  /* If the header is sticky, make product details content stick underneath the header.
+     Header-dependent page rules use #header-group as the :has() subject and reach the page with `~`.
+     With body as the subject, every [open] or [aria-expanded] change in the header restyles the whole page. */
+  #header-group:has(> .header-section > #header-component[data-sticky-state='active'])
+    ~ *
+    .product-details.sticky-content--desktop,
+  quick-add-dialog[header-sticky-active] .product-details.sticky-content--desktop {
     --sticky-header-offset: var(--header-height);
+  }
+
+  /* If the header is sticky, make the sticky product media stick underneath the header on desktop, like the product details.
+     Media that is limited to the screen height already leaves room for the header, so it keeps its size when the header becomes active. */
+  @media screen and (min-width: 750px) {
+    #header-group:has(> .header-section > #header-component[data-sticky-state='active'])
+      ~ *
+      .product-information__media
+      .sticky-content {
+      --sticky-header-offset: var(--header-height);
+    }
+
+    /* With a transparent header, constrained media is a full screen high, so while it sticks below the active header,
+       its bottom is below the screen. Pagination on the media moves up by the header height to stay in view. */
+    #header-group:has(> .header-section > header-component[transparent='not-sticky'][data-sticky-state='active'])
+      ~ *
+      .product-information__media
+      .sticky-content:has(.constrain-height)
+      slideshow-controls[controls-on-media][pagination-position='center'] {
+      bottom: var(--header-height);
+    }
   }
 {% endstylesheet %}

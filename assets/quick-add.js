@@ -5,6 +5,9 @@ import { mediaQueryLarge, isMobileBreakpoint, getIOSVersion } from '@theme/utili
 import VariantPicker from '@theme/variant-picker';
 import { StandardEvents, ProductSelectEvent, CartLinesUpdateEvent } from '@shopify/events';
 
+/** The section that quick add renders when the product page cannot fill the modal. */
+const QUICK_ADD_SECTION_ID = 'section-rendering-quick-add';
+
 export class QuickAddComponent extends Component {
   /** @type {AbortController | null} */
   #abortController = null;
@@ -67,9 +70,28 @@ export class QuickAddComponent extends Component {
     if (this.dataset.rendersBothButtons !== 'true') return;
 
     const productOptionsCount = this.dataset.productOptionsCount;
-    const quickAddButton = productOptionsCount === '1' ? 'add' : 'choose';
+    let quickAddButton = productOptionsCount === '1' ? 'add' : 'choose';
+
+    // A single-option card can resolve to an unavailable variant (e.g. re-selecting a
+    // sold-out swatch). Keep "Choose" so shoppers reach the picker, not a dead-end disabled "Add".
+    if (quickAddButton === 'add' && this.#isSelectedVariantUnavailable()) {
+      quickAddButton = 'choose';
+    }
+
     this.setAttribute('data-quick-add-button', quickAddButton);
   };
+
+  /**
+   * Whether the card's currently selected swatch maps to an unavailable variant.
+   * Reads `data-option-available` off the variant picker's selected option - the same
+   * signal the product card uses. Only reports true on an explicit `false`, so an
+   * unknown/absent signal leaves the caller's default ("add") untouched.
+   * @returns {boolean}
+   */
+  #isSelectedVariantUnavailable() {
+    const productCard = /** @type {import('./product-card').ProductCard | null} */ (this.closest('product-card'));
+    return productCard?.variantPicker?.selectedOption?.dataset.optionAvailable === 'false';
+  }
 
   /**
    * Clears the cached content when cart is updated
@@ -108,16 +130,8 @@ export class QuickAddComponent extends Component {
     let productGrid = this.#cachedContent.get(currentUrl);
 
     if (!productGrid) {
-      // Fetch and cache the content
-      const html = await this.fetchProductPage(currentUrl);
-      if (html) {
-        const gridElement = html.querySelector('[data-product-grid-content]');
-        if (gridElement) {
-          // Cache the cloned element to avoid modifying the original
-          productGrid = /** @type {Element} */ (gridElement.cloneNode(true));
-          this.#cachedContent.set(currentUrl, productGrid);
-        }
-      }
+      productGrid = (await this.#fetchProductGrid(currentUrl)) ?? undefined;
+      if (productGrid) this.#cachedContent.set(currentUrl, productGrid);
     }
 
     if (productGrid) {
@@ -129,6 +143,46 @@ export class QuickAddComponent extends Component {
 
     this.#openQuickAddModal();
   };
+
+  /**
+   * Fetches the product grid that fills the quick add modal.
+   * The product page's own product information is used when it has every part the modal needs. A product template
+   * can hide that section or its blocks, so otherwise the theme's quick add section is rendered for the product.
+   * @param {string} productPageUrl - The URL of the product page
+   * @returns {Promise<Element | null>} A copy of the product grid, or null when a newer request aborted this one
+   */
+  async #fetchProductGrid(productPageUrl) {
+    const html = await this.fetchProductPage(productPageUrl);
+    if (!html) return null;
+
+    const pageGrid = html.querySelector('[data-product-grid-content]');
+    if (pageGrid && this.#canFillModal(pageGrid)) return /** @type {Element} */ (pageGrid.cloneNode(true));
+
+    const sectionUrl = new URL(productPageUrl, window.location.href);
+    sectionUrl.searchParams.set('section_id', QUICK_ADD_SECTION_ID);
+
+    const sectionHtml = await this.fetchProductPage(sectionUrl.toString());
+    if (!sectionHtml) return null;
+
+    const grid = sectionHtml.querySelector('[data-product-grid-content]') ?? pageGrid;
+    return grid ? /** @type {Element} */ (grid.cloneNode(true)) : null;
+  }
+
+  /**
+   * Whether a product grid has the price, the buy buttons, and the variant picker that the product needs.
+   * Product cards inside the grid, such as product recommendations, do not count.
+   * @param {Element} productGrid - The product grid element
+   * @returns {boolean}
+   */
+  #canFillModal(productGrid) {
+    /** @param {string} selector */
+    const hasPart = (selector) =>
+      Array.from(productGrid.querySelectorAll(selector)).some((element) => !element.closest('product-card'));
+
+    if (!hasPart('product-price') || !hasPart('product-form-component')) return false;
+
+    return Number(this.dataset.productVariantsCount) <= 1 || hasPart('variant-picker');
+  }
 
   #resetScroll() {
     const dialogComponent = document.getElementById('quick-add-dialog');
@@ -154,6 +208,7 @@ export class QuickAddComponent extends Component {
     if (!(dialogComponent instanceof QuickAddDialog)) return;
 
     this.#stayVisibleUntilDialogCloses(dialogComponent);
+    this.#syncHeaderState(dialogComponent);
 
     dialogComponent.showDialog();
 
@@ -163,6 +218,24 @@ export class QuickAddComponent extends Component {
     if (!dialog) return;
     dialog.addEventListener('animationstart', this.#resetScroll.bind(this), { once: true });
   };
+
+  /**
+   * Mirrors the header states that product media and details styles depend on. Those rules reach page
+   * content from `#header-group` with a sibling combinator, which can't reach this body-level dialog.
+   * Scroll is locked while the dialog is open, so the header can't change state until it closes.
+   *
+   * @param {QuickAddDialog} dialogComponent
+   */
+  #syncHeaderState(dialogComponent) {
+    dialogComponent.toggleAttribute(
+      'header-transparent',
+      document.querySelector('header-component[transparent]') !== null
+    );
+    dialogComponent.toggleAttribute(
+      'header-sticky-active',
+      document.querySelector("#header-group #header-component[data-sticky-state='active']") !== null
+    );
+  }
 
   #closeQuickAddModal = () => {
     const dialogComponent = document.getElementById('quick-add-dialog');
@@ -249,6 +322,14 @@ export class QuickAddComponent extends Component {
     // Sync the view-event-payload attribute and morph children into the modal's product-component
     const payload = productGrid.getAttribute('view-event-payload') || '';
     modalContent.setAttribute('view-event-payload', payload);
+
+    // Variant changes in the modal render the same section that filled it
+    const quickAddSectionId = productGrid.getAttribute('data-quick-add-section-id');
+    if (quickAddSectionId) {
+      modalContent.setAttribute('data-quick-add-section-id', quickAddSectionId);
+    } else {
+      modalContent.removeAttribute('data-quick-add-section-id');
+    }
 
     morph(modalContent, productGrid);
 

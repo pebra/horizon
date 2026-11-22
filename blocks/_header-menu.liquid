@@ -37,6 +37,7 @@
         class="menu-list menu-list--mobile{% if transparent == blank %} color-custom-{{ block.id }}{% endif %}"
         style="--menu-horizontal-gap: 15px; --mobile-nav-margin: auto;"
         data-hydration-key="header-menu-mobile-navigation-bar"
+        data-navigation-bar-enabled
       >
         <div class="menu-list__scroll-container">
           <ul
@@ -93,22 +94,18 @@
     {% capture children %}
       {% for link in block_settings.menu.links %}
         <li
-          role="presentation"
           class="menu-list__list-item"
-          on:focus="/activate"
           on:blur="/deactivate"
           on:pointerenter="/activate"
           on:pointerleave="/deactivate"
         >
+          {%- if link.links != blank -%}
+            <span class="menu-list__trigger">
+          {%- endif -%}
           <a
             href="{{ link.url }}"
             data-skip-node-update="true"
             class="menu-list__link{% if link.active %} menu-list__link--active{% endif %}"
-            {%- if link.links != blank -%}
-              aria-controls="submenu-{{ forloop.index }}"
-              aria-haspopup="true"
-              aria-expanded="false"
-            {%- endif -%}
             {% if link.current %}
               aria-current="page"
             {% endif %}
@@ -117,7 +114,31 @@
             <span class="menu-list__link-title">{{- link.title -}}</span>
           </a>
           {%- if link.links != blank -%}
-            <div class="menu-list__submenu{{ background_color_classes }}" ref="submenu[]">
+            <button
+              type="button"
+              class="menu-list__disclosure button-unstyled"
+              aria-controls="submenu-{{ forloop.index }}"
+              aria-expanded="false"
+              ref="disclosure[]"
+              data-skip-node-update
+              on:click="/toggle"
+            >
+              <span class="visually-hidden">{{ 'accessibility.show_submenu' | t: title: link.title }}</span>
+              <svg
+                class="menu-list__disclosure-icon"
+                aria-hidden="true"
+                focusable="false"
+                viewBox="0 0 10 6"
+              >
+                {%- render 'icon', icon: 'caret' -%}
+              </svg>
+            </button>
+            </span>
+            {%- comment -%}
+              Collapsed by default via `inert`: keeps the submenu out of the tab order
+              and the accessibility tree until it is opened. Toggled in header-menu.js.
+            {%- endcomment -%}
+            <div class="menu-list__submenu{{ background_color_classes }}" ref="submenu[]" data-skip-node-update inert>
               <div
                 id="submenu-{{ forloop.index }}"
                 class="menu-list__submenu-inner"
@@ -149,19 +170,19 @@
       {% endfor %}
       <li
         class="menu-list__list-item"
-        role="presentation"
         slot="more"
-        on:focus="/activate"
         on:blur="/deactivate"
         on:pointerenter="/activate"
         on:pointerleave="/deactivate"
       >
         <button
-          role="listitem"
           class="menu-list__link button-unstyled"
           aria-haspopup="true"
           aria-expanded="false"
           ref="menuitem"
+          on:click="/toggle"
+          data-testid="header-menu-more-button"
+          data-skip-node-update
         >
           <span class="menu-list__link-title">{{ 'actions.more' | t }}</span>
         </button>
@@ -173,6 +194,7 @@
       class="header-menu"
       {{ block.shopify_attributes }}
       data-hydration-key="header-menu"
+      data-skip-node-update
     >
       <div class="header-menu__inner">
         <nav
@@ -312,8 +334,7 @@
       display: none;
       top: var(--header-padding);
       height: var(--box-height);
-      left: 0;
-      right: 0;
+      inset-inline: 0;
     }
 
     &[data-safety-box='true']::after {
@@ -330,8 +351,55 @@
     }
   }
 
+  /* Wraps a top-level link and its disclosure button. Positioned so the
+     absolutely-positioned button can sit in the gap after the link without
+     affecting the top-bar layout. */
+  .menu-list__trigger {
+    position: relative;
+    display: flex;
+    height: 100%;
+  }
+
+  .menu-list__disclosure {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-start: calc(100% - var(--gap-xs));
+    width: max-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: var(--padding-3xs);
+    padding-block: var(--padding-sm);
+    color: var(--menu-top-level-font-color);
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(-50%);
+    outline-offset: 0.1em;
+
+    /* Hidden control must not intercept pointer events; hover-open is driven by
+       the list item itself. */
+    pointer-events: none;
+
+    &:focus-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  }
+
+  .menu-list__disclosure-icon {
+    display: block;
+    width: var(--font-size--3xs);
+    aspect-ratio: 10 / 6;
+    fill: currentColor;
+    transition: transform var(--animation-speed) var(--animation-easing);
+  }
+
+  .menu-list__disclosure[aria-expanded='true'] .menu-list__disclosure-icon {
+    transform: rotate(180deg);
+  }
+
   .menu-list__link-title {
-    padding-inline: calc(var(--gap-xl) / 2);
+    padding-inline: var(--gap-sm);
   }
   [slot='overflow'] .menu-list__link-title {
     padding-inline: 0;
@@ -366,7 +434,7 @@
   /* stylelint-disable-next-line selector-max-specificity */
   .menu-list:not(:has(.menu-list__list-item:hover)) .menu-list__link--active,
   .menu-list .menu-list__list-item:where(:hover, :focus-within) .menu-list__link,
-  .menu-list .menu-list__list-item:is([slot='more'], [slot='overflow']) .menu-list__link[aria-expanded='true'] {
+  .menu-list .menu-list__list-item:is([slot='more'], [slot='overflow']):has([aria-expanded='true']) .menu-list__link {
     color: var(--menu-top-level-font-color);
   }
 
@@ -378,7 +446,13 @@
     margin-inline: calc(-1 * var(--menu-horizontal-gap) / 2);
   }
 
+  /* The overflow list keeps the height it measured on its first reflow. Center the list so its
+     links stay on the row's center line when the row grows later, for example when the sticky
+     header shows a logo that is hidden on the home page. */
   .overflow-menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     /* stylelint-disable-next-line declaration-no-important */
     background-color: transparent !important;
     padding: var(--focus-outline-size);
@@ -406,22 +480,32 @@
     --submenu-content-opacity: 0;
     --submenu-content-animation: opacity calc(var(--submenu-animation-speed) * 0.75) var(--animation-easing);
 
+    /* Bridge the gap (row bottom padding + border) so the pointer reaches the
+       submenu; collapses to 0 when the padding does. */
+    --submenu-gap: calc(var(--padding-block-end, var(--header-padding)) + var(--border-bottom-width, 0px));
+    --submenu-clip-top: calc(var(--header-height) - var(--submenu-gap));
+
     visibility: hidden;
     position: absolute;
     width: 100%;
-    left: 0;
+    inset-inline-start: 0;
     top: calc(100% - 1px + var(--border-bottom-width) - (var(--full-open-header-height) - var(--submenu-height)));
     z-index: var(--layer-header-menu);
     padding-inline: var(--padding-inline);
-    /* Clip path starts at header height so it doesn't mess with the pointer events in the header */
-    clip-path: rect(var(--header-height) 100% var(--full-open-header-height) 0); /* stylelint-disable-line */
+    clip-path: rect(var(--submenu-clip-top) 100% var(--full-open-header-height) 0); /* stylelint-disable-line */
     transition: clip-path var(--submenu-animation-speed) var(--ease-out-cubic); /* stylelint-disable-line */
+  }
+
+  /* Keep the submenu transparent (color-custom paints an opaque bg) so the
+     bridged band shows the header row; the underlay paints the dropdown. */
+  .menu-list__list-item > .menu-list__submenu {
+    background-color: transparent;
   }
 
   [data-submenu-overlap-bottom-row] {
     .menu-list__list-item:where(:not([slot='overflow'])) > .menu-list__submenu,
     .overflow-menu::part(overflow) {
-      clip-path: rect(var(--top-row-height) 100% var(--full-open-header-height) 0); /* stylelint-disable-line */
+      --submenu-clip-top: calc(var(--top-row-height) - var(--submenu-gap));
     }
   }
 
@@ -461,7 +545,34 @@
     display: contents;
     white-space: normal;
 
+    /* The trigger becomes the left-column grid item, laying the link and its
+       disclosure button out inline */
+
+    .menu-list__trigger {
+      grid-area: left;
+      grid-row: auto;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: var(--gap-2xs);
+    }
+
+    .menu-list__disclosure {
+      position: static;
+      flex-shrink: 0;
+      transform: none;
+    }
+
+    /* Point the chevron toward the content that opens to the right. */
+    .menu-list__disclosure-icon,
+    .menu-list__disclosure[aria-expanded='true'] .menu-list__disclosure-icon {
+      transform: rotate(-90deg);
+    }
+
     .menu-list__link {
+      /* Bare leaf links (no children) have no `.menu-list__trigger` wrapper, so
+         they need explicit left-column placement themselves. On parent items the
+         link is inside the trigger and this is simply ignored. */
       grid-area: left;
       grid-row: auto;
       height: min-content;
@@ -483,7 +594,9 @@
       padding-block: 0;
     }
 
-    .menu-list__link[aria-expanded='true'] + .menu-list__submenu {
+    /* The disclosure button owns the expanded state; reveal the submenu when it
+       is expanded (via the inline chevron, hover, or the More trigger). */
+    &:has(.menu-list__disclosure[aria-expanded='true']) .menu-list__submenu {
       visibility: visible;
     }
   }
@@ -624,6 +737,15 @@
     grid-column: span 4;
   }
 
+  /* A column of many child links splits them into one inner column for each grid track it spans. */
+  .mega-menu__nested-list {
+    column-count: var(--menu-nested-columns);
+  }
+
+  .mega-menu__nested-break {
+    break-after: column;
+  }
+
   .mega-menu__column--wide-collection-image {
     grid-column: span 1;
 
@@ -683,6 +805,129 @@
 
   .menu-list__list-item[slot='overflow'] .section .mega-menu__grid {
     grid-column: 1;
+  }
+
+  /*
+    In the More panel a submenu shares its row with the 200px rail, and an open
+    cart drawer narrows the page further, so it can be far narrower than the
+    viewport that picked the desktop column count. Text, featured product and
+    featured collection submenus step their column count down with the width
+    they actually have, keeping each column at least about 100px wide: the
+    tablet layout below 700px, then three columns, then two. A column of child
+    links that loses grid tracks also loses inner columns, and its links
+    balance across the inner columns that are left.
+  */
+  .menu-list__list-item[slot='overflow'] .menu-list__submenu-inner {
+    container: overflow-submenu / inline-size;
+  }
+
+  @container overflow-submenu (max-width: 699px) {
+    .mega-menu__grid:has(> .mega-menu__list--text),
+    .mega-menu__grid:has(> .mega-menu__content) {
+      grid-template-columns: repeat(var(--menu-columns-tablet), minmax(0, 1fr));
+    }
+
+    .mega-menu__list--text {
+      grid-column: 1 / -1;
+    }
+
+    .mega-menu__grid:has(> .mega-menu__content) > .mega-menu__list {
+      grid-column: span var(--menu-columns-tablet);
+    }
+
+    .mega-menu__content {
+      grid-column: span var(--menu-content-columns-tablet) / -1;
+    }
+
+    .mega-menu__content-list--products {
+      grid-template-columns: repeat(var(--menu-content-columns-tablet), minmax(0, 1fr));
+    }
+
+    .mega-menu__content-list--collections {
+      grid-template-columns: repeat(var(--menu-content-columns-tablet), minmax(0, 300px));
+    }
+
+    .mega-menu__content-list-item--hidden-tablet {
+      display: none;
+    }
+
+    .mega-menu__grid:has(> .mega-menu__content) .mega-menu__nested-list {
+      column-count: min(var(--menu-nested-columns), var(--menu-columns-tablet));
+    }
+
+    .mega-menu__grid:has(> .mega-menu__content) .mega-menu__nested-break {
+      break-after: auto;
+    }
+  }
+
+  /* Below 450px a featured submenu keeps two columns of links and one featured card. */
+  @container overflow-submenu (max-width: 449px) {
+    .mega-menu__grid:has(> .mega-menu__list--text),
+    .mega-menu__grid:has(> .mega-menu__content) {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .mega-menu__list--text .mega-menu__column--span-4 {
+      grid-column: span 3;
+    }
+
+    .mega-menu__list--text .mega-menu__column--span-4 .mega-menu__nested-list {
+      column-count: 3;
+    }
+
+    .mega-menu__list--text .mega-menu__column--span-4 .mega-menu__nested-break {
+      break-after: auto;
+    }
+
+    .mega-menu__grid:has(> .mega-menu__content) > .mega-menu__list,
+    .mega-menu__grid:has(> .mega-menu__content) :is(.mega-menu__column--span-3, .mega-menu__column--span-4) {
+      grid-column: span 2;
+    }
+
+    .mega-menu__content {
+      grid-column: span 1 / -1;
+    }
+
+    .mega-menu__content-list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .mega-menu__content-list-item:nth-child(n + 2) {
+      display: none;
+    }
+
+    .mega-menu__grid:has(> .mega-menu__content) .mega-menu__nested-list {
+      column-count: min(var(--menu-nested-columns), 2);
+    }
+  }
+
+  @container overflow-submenu (max-width: 329px) {
+    .mega-menu__grid:has(> .mega-menu__list--text),
+    .mega-menu__grid:has(> .mega-menu__content) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mega-menu__list--text :is(.mega-menu__column--span-3, .mega-menu__column--span-4) {
+      grid-column: span 2;
+    }
+
+    .mega-menu__list--text :is(.mega-menu__column--span-3, .mega-menu__column--span-4) .mega-menu__nested-list {
+      column-count: 2;
+    }
+
+    .mega-menu__list--text :is(.mega-menu__column--span-3, .mega-menu__column--span-4) .mega-menu__nested-break {
+      break-after: auto;
+    }
+
+    .mega-menu__grid:has(> .mega-menu__content) > .mega-menu__list,
+    .mega-menu__grid:has(> .mega-menu__content)
+      :is(.mega-menu__column--span-2, .mega-menu__column--span-3, .mega-menu__column--span-4) {
+      grid-column: span 1;
+    }
+
+    .mega-menu__grid:has(> .mega-menu__content) .mega-menu__nested-list {
+      column-count: 1;
+    }
   }
 
   .mega-menu__content-list li {
@@ -953,6 +1198,13 @@
       "id": "drawer_dividers",
       "label": "t:settings.dividers",
       "default": false
+    },
+    {
+      "type": "color",
+      "id": "drawer_divider_color",
+      "label": "t:settings.divider_color",
+      "placeholder": "t:settings.default",
+      "visible_if": "{{ block.settings.drawer_dividers }}"
     }
   ]
 }
