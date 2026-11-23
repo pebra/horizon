@@ -12,6 +12,23 @@
     "beaverkeys_hero": {
       "type": "beaverkeys-hero",
       "blocks": {
+        "beaverkeys_hero_slide_bfcm26": {
+          "type": "_beaverkeys-hero-slide",
+          "name": "BFCM 2026",
+          "settings": {
+            "badge": "Black Friday · Cyber Monday",
+            "heading_line_1": "The sale",
+            "heading_line_2": "is live.",
+            "subheading": "Our biggest deals of the year, shipped fast from Ottawa.",
+            "product": "",
+            "image": "shopify://shop_images/bfcm-2026-keycaps.png",
+            "button_label": "Shop the sale",
+            "button_link": "shopify://collections/bfcm-2026",
+            "gradient_start": "#ff885d",
+            "gradient_end": "#86cbc8"
+          },
+          "blocks": {}
+        },
         "beaverkeys_hero_slide_T9ea4K": {
           "type": "_beaverkeys-hero-slide",
           "name": "Back in Stock",
@@ -97,6 +114,7 @@
         }
       },
       "block_order": [
+        "beaverkeys_hero_slide_bfcm26",
         "beaverkeys_hero_slide_T9ea4K",
         "beaverkeys_hero_slide_AHKFCg",
         "beaverkeys_hero_slide_83Ncg3",
